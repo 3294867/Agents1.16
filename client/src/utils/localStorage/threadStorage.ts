@@ -19,7 +19,6 @@ const threadStorage = {
       return null;
     }
   },
-
 }
 
 export default threadStorage;

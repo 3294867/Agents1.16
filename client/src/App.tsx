@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import StoreProvider from './redux/StoreProvider';
+import { Toaster } from 'react-hot-toast';
 import { TooltipProvider } from './components/Tooltip';
 import Layout from './features/layout';
 import Redirect from './Redirect';
@@ -10,7 +10,7 @@ import { useHandleTheme } from './hooks/useHandleTheme';
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';
   useHandleTheme();
-  
+
   const router = useMemo(() => createBrowserRouter([
     {
       path: '/',
@@ -24,11 +24,10 @@ const App = () => {
   ]),[userId]);
 
   return (
-    <StoreProvider>
-      <TooltipProvider>
-        <RouterProvider router={router} />
-      </TooltipProvider>
-    </StoreProvider>
+    <TooltipProvider>
+      <RouterProvider router={router} />
+      <Toaster />
+    </TooltipProvider>
   )
 };
 

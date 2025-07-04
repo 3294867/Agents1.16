@@ -1,14 +1,12 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidV4 } from 'uuid';
 import { Button } from 'src/components/Button';
 import { Thread } from 'src/types';
 import { cn } from 'src/utils/cn';
 import { useNavigate } from 'react-router-dom';
-import { useCreateThreadMutation } from 'src/redux/actions/createThread';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { RootState } from 'src/redux/store';
-import selectAgentId from 'src/redux/selectors/selectAgentId';
 import tabsStorage from 'src/utils/localStorage/tabsStorage';
+import agentsStorage from 'src/utils/localStorage/agentsStorage';
+import { createThread } from 'src/actions/createThread';
 
 interface TabsProps {
   userId: string;
@@ -17,11 +15,8 @@ interface TabsProps {
 
 const Tabs = (props: TabsProps) => {
   const navigate = useNavigate();
-  const [createThread] = useCreateThreadMutation();
   const [ tabs, setTabs ] = useState<Thread[] | null>(null);
-  const { agentId } = useSelector((state: RootState) => props.agent
-    ? selectAgentId(state, props.agent)
-    : { agentId: null });
+  const agentId = agentsStorage.loadAgentId(props.agent);
 
   useEffect(() => {
     if (!props.agent) return;
@@ -45,13 +40,15 @@ const Tabs = (props: TabsProps) => {
   };
 
   const handleAddTab = (userId: string, agentId: string) => {
-    const threadId = uuidv4()
-    createThread({ id: threadId, userId, agentId, agent: props.agent })
-      .then(() => {
-        const updatedTabs = tabsStorage.load(props.agent);
-        if (updatedTabs !== null) setTabs(updatedTabs);
-        navigate(`/${props.agent}/${threadId}`)
-      });
+    const id = uuidV4();
+    createThread(id, userId, agentId, props.agent)
+      .then((response: Thread | null) => {
+        if (response !== null) {
+          setTabs([...tabs, response])
+          navigate(`/${props.agent}/${id}`)
+        } 
+      } 
+    );
   };
 
   const handleRemoveTab = (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {

@@ -8,7 +8,7 @@ interface AgentProps {
 };
 
 const Agent = (props: AgentProps) => {
-  const { agent } = useParams();
+  const { agent } = useParams<{ agent: string }>();
   if (!agent) return;
   return (
     <div className='ml-[52px] flex flex-col p-2'>

@@ -28,12 +28,10 @@ const createThread = async (req: Request, res: Response) => {
     if (!result) return sendResponse(res, "Failed to create thread.");
 
     /** Send response to the client */
-    res.format({"application/json": () => {
-      res.send({
-        message: "Thread fetched.",
-        data: result.rows[0]
-      });
-    }});
+    res.status(200).json({
+      message: "Thread fetched.",
+      data: result.rows[0]
+    });
 
   } catch (error) {
     console.error("Failed to create thread: ", error);

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
-import { NormalizedAgents } from "../types";
 
 const getAgents = async (req: Request, res: Response) => {
   const { userId } = req.body as { userId: string };
@@ -16,23 +15,11 @@ const getAgents = async (req: Request, res: Response) => {
     ])
     if (!result) return sendResponse(res, "Failed to fetch agents.");
     
-    const normalizedResult = result.rows.reduce(
-      (acc: NormalizedAgents, slot) => {
-        acc.byId[slot.id] = slot
-        acc.allIds.push(slot.id)
-        return acc;
-      },
-      { byId: {}, allIds: [] }
-    );
-
     /** Send response to the client */
-    res.format({"application/json": () => {
-      res.send({
-        message: "Agents have been fetched.",
-        data: normalizedResult
-      });
-    }});
-    
+    res.status(200).json({
+      message: "Agents have been fetched.",
+      data: result.rows
+    });
 
   } catch (error) {
     console.error("Failed to fetch agents: ", error);

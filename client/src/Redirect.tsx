@@ -2,10 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import tabsStorage from './utils/localStorage/tabsStorage';
-import { useCreateThreadMutation } from './redux/actions/createThread';
-import { useSelector } from 'react-redux';
-import { RootState } from './redux/store';
-import selectAgentId from './redux/selectors/selectAgentId';
+import agentsStorage from './utils/localStorage/agentsStorage';
+import { createThread } from './actions/createThread';
 
 interface RedirectProps {
   userId: string;
@@ -13,24 +11,22 @@ interface RedirectProps {
 
 const Redirect = (props: RedirectProps) => {
   const navigate = useNavigate();
-  const { agent } = useParams();
-  const [ createThread ] = useCreateThreadMutation();
-  const { agentId } = useSelector((state: RootState) => agent
-    ? selectAgentId(state, agent)
-    : { agentId: null });
+  const { agent } = useParams<{ agent: string }>();
   
   useEffect(() => {
-    if (!agent || !agentId) return;
-
+    if (!agent) return;
+    const savedAgentId = agentsStorage.loadAgentId(agent);
+    if (!savedAgentId) return;
+    
     const savedTabs = tabsStorage.load(agent)
     if (savedTabs === null) {
       const id = uuidV4();
-      createThread({ id, userId: props.userId, agentId, agent })
+      createThread(id, props.userId, savedAgentId, agent)
         .then(() => navigate(`/${agent}/${id}`));
     } else {
-      navigate(`/${agent}/${savedTabs[0].id}`);
+      navigate(`/${agent}/${savedTabs[0].id}`, { replace: true });
     }
-  },[agent, agentId, props.userId, navigate, createThread])
+  },[agent, props.userId, navigate])
   return null;
 };
 

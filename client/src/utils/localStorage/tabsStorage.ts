@@ -22,6 +22,37 @@ const tabsStorage = {
     }
   },
 
+  addTab: (agent: string, thread: Thread) => {
+    try {
+      const savedTabs = tabsStorage.load(agent);
+      const newTab = {
+        id: thread.id,
+        userId: thread.userId,
+        agentId: thread.agentId,
+        title: thread.title,
+        body: thread.body,
+        isActive: true,
+        isBookmarked: false,
+        createdAt: thread.createdAt,
+        updatedAt: thread.updatedAt
+      }
+
+      if (savedTabs === null) {
+        tabsStorage.save(agent, [newTab]);
+      } else {
+        const updatedTabs: Thread[] = [];
+        for (const t of savedTabs) {
+          if (t.agentId === thread.agentId) {
+            t.isActive = false;
+          };
+          updatedTabs.push(t);
+        }
+        tabsStorage.save(agent, [...updatedTabs, newTab]);
+      }
+    } catch (error) {
+      console.error(`Failed to add tab: `, error);
+    }
+  }
 }
 
 export default tabsStorage;

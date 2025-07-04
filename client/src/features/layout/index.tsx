@@ -1,14 +1,14 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './sidebar';
 import { useHandleBreakpoint } from 'src/hooks/useHandleBreakpoint';
-import { useGetAgentsQuery } from 'src/redux/api';
+import agentsStorage from 'src/utils/localStorage/agentsStorage';
 
 interface LayoutProps {
   userId: string;
 };
 
 const Layout = (props: LayoutProps) => {
-  useGetAgentsQuery({ userId: props.userId });
+  agentsStorage.loadAgents(props.userId);
   const isMobile = useHandleBreakpoint({ windowInnerWidth: 480 });
   
   return (
