@@ -1,14 +1,14 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from './sidebar';
 import { useHandleBreakpoint } from 'src/hooks/useHandleBreakpoint';
-import agentsStorage from 'src/utils/localStorage/agentsStorage';
+import updateAgents from 'src/utils/indexedDB/updateAgents';
 
 interface LayoutProps {
   userId: string;
 };
 
 const Layout = (props: LayoutProps) => {
-  agentsStorage.loadAgents(props.userId);
+  updateAgents(props.userId);
   const isMobile = useHandleBreakpoint({ windowInnerWidth: 480 });
   
   return (

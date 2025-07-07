@@ -29,9 +29,7 @@ const agentsStorage = {
           }
 
           const data: { message: string, data: Agent[] | null } = await response.json();
-          if (data.data === null) {
-            throw new Error(data.message);
-          }
+          if (data.data === null) throw new Error(data.message);
 
           agentsStorage.save(data.data);
           return data.data;
