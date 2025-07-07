@@ -6,10 +6,13 @@ import Layout from './features/layout';
 import Redirect from './Redirect';
 import Agent from "./features/agent";
 import { useHandleTheme } from './hooks/useHandleTheme';
+import { browserDB } from './utils/browserDB';
 
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';
   useHandleTheme();
+
+  browserDB.initialize();
 
   const router = useMemo(() => createBrowserRouter([
     {
