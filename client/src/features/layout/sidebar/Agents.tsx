@@ -10,7 +10,7 @@ interface AgentsProps {
 }
 
 const Agents = (props: AgentsProps) => {
-  const { agent } = useParams();
+  const { agentName } = useParams<{ agentName: string}>();
 
   return (
     <div className='flex flex-col gap-2 mt-28'>
@@ -20,7 +20,7 @@ const Agents = (props: AgentsProps) => {
             <Link prefetch='intent' to={`/${a.name}`}> 
               <Button variant='outline' size='icon' className={`
                 rounded-full
-                ${agent === a.name ? 'bg-blue-600 hover:bg-blue-600/80' : ''}
+                ${agentName === a.name ? 'bg-blue-600 hover:bg-blue-600/80' : ''}
               `}>
                 {a.name[0].toUpperCase()}
               </Button>

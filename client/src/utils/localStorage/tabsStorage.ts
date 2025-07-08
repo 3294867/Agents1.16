@@ -1,9 +1,9 @@
-import { Thread } from 'src/types';
+import { Tab } from 'src/types';
 
 const tabsStorage = {
-  save: (agent: string, threads: Thread[] ): boolean => {
+  save: (agent: string, tabs: Tab[] ): boolean => {
     try {
-      localStorage.setItem(`${agent}_tabs`, JSON.stringify(threads));
+      localStorage.setItem(`${agent}_tabs`, JSON.stringify(tabs));
       return true;
     } catch (error) {
       console.error('Failed to save threads: ', error);
@@ -11,38 +11,33 @@ const tabsStorage = {
     }
   },
 
-  load: (agent: string): Thread[] | null => {
+  load: (agent: string): Tab[] | null => {
     try {
       const savedTabs = localStorage.getItem(`${agent}_tabs`);
       if (savedTabs) return JSON.parse(savedTabs);
       return null;
     } catch (error) {
-      console.error(`Failed to load threads: `, error);
+      console.error(`Failed to load tabs: `, error);
       return null;
     }
   },
 
-  addTab: (agent: string, thread: Thread) => {
+  addTab: (agent: string, tab: Tab) => {
     try {
       const savedTabs = tabsStorage.load(agent);
       const newTab = {
-        id: thread.id,
-        userId: thread.userId,
-        agentId: thread.agentId,
-        title: thread.title,
-        body: thread.body,
+        id: tab.id,
+        agentId: tab.agentId,
+        title: tab.title,
         isActive: true,
-        isBookmarked: false,
-        createdAt: thread.createdAt,
-        updatedAt: thread.updatedAt
       }
 
       if (savedTabs === null) {
         tabsStorage.save(agent, [newTab]);
       } else {
-        const updatedTabs: Thread[] = [];
+        const updatedTabs: Tab[] = [];
         for (const t of savedTabs) {
-          if (t.agentId === thread.agentId) {
+          if (t.agentId === tab.agentId) {
             t.isActive = false;
           };
           updatedTabs.push(t);
@@ -53,6 +48,6 @@ const tabsStorage = {
       console.error(`Failed to add tab: `, error);
     }
   }
-}
+};
 
 export default tabsStorage;

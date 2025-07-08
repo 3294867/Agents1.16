@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Thread as ThreadType } from 'src/types';
-import threadStorage from 'src/utils/localStorage/threadStorage';
+import addThread from 'src/utils/indexedDB/addThread';
+import getThread from 'src/utils/indexedDB/getThread';
 
 const Thread = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -15,7 +16,7 @@ const Thread = () => {
     const fetchThread = async () => {
       setIsLoading(true);
 
-      const savedThread = threadStorage.load(threadId) as ThreadType | null;
+      const savedThread = await getThread(threadId) as ThreadType | null;
       if (savedThread) {
         setThread(savedThread);
         setIsLoading(false);
@@ -36,7 +37,7 @@ const Thread = () => {
             throw new Error(data.message);
           }
   
-          threadStorage.save(data.data);
+          addThread(data.data);
           setThread(data.data);
         } catch (error) {
           setIsError(error instanceof Error ? error.message : 'An error occured.');

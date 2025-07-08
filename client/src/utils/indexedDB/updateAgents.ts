@@ -22,8 +22,8 @@ const updateAgents = async (userId: string): Promise<void> => {
     /** Store data */
     for (const agent of data.data) {
       const transaction = db.transaction(['Agent'], 'readwrite');
-      const objectStore = transaction.objectStore('Agent');
-      objectStore.put(agent);
+      const agentStore = transaction.objectStore('Agent');
+      agentStore.put(agent);
 
       transaction.oncomplete = () => {
         db.close();

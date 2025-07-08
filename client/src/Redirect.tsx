@@ -19,9 +19,9 @@ const Redirect = (props: RedirectProps) => {
       const gettingAgent = async () => {
         const agent = await getAgent(agentName);
         if (agent) return agent.id;
-        return 'research';
       };
       const agentId = await gettingAgent();
+      if (!agentId) return;
 
       const savedTabs = tabsStorage.load(agentName);
       if (savedTabs === null) {

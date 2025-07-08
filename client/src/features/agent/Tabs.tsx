@@ -1,6 +1,6 @@
 import { v4 as uuidV4 } from 'uuid';
 import { Button } from 'src/components/Button';
-import { Agent as AgentType, Thread } from 'src/types';
+import { Agent as AgentType, Tab } from 'src/types';
 import { cn } from 'src/utils/cn';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
@@ -14,7 +14,7 @@ interface TabsProps {
 
 const Tabs = (props: TabsProps) => {
   const navigate = useNavigate();
-  const [ tabs, setTabs ] = useState<Thread[] | null>(null);
+  const [ tabs, setTabs ] = useState<Tab[] | null>(null);
 
   useEffect(() => {
     if (!props.agent) return;
@@ -26,7 +26,7 @@ const Tabs = (props: TabsProps) => {
   if (!tabs) return;
 
   const handleSelectTab = (threadId: string, agentId: string) => {
-    let updatedTabs: Thread[] = [];
+    let updatedTabs: Tab[] = [];
     for (const t of tabs) {
       if (t.agentId === agentId) {
         t.isActive = (t.id === threadId) ? true : false;
@@ -41,9 +41,9 @@ const Tabs = (props: TabsProps) => {
   const handleAddTab = (userId: string, agentId: string) => {
     const id = uuidV4();
     createThread(id, userId, agentId, props.agent.name)
-      .then((response: Thread | null) => {
+      .then((response: Tab | null) => {
         if (response !== null) {
-          let updatedTabs: Thread[] = [];
+          let updatedTabs: Tab[] = [];
           for (const t of tabs) {
             if (t.agentId === agentId) t.isActive = false;
             updatedTabs.push(t);
@@ -63,7 +63,7 @@ const Tabs = (props: TabsProps) => {
     const removedTab = tabs.find(t => t.id === threadId);
     if (!removedTab) return;
     
-    let updatedTabs: Thread[] = tabs;
+    let updatedTabs: Tab[] = tabs;
     updatedTabs = updatedTabs.filter(t => t.id !== threadId);
     
     if (removedTab.isActive) {

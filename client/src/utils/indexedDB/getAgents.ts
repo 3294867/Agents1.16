@@ -1,6 +1,6 @@
 import { Agent } from 'src/types';
 
-const getAgent = (name: string): Promise<Agent | null> => {
+const getAgents = (): Promise<Agent[] | null> => {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open('Agents', 1);
   
@@ -14,8 +14,7 @@ const getAgent = (name: string): Promise<Agent | null> => {
   
       agents.onsuccess = (event: Event): void => {
         const agents = (event.target as IDBRequest).result as Agent[];
-        const agent = agents.filter((agent: Agent) => agent.name === name)[0];
-        resolve(agent || null);
+        resolve(agents || null);
       };
   
       agents.onerror = (event: Event): void => {
@@ -36,4 +35,4 @@ const getAgent = (name: string): Promise<Agent | null> => {
   });
 };
 
-export default getAgent;
+export default getAgents;

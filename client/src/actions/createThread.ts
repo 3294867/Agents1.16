@@ -1,5 +1,6 @@
 import toast from 'react-hot-toast';
 import { Thread } from 'src/types';
+import addThread from 'src/utils/indexedDB/addThread';
 import tabsStorage from 'src/utils/localStorage/tabsStorage';
 
 export const createThread = async (id: string, userId: string, agentId: string, agentName: string): Promise<Thread | null> => {
@@ -10,6 +11,7 @@ export const createThread = async (id: string, userId: string, agentId: string, 
       id, userId, agentId
     })
   })
+  
   if (!response.ok) {
     const errorText = await response.text();
     console.error(`Failed to create thread: ${response.status} ${response.statusText} - ${errorText}`);
@@ -26,5 +28,6 @@ export const createThread = async (id: string, userId: string, agentId: string, 
   }
 
   tabsStorage.addTab(agentName, data.data);
+  addThread(data.data);
   return data.data;
 };

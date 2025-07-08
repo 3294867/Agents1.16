@@ -36,6 +36,13 @@ export interface Thread {
   updatedAt: Date;
 };
 
+export interface Tab {
+  id: string;
+  agentId: string;
+  title: string | null;
+  isActive: boolean;
+}
+
 export interface NormalizedThreads {
   byId: Record<string, Thread>;
   allIds: string[];

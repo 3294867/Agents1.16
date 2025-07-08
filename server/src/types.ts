@@ -38,4 +38,4 @@ export interface Thread {
 export interface NormalizedThreads {
   byId: Record<string, Thread>;
   allIds: string[];
-}
+};
