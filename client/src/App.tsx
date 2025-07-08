@@ -19,8 +19,8 @@ const App = () => {
       element: <Layout userId={userId} />,
       children: [
         { path: '/', element: <Navigate to='/research'/> },
-        { path: '/:agent', element: <Redirect userId={userId} /> },
-        { path: '/:agent/:threadId', element: <Agent userId={userId} /> },
+        { path: '/:agentName', element: <Redirect userId={userId} /> },
+        { path: '/:agentName/:threadId', element: <Agent userId={userId} /> },
       ]
     }
   ]),[userId]);

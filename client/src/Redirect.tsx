@@ -2,8 +2,8 @@ import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import tabsStorage from './utils/localStorage/tabsStorage';
-import agentsStorage from './utils/localStorage/agentsStorage';
 import { createThread } from './actions/createThread';
+import getAgent from './utils/indexedDB/getAgent';
 
 interface RedirectProps {
   userId: string;
@@ -11,23 +11,32 @@ interface RedirectProps {
 
 const Redirect = (props: RedirectProps) => {
   const navigate = useNavigate();
-  const { agent } = useParams<{ agent: string }>();
+  const { agentName } = useParams<{ agentName: string }>();
   
   useEffect(() => {
-    if (!agent) return;
-    const savedAgentId = agentsStorage.loadAgentId(agent);
-    if (!savedAgentId) return;
+    if (!agentName) return;
+    const redirect = async () => {
+      const gettingAgent = async () => {
+        const agent = await getAgent(agentName);
+        if (agent) return agent.id;
+        return 'research';
+      };
+      const agentId = await gettingAgent();
+
+      const savedTabs = tabsStorage.load(agentName);
+      if (savedTabs === null) {
+        const id = uuidV4();
+        createThread(id, props.userId, agentId, agentName)
+          .then(() => navigate(`/${agentName}/${id}`));
+      } else {
+        navigate(`/${agentName}/${savedTabs[0].id}`, { replace: true });
+      }
+    };
+    redirect();
     
-    const savedTabs = tabsStorage.load(agent)
-    if (savedTabs === null) {
-      const id = uuidV4();
-      createThread(id, props.userId, savedAgentId, agent)
-        .then(() => navigate(`/${agent}/${id}`));
-    } else {
-      navigate(`/${agent}/${savedTabs[0].id}`, { replace: true });
-    }
-  },[agent, props.userId, navigate])
+  },[agentName, props.userId, navigate])
   return null;
 };
 
 export default Redirect;
+ 

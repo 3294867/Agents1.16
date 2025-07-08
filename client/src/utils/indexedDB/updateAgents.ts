@@ -1,7 +1,7 @@
 import { Agent } from 'src/types';
 import initializeIndexedDB from './initializeIndexedDB';
 
-async function updateAgents(userId: string): Promise<void> {
+const updateAgents = async (userId: string): Promise<void> => {
   try {
     const db = await initializeIndexedDB() as IDBDatabase;
 
@@ -26,6 +26,7 @@ async function updateAgents(userId: string): Promise<void> {
       objectStore.put(agent);
 
       transaction.oncomplete = () => {
+        db.close();
         console.log('Data stored successfully in IndexedDB');
       };
   

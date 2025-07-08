@@ -5,7 +5,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/comp
 
 interface ActionsProps {
   userId: string;
-  agent: string;
+  agentId: string;
 };
 
 export const Actions = (props: ActionsProps) => {
