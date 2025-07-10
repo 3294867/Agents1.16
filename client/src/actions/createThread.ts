@@ -1,9 +1,9 @@
 import toast from 'react-hot-toast';
+import { db } from 'src/storage/indexedDB/db';
 import { Thread } from 'src/types';
-import addThread from 'src/utils/indexedDB/addThread';
-import tabsStorage from 'src/utils/localStorage/tabsStorage';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
-export const createThread = async (id: string, userId: string, agentId: string, agentName: string): Promise<Thread | null> => {
+const createThread = async (id: string, userId: string, agentId: string, agentName: string): Promise<Thread | null> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-thread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,6 +28,9 @@ export const createThread = async (id: string, userId: string, agentId: string, 
   }
 
   tabsStorage.addTab(agentName, data.data);
-  addThread(data.data);
+  await db.threads.add(data.data);
+  
   return data.data;
 };
+
+export default createThread;

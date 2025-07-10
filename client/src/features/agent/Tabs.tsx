@@ -4,8 +4,8 @@ import { Agent as AgentType, Tab } from 'src/types';
 import { cn } from 'src/utils/cn';
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import tabsStorage from 'src/utils/localStorage/tabsStorage';
-import { createThread } from 'src/actions/createThread';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import createThread from 'src/actions/createThread';
 
 interface TabsProps {
   userId: string;

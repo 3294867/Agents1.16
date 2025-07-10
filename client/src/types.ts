@@ -1,4 +1,4 @@
-export interface Agent {
+interface Agent {
   id: string;
   type: 'research' | 'code';
   model: 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
@@ -12,19 +12,19 @@ export interface Agent {
   updatedAt: Date;
 };
 
-export interface NormalizedAgents {
+interface NormalizedAgents {
   byId: Record<string, Agent>;
   allIds: string[];
 };
 
-export type ThreadBody = {
+type ThreadBody = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
 }[] | [];
 
-export interface Thread {
+interface Thread {
   id: string;
   userId: string;
   agentId: string;
@@ -36,14 +36,16 @@ export interface Thread {
   updatedAt: Date;
 };
 
-export interface Tab {
+interface Tab {
   id: string;
   agentId: string;
   title: string | null;
   isActive: boolean;
-}
+};
 
-export interface NormalizedThreads {
+interface NormalizedThreads {
   byId: Record<string, Thread>;
   allIds: string[];
-}
+};
+
+export type { Agent, NormalizedAgents, ThreadBody, Thread, NormalizedThreads, Tab  };

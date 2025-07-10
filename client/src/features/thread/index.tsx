@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import getThread from 'src/actions/getThread';
+import { db } from 'src/storage/indexedDB/db';
 import { Thread as ThreadType } from 'src/types';
-import addThread from 'src/utils/indexedDB/addThread';
-import getThread from 'src/utils/indexedDB/getThread';
 
 const Thread = () => {
   const { threadId } = useParams<{ threadId: string }>();
@@ -16,29 +16,15 @@ const Thread = () => {
     const fetchThread = async () => {
       setIsLoading(true);
 
-      const savedThread = await getThread(threadId) as ThreadType | null;
+      const savedThread = await db.threads.get({ id: threadId });
       if (savedThread) {
         setThread(savedThread);
         setIsLoading(false);
         return;
       } else {
         try {
-          const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ threadId })
-          });
-          if (!response.ok) {
-            throw new Error('Failed to fetch thread.');
-          }
-  
-          const data: { message: string; data: ThreadType | null } = await response.json();
-          if (data.data === null) {
-            throw new Error(data.message);
-          }
-  
-          addThread(data.data);
-          setThread(data.data);
+          const thread = await getThread(threadId);
+          if (thread) setThread(thread);
         } catch (error) {
           setIsError(error instanceof Error ? error.message : 'An error occured.');
           console.error(error);
