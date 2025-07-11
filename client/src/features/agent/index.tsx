@@ -2,9 +2,7 @@ import { useParams } from 'react-router-dom';
 import Tabs from './Tabs';
 import { Actions } from './Actions';
 import Thread from '../thread';
-import { useEffect, useState } from 'react';
-import { Agent as AgentType } from 'src/types';
-import { db } from 'src/storage/indexedDB/db';
+import { indexedDB } from 'src/storage/indexedDB';
 
 interface AgentProps {
   userId: string;
@@ -12,18 +10,7 @@ interface AgentProps {
 
 const Agent = (props: AgentProps) => {
   const { agentName } = useParams<{ agentName: string }>();
-
-  const [agent, setAgent] = useState<AgentType | null>(null);
-
-  useEffect(() => {
-    if (!agentName) return;
-    const gettingAgent = async () => {
-      const agent = await db.agents.get({ name: agentName });
-      if (agent) setAgent(agent);
-    };
-    gettingAgent();
-  }, [agentName]);
-
+  const agent = indexedDB.getAgent(agentName);
   if (!agent) return;
 
   return (

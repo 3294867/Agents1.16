@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { db } from 'src/storage/indexedDB/db';
+import { db } from 'src/storage/indexedDB';
 import { Thread } from 'src/types';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 

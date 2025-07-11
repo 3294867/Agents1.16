@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB/db';
+import { db } from 'src/storage/indexedDB';
 import { Thread } from 'src/types';
 
 const getThread = async (threadId: string): Promise<Thread | null> => {

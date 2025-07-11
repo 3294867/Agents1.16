@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import tabsStorage from '../storage/localStorage/tabsStorage';
 import createThread from '../actions/createThread';
-import { db } from '../storage/indexedDB/db';
+import { db } from '../storage/indexedDB';
 import getAgents from 'src/actions/getAgents';
 import { Agent } from 'src/types';
 

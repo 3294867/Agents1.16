@@ -6,7 +6,7 @@ import Redirect from './features/Redirect';
 import Agent from './features/agent';
 import { TooltipProvider } from './components/Tooltip';
 import { useHandleTheme } from './hooks/useHandleTheme';
-import { initDB } from 'src/storage/indexedDB/db';
+import { initDB } from 'src/storage/indexedDB';
 
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';

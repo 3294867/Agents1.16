@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB/db';
+import { db } from 'src/storage/indexedDB';
 import { Agent } from 'src/types';
 
 const getAgents = async (userId: string): Promise<Agent[] | null> => {
