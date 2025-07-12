@@ -1,8 +1,8 @@
 import { useParams } from 'react-router-dom';
+import { indexedDB } from 'src/storage/indexedDB';
 import Tabs from './Tabs';
 import { Actions } from './Actions';
-import Thread from '../thread';
-import { indexedDB } from 'src/storage/indexedDB';
+import Thread from 'src/features/thread';
 
 interface AgentProps {
   userId: string;

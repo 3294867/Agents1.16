@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import Layout from './features/layout';
-import Redirect from './features/Redirect';
-import Agent from './features/agent';
-import { TooltipProvider } from './components/Tooltip';
-import { useHandleTheme } from './hooks/useHandleTheme';
-import { initDB } from 'src/storage/indexedDB';
+import { indexedDB } from 'src/storage/indexedDB';
+import Layout from 'src/features/layout';
+import Redirect from 'src/features/Redirect';
+import Agent from 'src/features/agent';
+import { TooltipProvider } from 'src/components/Tooltip';
+import { useHandleTheme } from 'src/hooks/useHandleTheme';
 
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';
-  initDB();
+  indexedDB.initialize();
   useHandleTheme();
 
   const router = useMemo(() => createBrowserRouter([

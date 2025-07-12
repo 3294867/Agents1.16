@@ -1,30 +1,15 @@
 import { Outlet } from 'react-router-dom';
-import Sidebar from './sidebar';
-import getAgents from 'src/actions/getAgents';
+import Sidebar from 'src/features/layout/sidebar';
 import { useHandleBreakpoint } from 'src/hooks/useHandleBreakpoint';
-import { useEffect, useState } from 'react';
-import { Agent } from 'src/types';
+import hooks from 'src/hooks';
 
 interface LayoutProps {
   userId: string;
 };
 
 const Layout = (props: LayoutProps) => {
-  const [agents, setAgents] = useState<Agent[] | null>(null);
   const isMobile = useHandleBreakpoint({ windowInnerWidth: 480 });
-  
-  useEffect(() => {
-    const gettingAgents = async () => {
-      const agents = await getAgents(props.userId)
-      if (agents) {
-        setAgents(agents);
-      }
-    }
-    gettingAgents();
-
-    return () => setAgents(null);
-  },[getAgents])
-
+  const agents = hooks.useGetAgents(props.userId);
   if (!agents) return null;
 
   return (

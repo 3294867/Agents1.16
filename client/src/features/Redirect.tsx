@@ -6,6 +6,7 @@ import createThread from '../actions/createThread';
 import { db } from '../storage/indexedDB';
 import getAgents from 'src/actions/getAgents';
 import { Agent } from 'src/types';
+import postgresDB from 'src/storage/postgresDB';
 
 interface RedirectProps {
   userId: string;
@@ -23,7 +24,7 @@ const Redirect = (props: RedirectProps) => {
       if (typeof gettingAgent !== 'undefined') {
         agent = gettingAgent;
       } else {
-        const agents = await getAgents(props.userId);
+        const agents = await postgresDB.getAgents(props.userId);
         if (agents) {
           agent = agents.find((a) => a.name === agentName) ?? null;
         }
