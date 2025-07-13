@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useHandleLayout = () => {
+const useHandleLayout = () => {
   const [layout, setLayout] = useState<'oneColumn' | 'twoColumns'>('twoColumns');
 
   useEffect(() => {
@@ -8,4 +8,6 @@ export const useHandleLayout = () => {
   }, [layout]);
   
   return { layout, setLayout };
-}
+};
+
+export default useHandleLayout;

@@ -1,5 +1,11 @@
 import { Agent } from 'src/types';
 
+/**
+ * Get agents.
+ * 
+ * @param {string} userId - User id.
+ * @returns {Object} - Data object.
+*/
 const getAgents = async (userId: string): Promise<Agent[] | null> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {
     method: 'POST',

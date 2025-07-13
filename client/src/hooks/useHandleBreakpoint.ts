@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useHandleBreakpoint = (props: {
+const useHandleBreakpoint = (props: {
   windowInnerWidth: number
 }) => {
   const [ isBreakpoint, setIsBreakpoint ] = useState<boolean>(false);
@@ -23,4 +23,6 @@ export const useHandleBreakpoint = (props: {
   }, [props.windowInnerWidth]);
 
   return isBreakpoint;
-}
+};
+
+export default useHandleBreakpoint;

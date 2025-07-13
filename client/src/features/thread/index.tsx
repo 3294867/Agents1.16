@@ -1,13 +1,15 @@
+import { LoaderIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
-import { indexedDB } from 'src/storage/indexedDB';
+import Error from 'src/components/Error';
+import hooks from 'src/hooks';
 
 const Thread = () => {
   const { threadId } = useParams<{ threadId: string }>();
-  const { thread, isLoading, isError } = indexedDB.getThread(threadId);
-  if (!thread) return null;
-
-  if (isLoading) return <div className='text-white'>Loading...</div>;
-  if (isError) return <div className='text-whtie'>Error</div>;
+  const { thread, isLoading, error } = hooks.useGetThread(threadId);
+  
+  if (error) return <Error error={error} />;
+  if (isLoading) return <Loading />;
+  if (!thread) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className='text-white'>
@@ -17,3 +19,11 @@ const Thread = () => {
 };
 
 export default Thread;
+
+const Loading = () => {
+  return (
+    <div className='w-[640px] h-full mx-auto flex justify-center items-center'>
+      <LoaderIcon className='w-5 h-5 text-white animate-spin' />
+    </div>
+  )
+}

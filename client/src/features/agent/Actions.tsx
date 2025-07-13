@@ -1,5 +1,5 @@
-import { CogIcon, EllipsisVerticalIcon, FolderClosedIcon, HistoryIcon } from 'lucide-react';
 import { useState } from 'react';
+import { CogIcon, EllipsisVerticalIcon, FolderClosedIcon, HistoryIcon } from 'lucide-react';
 import { Button } from 'src/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/components/DropdownMenu';
 
@@ -8,7 +8,7 @@ interface ActionsProps {
   agentId: string;
 };
 
-export const Actions = (props: ActionsProps) => {
+const Actions = (props: ActionsProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   return (
@@ -36,3 +36,5 @@ export const Actions = (props: ActionsProps) => {
     </div>    
   )
 };
+
+export default Actions;

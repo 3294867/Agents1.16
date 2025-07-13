@@ -1,39 +1,27 @@
-import { useEffect, useState } from 'react';
 import { db } from 'src/storage/indexedDB';
 import { Thread } from 'src/types';
 
-const getThread = (threadId: string | undefined): { thread: Thread | null, isLoading: boolean, isError: boolean } => {
-  const [ thread, setThread ] = useState<Thread | null>(null);
-  const [ isLoading, setIsLoading ] = useState<boolean>(false);
-  const [ isError, setIsError ] = useState<boolean>(false);
+interface GetThreadProps {
+  threadId: string | undefined;
+  error: string | null;
+  setError: (error: string | null) => void;
+};
 
-  useEffect(() => {
-    try {
-      setIsLoading(true);
-      if (!threadId) return;
-      const fetchThread = async () => {
-        const threadData = await db.threads.get({ id: threadId });
-        if (threadData) {
-          setThread(threadData);
-        } else {
-          setIsError(true);
-        }
-        setIsLoading(false);
-      };
-      fetchThread();
-    } catch (error) {
-      setIsError(true);
-      throw new Error(`Failed to get thread: ${error}`);
-    }
-
-    return () => {
-      setThread(null);
-      setIsLoading(false);
-      setIsError(false);
-    }
-    },[threadId]);
-
-  return { thread, isLoading, isError };
+const getThread = async (props: GetThreadProps): Promise<Thread | null> => {
+  if (!props.threadId) {
+    props.setError('Thread id is required.');
+    return null;
+  }
+  
+  try {
+    const thread = await db.threads.where('id').equals(props.threadId).first();
+    if (!thread) return null;
+    return thread;
+  } catch (error) {
+    console.error(error);
+    props.setError(`IndexedDB error: ${error instanceof Error ? error.name : 'Unknown error'}`);
+    return null;
+  }
 }
 
 export default getThread;

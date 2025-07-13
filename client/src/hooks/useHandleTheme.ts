@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-export const useHandleTheme = () => {
+const useHandleTheme = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
@@ -12,4 +12,6 @@ export const useHandleTheme = () => {
   }, [theme]);
   
   return { theme, setTheme };
-}
+};
+
+export default useHandleTheme;

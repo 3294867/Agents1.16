@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { pool } from '..';
-import { sendResponse } from '../utils/sendResponse';
+import { pool } from "..";
+import { sendResponse } from "../utils/sendResponse";
 
 interface RequestType {
   threadId: string;
@@ -19,7 +19,7 @@ const getThread = async (req: Request, res: Response) => {
       threadId
     ]);
 
-    if (!result) sendResponse(res, "Failed to fetch thread.")
+    if (!result) sendResponse(res, 404, "Failed to fetch thread.")
 
     res.status(200).json({
       message: "Thread fetched.",

@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import { Moon, Sun } from 'lucide-react';
 import { Button } from 'src/components/Button';
-import { useHandleTheme } from 'src/hooks/useHandleTheme';
+import useHandleTheme from 'src/hooks/useHandleTheme';
 
 
 

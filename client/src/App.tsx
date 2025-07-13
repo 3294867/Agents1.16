@@ -6,7 +6,7 @@ import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
 import { TooltipProvider } from 'src/components/Tooltip';
-import { useHandleTheme } from 'src/hooks/useHandleTheme';
+import useHandleTheme from 'src/hooks/useHandleTheme';
 
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';

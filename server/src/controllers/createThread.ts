@@ -25,7 +25,7 @@ const createThread = async (req: Request, res: Response) => {
       userId,
       agentId
     ])
-    if (!result) return sendResponse(res, "Failed to create thread.");
+    if (!result) return sendResponse(res, 503, "Failed to create thread.");
 
     /** Send response to the client */
     res.status(200).json({

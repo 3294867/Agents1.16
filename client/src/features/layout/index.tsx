@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Sidebar from 'src/features/layout/sidebar';
-import { useHandleBreakpoint } from 'src/hooks/useHandleBreakpoint';
+import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
 import hooks from 'src/hooks';
 
 interface LayoutProps {

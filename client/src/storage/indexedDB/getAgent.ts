@@ -1,20 +1,27 @@
-import { useEffect, useState } from 'react';
 import { db } from 'src/storage/indexedDB';
 import { Agent } from 'src/types';
 
-const getAgent = (agentName: string | undefined) => {
-  const [agent, setAgent] = useState<Agent | null>(null);
+interface GetAgentProps {
+  agentName: string | undefined;
+  error: string | null;
+  setError: (error: string | null) => void;
+};
 
-  useEffect(() => {
-    if (!agentName) return;
-    const fetchAgent = async () => {
-      const agentData = await db.agents.get({ name: agentName });
-      if (agentData) setAgent(agentData);
-    };
-    fetchAgent();
-  },[agentName]);
-  
-  return agent;
+const getAgent = async (props: GetAgentProps): Promise<Agent | null> => {
+  if (!props.agentName) {
+    props.setError('Agent name is required');
+    return null;
+  }
+
+  try {
+    const agent = await db.agents.where('name').equals(props.agentName).first();
+    if (!agent) return null;
+    return agent;
+  } catch (error) {
+    console.error(error);
+    props.setError(`IndexedDB error: ${error instanceof Error ? error.name : 'Unknown error'}`);
+    return null;
+  }
 };
 
 export default getAgent;
