@@ -1,4 +1,4 @@
-export const models = [
+export const agentModels = [
   'gpt-4.1',
   'gpt-4o',
   'gpt-4o-audio-preview',

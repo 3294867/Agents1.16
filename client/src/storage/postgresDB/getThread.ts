@@ -1,21 +1,21 @@
-import { Agent } from 'src/types';
+import { Thread } from 'src/types';
 
 interface Request {
-  userId: string;
+  threadId: string;
 };
 
 /**
- * Get agents.
+ * Get thread.
  * 
- * @param {string} props.userId - User id.
+ * @param {string} props.threadId - Thread id.
  * @returns {Object} - Data object.
 */
-const getAgents = async (props: Request): Promise<Agent[]> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {
+const getThread = async (props: Request): Promise<Thread> => {
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      userId: props.userId
+      threadId: props.threadId
     })
   });
   
@@ -24,9 +24,9 @@ const getAgents = async (props: Request): Promise<Agent[]> => {
     throw new Error(`Failed to fetch agents: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
-  const data: { message: string, data: Agent[] | null } = await response.json();
+  const data: { message: string, data: Thread | null } = await response.json();
   if (data.data === null) throw new Error(data.message);
   return data.data;
 };
 
-export default getAgents;
+export default getThread;

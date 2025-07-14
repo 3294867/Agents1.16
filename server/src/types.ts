@@ -1,7 +1,10 @@
-export interface Agent {
+type AgentType = 'research' | 'code';
+type AgentModel = 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
+
+interface Agent {
   id: string;
-  type: 'research' | 'code';
-  model: 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
+  type: AgentType;
+  model: AgentModel;
   userId: string;
   name: string;
   systemInstructions: string;
@@ -12,19 +15,19 @@ export interface Agent {
   updatedAt: Date;
 };
 
-export interface NormalizedAgents {
+interface NormalizedAgents {
   byId: Record<string, Agent>;
   allIds: string[];
 };
 
-export type ThreadBody = {
+type ThreadBody = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
 }[] | [];
 
-export interface Thread {
+interface Thread {
   id: string;
   userId: string;
   agentId: string;
@@ -35,7 +38,17 @@ export interface Thread {
   updatedAt: Date;
 };
 
-export interface NormalizedThreads {
+interface NormalizedThreads {
   byId: Record<string, Thread>;
   allIds: string[];
 };
+
+export {
+  AgentType,
+  AgentModel,
+  Agent,
+  NormalizedAgents,
+  ThreadBody,
+  Thread,
+  NormalizedThreads
+}

@@ -1,0 +1,36 @@
+import { Request, Response } from "express";
+import { pool } from "../index";
+import { sendResponse } from "../utils/sendResponse";
+
+interface RequestType {
+  threadId: string;
+  title: string;
+}
+
+const updateThreadTitle = async (req: Request, res: Response) => {
+  const { threadId, title } = req.body as RequestType;
+
+  try {
+    const queryText = `
+      UPDATE "Thread"
+      SET "title" = $1::text
+      WHERE "id" = $2::uuid;
+    `;
+    
+    const result = await pool.query(queryText, [
+      title,
+      threadId
+    ])
+    if (!result) return sendResponse(res, 503, "Failed to update thread title.")
+
+    /** Send response to the client */
+    res.status(200).json({
+      message: "Thread title updated."
+    })
+  } catch (error) {
+    console.error("Failed to update thread title: ", error);
+    res.status(500).json({ error: "Internal server error." });
+  }
+}
+
+export default updateThreadTitle;

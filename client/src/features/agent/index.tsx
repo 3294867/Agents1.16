@@ -12,12 +12,12 @@ interface AgentProps {
 };
 
 const Agent = (props: AgentProps) => {
-  const { agentName } = useParams<{ agentName: string }>();
+  const { agentName } = useParams<{ agentName: string | undefined }>();
   const { agent, error, isLoading } = hooks.useGetAgent(agentName);
   
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!agent) return <Error error='Something went wrong. Try again later.' />;
+  if (!agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className='ml-[52px] flex flex-col p-2'>
@@ -25,7 +25,7 @@ const Agent = (props: AgentProps) => {
         <Tabs userId={props.userId} agent={agent} />
         <Actions userId={props.userId} agentId={agent.id} />
       </header>
-      <Thread />
+      <Thread agentId={agent.id} agentName={agentName} agentModel={agent.model} />
     </div>
   )
 };
@@ -51,4 +51,4 @@ const Loading = () => {
       </div>
     </div>
   )
-}
+};

@@ -5,6 +5,7 @@ import storeAgents from 'src/storage/indexedDB/storeAgents';
 import getAgents from 'src/storage/indexedDB/getAgents';
 import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
+import updateThread from 'src/storage/indexedDB/updateThread';
 
 const db = new Dexie('Agents') as Dexie & {
   agents: EntityTable<Agent, 'id'>,
@@ -16,7 +17,8 @@ const indexedDB = {
   storeAgents,
   getAgents,
   getAgent,
-  getThread
+  getThread,
+  updateThread
 };
 
 export { db, indexedDB };

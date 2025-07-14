@@ -1,25 +1,27 @@
-interface RequestBody {
+import { AgentModel } from 'src/types';
+
+interface Request {
   threadId: string;
-  model: 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o',
-  body: string;
+  agentModel: AgentModel,
+  input: string;
 };
 
 /**
  * Create response.
  * 
  * @param {string} props.threadId - Thread id.
- * @param {string} props.model - AI model.
- * @param {string} props.body - Request input.
+ * @param {string} props.agentModel - AI model.
+ * @param {string} props.input - Request input.
  * @returns {string} - Response.
 */
-const createResponse = async (props: RequestBody): Promise<string | null> => {
+const createResponse = async (props: Request): Promise<string> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-response`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       threadId: props.threadId,
-      model: props.model,
-      body: props.body
+      model: props.agentModel,
+      body: props.input
     })
   });
   

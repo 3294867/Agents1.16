@@ -22,6 +22,23 @@ const tabsStorage = {
     }
   },
 
+  update: (agent: string, agentId: string ,threadId: string, newTitle: string) => {
+    try {
+      const savedTabs = localStorage.getItem(`tabs_${agent}`)
+      if (savedTabs) {
+        const remainingTabs = JSON.parse(savedTabs).filter((tab: { id: string, title: string, isActive: boolean }) => tab.id !== threadId);
+        const updatedTab: Tab = { id: threadId, agentId, title: newTitle, isActive: true };
+        const updatedTabs = [...remainingTabs, updatedTab] as Tab[];
+
+        localStorage.setItem(`tabs_${agent}`, JSON.stringify(updatedTabs));
+      }
+      return null;
+    } catch (error) {
+      console.error(`Failed to udpate tabs: `, error);
+      return null;
+    }
+  },
+
   addTab: (agent: string, tab: Tab) => {
     try {
       const savedTabs = tabsStorage.load(agent);
