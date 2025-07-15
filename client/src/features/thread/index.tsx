@@ -11,12 +11,12 @@ interface ThreadProps {
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
-}
+};
 
 const Thread = (props: ThreadProps) => {
   const { threadId } = useParams<{ threadId: string | undefined }>();
   const { thread, isLoading, error } = hooks.useGetThread(threadId);
-  
+
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!threadId || !thread) return <Error error='Something went wrong. Try again later.' />;
@@ -26,7 +26,7 @@ const Thread = (props: ThreadProps) => {
   const threadTitle = thread.title
 
   return (
-    <main className='relative w-[640px] mx-auto flex flex-col my-8'>
+    <main className='relative w-[640px] mx-auto flex flex-col mt-8'>
       <Header threadId={threadId} threadTitle={threadTitle} />
       <Chat threadBody={threadBody} />
       <Form {...props} threadId={threadId} threadBodyLength={threadBodyLength} />

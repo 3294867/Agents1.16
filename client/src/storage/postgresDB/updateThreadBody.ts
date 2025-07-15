@@ -17,7 +17,7 @@ const updateThreadBody = async (props: Request): Promise<string> => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      threaId: props.threadId,
+      threadId: props.threadId,
       requestBody: props.requestBody,
       responseBody: props.responseBody
     })

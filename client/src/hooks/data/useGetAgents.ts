@@ -15,7 +15,7 @@ const useGetAgents = (userId: string) => {
           return;
         }
         
-        const fetchedAgents = await postgresDB.getAgents(userId);
+        const fetchedAgents = await postgresDB.getAgents({ userId });
         if (!fetchedAgents) {
           setAgents(null);
           return;

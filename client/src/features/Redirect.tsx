@@ -3,10 +3,9 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import tabsStorage from '../storage/localStorage/tabsStorage';
 import createThread from '../actions/createThread';
-import { db } from '../storage/indexedDB';
-import getAgents from 'src/actions/getAgents';
 import { Agent } from 'src/types';
 import postgresDB from 'src/storage/postgresDB';
+import { db } from 'src/storage/indexedDB';
 
 interface RedirectProps {
   userId: string;
@@ -20,11 +19,13 @@ const Redirect = (props: RedirectProps) => {
     if (!agentName) return;
     const redirect = async () => {
       let agent: Agent | null = null;
-      const gettingAgent = await db.agents.get({ name: agentName });
+      const gettingAgent = await db.agents.where('name').equals(agentName).first();
       if (typeof gettingAgent !== 'undefined') {
         agent = gettingAgent;
       } else {
-        const agents = await postgresDB.getAgents(props.userId);
+        const agents = await postgresDB.getAgents({
+          userId: props.userId
+        });
         if (agents) {
           agent = agents.find((a) => a.name === agentName) ?? null;
         }

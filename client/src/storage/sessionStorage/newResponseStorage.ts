@@ -1,12 +1,12 @@
 import { NewResponse } from 'src/types';
 
 const newResponseStorage = {
-  add: (responseId: string) => {
+  add: (responseId: string, isLoading: boolean) => {
+    const newResponse: NewResponse = { responseId, isLoading };
     try {
-      const newResponse: NewResponse = { responseId, isLoading: true };
       sessionStorage.setItem('newResponse', JSON.stringify(newResponse));
     } catch (error) {
-      console.error('Failed to add new response: ', error);
+      console.error('Failed to update new response: ', error);
     }
   },
 
@@ -21,15 +21,6 @@ const newResponseStorage = {
     } catch (error) {
       console.error('Failed to add new response: ', error);
       return noNewResponse;
-    }
-  },
-  
-  update: (responseId: string, isLoading: boolean) => {
-    const newResponse: NewResponse = { responseId, isLoading };
-    try {
-      sessionStorage.setItem('newResponse', JSON.stringify(newResponse));
-    } catch (error) {
-      console.error('Failed to update new response: ', error);
     }
   },
 

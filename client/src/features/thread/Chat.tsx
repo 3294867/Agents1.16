@@ -10,9 +10,10 @@ interface ChatProps {
 
 const Chat = (props: ChatProps) => {
   const newResponse = newResponseStorage.get();
+  
   return (
-    <div className='flex flex-1 flex-col pb-8 gap-8 overflow-y-auto scrollbar scrollbar-thumb-border scrollbar-thumb-rounded-full scrollbar-track-card-background scrollbar-w-1 scrollbar-h-1'>
-      {props.threadBody.map((i, idx) => (
+    <div className='flex flex-1 flex-col mt-8 pb-48 gap-8 overflow-y-auto scrollbar scrollbar-thumb-border scrollbar-thumb-rounded-full scrollbar-track-card-background scrollbar-w-1 scrollbar-h-1'>
+      {props.threadBody.length > 0 && props.threadBody.map((i, idx) => (
         <div key={idx} className='space-y-2'>
           <Question requestId={i.requestId} requestBody={i.requestBody} />
           <Answer
@@ -48,7 +49,7 @@ const Question = (props: QuestionProps) => {
 interface AnswerProps {
   responseId: string;
   responseBody: string;
-  newResponseId: string | undefined;
+  newResponseId: string;
 }
 
 const Answer = (props: AnswerProps) => {
@@ -59,7 +60,7 @@ const Answer = (props: AnswerProps) => {
 
 interface ProgressiveTextProps {
   responseBody: string;
-}
+};
 
 const ProgressiveParagraph = (props: ProgressiveTextProps) => {
   const [copy, setCopy] = useState('');
@@ -73,10 +74,10 @@ const ProgressiveParagraph = (props: ProgressiveTextProps) => {
       } else {
         clearInterval(timer);
       }
-    },12)
+    },12);
 
     return () => clearInterval(timer);
-  },[[props.responseBody]])
+  },[props.responseBody]);
 
   return (
     <motion.div

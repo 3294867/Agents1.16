@@ -25,9 +25,8 @@ const Form = (props: FormProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setInput('');
 
-    newResponseStorage.update('', true);
+    newResponseStorage.remove();
 
     /** Create response (openai) */
     const responseBody = await openai.createResponse({
@@ -35,16 +34,18 @@ const Form = (props: FormProps) => {
       agentModel,
       input
     });
-    
+
     /** Update thread body (postgresDB) */
     const responseId = await postgresDB.updateThreadBody({
       threadId: props.threadId,
       requestBody: input,
       responseBody
     });
-    
+
+    setInput('');
+
     /** Update new Response (sessionStorage) */
-    newResponseStorage.update(responseId, true);
+    newResponseStorage.add(responseId, true);
 
     if (props.threadBodyLength === 0) {
       /** Create thread title */
@@ -52,7 +53,7 @@ const Form = (props: FormProps) => {
         question: input,
         answer: responseBody
       });
-  
+
       /** Update thread title (postgresDB) */
       await postgresDB.updateThreadTitle({
         threadId: props.threadId,
@@ -68,7 +69,7 @@ const Form = (props: FormProps) => {
       threadId: props.threadId
     });
     await indexedDB.updateThread({ thread });
-  }
+  };
   
   return (
     <div className='fixed bottom-8 left-0 right-0 w-full flex justify-center'>

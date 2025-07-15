@@ -14,7 +14,7 @@ const updateThreadTitle = async (props: Request) => {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      threaId: props.threadId,
+      threadId: props.threadId,
       threadTitle: props.threadTitle
     })
   });
@@ -24,8 +24,6 @@ const updateThreadTitle = async (props: Request) => {
     throw new Error(`Failed to update thread title: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
-  const data: { message: string, data: string | null } = await response.json();
-  if (data.data === null) throw new Error(data.message);
   return null;
 };
 

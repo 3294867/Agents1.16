@@ -13,7 +13,7 @@ const Layout = (props: LayoutProps) => {
   if (!agents) return null;
 
   return (
-    <div className='h-screen bg-background'>
+    <div className='min-h-screen bg-background'>
       <div className='h-full w-full mx-auto xl:max-w-screen-xl 2xl:max-w-screen-2xl xs:border-x-[1px] border-border'>
         <Sidebar userId={props.userId} agents={agents} isMobile={isMobile} />
         <Outlet />

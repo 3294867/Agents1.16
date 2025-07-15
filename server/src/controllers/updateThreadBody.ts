@@ -19,10 +19,7 @@ const updateThreadBody = async (req: Request, res: Response) => {
     const requestQueryText = `
       INSERT INTO "Request" ("threadId", "body")
       VALUES ($1::uuid, $2::text)
-      RETURNING
-        "id",
-        "createdAt"
-      ;
+      RETURNING "id", "createdAt";
     `;
     const request = await pool.query(requestQueryText, [threadId, requestBody]);
     if (!request) return sendResponse(res, 503, "Failed to add request.");
@@ -36,10 +33,7 @@ const updateThreadBody = async (req: Request, res: Response) => {
       SELECT
         $1::uuid AS "threadId",
         $2::text AS "body"
-      Returning
-        "id",
-        "createdAt"
-      ;
+      Returning "id", "createdAt";
     `;
     const response = await pool.query(responseQueryText, [
       threadId,
@@ -85,7 +79,7 @@ const updateThreadBody = async (req: Request, res: Response) => {
     /** Send response to the client */
     res.status(200).json({
       message: "Thread updated.",
-      data: { newResponseId: response.rows[0].id }
+      data: response.rows[0].id
     });
 
   } catch (error) {

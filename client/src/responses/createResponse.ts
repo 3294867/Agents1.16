@@ -20,8 +20,8 @@ const createResponse = async (props: Request): Promise<string> => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       threadId: props.threadId,
-      model: props.agentModel,
-      body: props.input
+      agentModel: props.agentModel,
+      input: props.input
     })
   });
   

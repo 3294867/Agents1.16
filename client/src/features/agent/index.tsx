@@ -14,7 +14,7 @@ interface AgentProps {
 const Agent = (props: AgentProps) => {
   const { agentName } = useParams<{ agentName: string | undefined }>();
   const { agent, error, isLoading } = hooks.useGetAgent(agentName);
-  
+
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!agentName || !agent) return <Error error='Something went wrong. Try again later.' />;

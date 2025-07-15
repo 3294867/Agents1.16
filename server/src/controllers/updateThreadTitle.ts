@@ -4,11 +4,11 @@ import { sendResponse } from "../utils/sendResponse";
 
 interface RequestType {
   threadId: string;
-  title: string;
-}
+  threadTitle: string;
+};
 
 const updateThreadTitle = async (req: Request, res: Response) => {
-  const { threadId, title } = req.body as RequestType;
+  const { threadId, threadTitle } = req.body as RequestType;
 
   try {
     const queryText = `
@@ -18,7 +18,7 @@ const updateThreadTitle = async (req: Request, res: Response) => {
     `;
     
     const result = await pool.query(queryText, [
-      title,
+      threadTitle,
       threadId
     ])
     if (!result) return sendResponse(res, 503, "Failed to update thread title.")
