@@ -28,7 +28,7 @@ const Thread = (props: ThreadProps) => {
   return (
     <main className='relative w-[640px] mx-auto flex flex-col mt-8'>
       <Header threadId={threadId} threadTitle={threadTitle} />
-      <Chat threadBody={threadBody} />
+      <Chat threadId={threadId} threadBody={threadBody} />
       <Form {...props} threadId={threadId} threadBodyLength={threadBodyLength} />
     </main>
   );

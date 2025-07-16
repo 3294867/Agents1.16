@@ -51,10 +51,14 @@ interface NormalizedThreads {
   allIds: string[];
 };
 
-interface NewResponse {
+interface NewQuery {
+  id: string;
+  requestId: string;
+  requestBody: string;
   responseId: string;
+  responseBody: string;
   isLoading: boolean;
-};
+}
 
 export type {
   AgentType,
@@ -65,5 +69,5 @@ export type {
   Thread,
   NormalizedThreads,
   Tab,
-  NewResponse
+  NewQuery
 };

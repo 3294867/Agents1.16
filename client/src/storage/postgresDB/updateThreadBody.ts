@@ -12,7 +12,7 @@ interface Request {
  * @param {string} props.responseBody - Response body.
  * @returns {string} Response id.
 */
-const updateThreadBody = async (props: Request): Promise<string> => {
+const updateThreadBody = async (props: Request): Promise<{ requestId: string, responseId: string }> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-thread-body`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -28,7 +28,7 @@ const updateThreadBody = async (props: Request): Promise<string> => {
     throw new Error(`Failed to update thread body: ${response.status} ${response.statusText} - ${errorText}`);
   }
   
-  const data: { message: string, data: string | null } = await response.json();
+  const data: { message: string, data: { requestId: string, responseId: string } | null } = await response.json();
   if (data.data === null) throw new Error(data.message);
   return data.data;
 };

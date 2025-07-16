@@ -1,6 +1,9 @@
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
 import { Paragraph } from 'src/components/Paragraph';
+import hooks from 'src/hooks';
 import { ThreadBody } from 'src/types';
-import NewQuery from './chat/NewQuery';
+import NewQuery from './NewQuery';
 
 interface ChatProps {
   threadId: string;

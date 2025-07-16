@@ -79,7 +79,7 @@ const updateThreadBody = async (req: Request, res: Response) => {
     /** Send response to the client */
     res.status(200).json({
       message: "Thread updated.",
-      data: response.rows[0].id
+      data: { requestId: request.rows[0].id, responseId: response.rows[0].id }
     });
 
   } catch (error) {

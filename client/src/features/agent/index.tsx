@@ -34,7 +34,7 @@ export default Agent;
 
 const Loading = () => {
   return (
-    <div className='ml-[52px] flex flex-col p-2'>
+    <div className='ml-[52px] min-h-screen flex flex-col p-2'>
       <header className='flex justify-between items-center pb-2 border-b-1 border-border'>
         <div className='h-8 w-[140px] rounded-full border border-border' />
         <div className='flex gap-1.5 items-center'>

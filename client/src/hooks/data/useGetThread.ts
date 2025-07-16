@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { indexedDB } from 'src/storage/indexedDB';
 import { Thread } from 'src/types';
 
-const useGetThread = (threadId: string | undefined)  => {
+const useGetThread = (threadId: string | undefined) => {
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);

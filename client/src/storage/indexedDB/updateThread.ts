@@ -1,5 +1,6 @@
 import { db } from 'src/storage/indexedDB';
 import { Thread } from 'src/types';
+import newQueryStorage from '../sessionStorage/newQueryStorage';
 
 interface updateThreadProps {
   thread: Thread;
@@ -15,6 +16,8 @@ const updateThread = async (props: updateThreadProps) => {
       detail: { threadId: props.thread.id }
     });
     window.dispatchEvent(event);
+
+    newQueryStorage.remove();
     
     return thread
   } catch (error) {

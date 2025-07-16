@@ -1,15 +1,16 @@
 import { ChevronDown, MoveUpRightIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
+import { v4 as uuidV4 } from 'uuid';
 import openai from 'src/responses';
 import postgresDB from 'src/storage/postgresDB';
-import newResponseStorage from 'src/storage/sessionStorage/newResponseStorage';
 import { Button } from 'src/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/components/DropdownMenu';
 import { Textarea } from 'src/components/Textarea';
-import { agentModels } from 'src/constants';
 import { AgentModel } from 'src/types';
 import { indexedDB } from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import newQueryStorage from 'src/storage/sessionStorage/newQueryStorage';
+import constants from 'src/constants';
 
 interface FormProps {
   threadId: string;
@@ -26,7 +27,12 @@ const Form = (props: FormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    newResponseStorage.remove();
+    /** Remove previous query (sessionStorage) */
+    newQueryStorage.remove();
+
+    /** Add new query (sessionStorage) */
+    const newQueryId = uuidV4();
+    newQueryStorage.add(newQueryId,'', input, '', '', true);
 
     /** Create response (openai) */
     const responseBody = await openai.createResponse({
@@ -36,16 +42,16 @@ const Form = (props: FormProps) => {
     });
 
     /** Update thread body (postgresDB) */
-    const responseId = await postgresDB.updateThreadBody({
+    const { requestId, responseId } = await postgresDB.updateThreadBody({
       threadId: props.threadId,
       requestBody: input,
       responseBody
     });
 
-    setInput('');
+    /** Update new query (sessionStorage) */
+    newQueryStorage.update(newQueryId, requestId, input, responseId, responseBody, true);
 
-    /** Update new Response (sessionStorage) */
-    newResponseStorage.add(responseId, true);
+    setInput('');
 
     if (props.threadBodyLength === 0) {
       /** Create thread title */
@@ -69,6 +75,8 @@ const Form = (props: FormProps) => {
       threadId: props.threadId
     });
     await indexedDB.updateThread({ thread });
+
+    newQueryStorage.remove();
   };
   
   return (
@@ -79,7 +87,7 @@ const Form = (props: FormProps) => {
           onChange={(e) => setInput(e.target.value)}
           placeholder='Ask anything...'
           spellCheck='false'
-          className='mt-2 focus:bg-black focus:border-border-focus w-full resize-none border-none placeholder:text-text-tertiary text-text-primary'
+          className='mt-2 focus:border-border-focus w-full resize-none border-none placeholder:text-text-tertiary text-text-primary'
         />
         <div className='flex p-2 items-center justify-between'>
           <div className='flex gap-2 items-center'>
@@ -123,7 +131,7 @@ const AgentModelDropdown = (props: AgentModelDropdownProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' sideOffset={4} >
-        {agentModels
+        {constants.agentModels
           .filter(m => m !== props.agentModel)
           .map(m => (
             <Button

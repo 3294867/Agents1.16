@@ -1,16 +1,16 @@
-export const agentModels = [
+const agentTypes = [
+  'research',
+  'code'
+] as ('research' | 'code')[];
+
+const agentModels = [
   'gpt-4.1',
   'gpt-4o',
   'gpt-4o-audio-preview',
   'chatgpt-4o'
 ] as ('gpt-4.1' |'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o')[];
 
-export const agentTypes = [
-  'research',
-  'code'
-] as ('research' | 'code')[];
-
-export const technologies = [
+const technologies = [
   'ActiveMQ',
   'Angular',
   'Ansible',
@@ -112,3 +112,14 @@ export const technologies = [
   'Xamarin',
   'ZeroMQ'
 ];
+
+const tabMaxLength = 15;
+
+const constants = {
+  agentTypes,
+  agentModels,
+  technologies,
+  tabMaxLength
+};
+
+export default constants;

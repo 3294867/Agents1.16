@@ -22,15 +22,21 @@ const tabsStorage = {
     }
   },
 
-  update: (agent: string, agentId: string ,threadId: string, newTitle: string) => {
+  update: (agent: string, agentId: string, threadId: string, newTitle: string) => {
     try {
-      const savedTabs = localStorage.getItem(`tabs_${agent}`)
+      const savedTabs = localStorage.getItem(`${agent}_tabs`);
       if (savedTabs) {
         const remainingTabs = JSON.parse(savedTabs).filter((tab: { id: string, title: string, isActive: boolean }) => tab.id !== threadId);
         const updatedTab: Tab = { id: threadId, agentId, title: newTitle, isActive: true };
         const updatedTabs = [...remainingTabs, updatedTab] as Tab[];
 
-        localStorage.setItem(`tabs_${agent}`, JSON.stringify(updatedTabs));
+        localStorage.setItem(`${agent}_tabs`, JSON.stringify(updatedTabs));
+
+        /** Dispatch event */
+        const event = new CustomEvent('tabsUpdated', {
+          detail: { agent: agent }
+        });
+        window.dispatchEvent(event);
       }
       return null;
     } catch (error) {

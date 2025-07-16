@@ -21,11 +21,7 @@ const createThread = async (id: string, userId: string, agentId: string, agentNa
 
   const data: { message: string, data: Thread | null } = await response.json();
 
-  if (data.data === null) {
-    console.error(data.message);
-    toast(data.message);
-    return null;
-  }
+  if (data.data === null) throw new Error('Failed to create thread.')
 
   tabsStorage.addTab(agentName, data.data);
   await db.threads.add(data.data);
