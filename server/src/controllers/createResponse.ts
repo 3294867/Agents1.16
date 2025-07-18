@@ -27,6 +27,8 @@ const createResponse = async (req: Request, res: Response) => {
     
     const instructions = await pool.query(instructionsQueryText, [threadId]);
     if (!instructions) return sendResponse(res, 404, "Failed to get instructions.");
+
+    console.log('instructions: ', instructions);
     
     /** Create openai response */
     const apiResponse = await client.responses.create({

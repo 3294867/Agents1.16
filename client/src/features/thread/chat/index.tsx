@@ -1,13 +1,10 @@
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { Paragraph } from 'src/components/Paragraph';
-import hooks from 'src/hooks';
-import { ThreadBody } from 'src/types';
-import NewQuery from './NewQuery';
+import Answer from './Answer';
+import { Query } from 'src/types';
 
 interface ChatProps {
   threadId: string;
-  threadBody: ThreadBody;
+  threadBody: Query[] | [];
 };
 
 const Chat = (props: ChatProps) => {
@@ -16,10 +13,9 @@ const Chat = (props: ChatProps) => {
       {props.threadBody.length > 0 && props.threadBody.map((i, idx) => (
         <div key={idx} className='space-y-2'>
           <Question requestId={i.requestId} requestBody={i.requestBody} />
-          <Answer responseId={i.responseId} responseBody={i.responseBody} />
+          <Answer threadId={props.threadId} responseId={i.responseId} responseBody={i.responseBody} isNew={i.isNew} />
         </div>
       ))}
-      <NewQuery threadId={props.threadId} />
     </div>
   );
 };
@@ -41,13 +37,4 @@ const Question = (props: QuestionProps) => {
       </div>
     </div>
   );
-};
-
-interface AnswerProps {
-  responseId: string;
-  responseBody: string;
-}
-
-const Answer = (props: AnswerProps) => {
-  return <Paragraph variant='thin'>{props.responseBody}</Paragraph>;
 };

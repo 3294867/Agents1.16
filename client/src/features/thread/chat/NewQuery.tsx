@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Paragraph } from 'src/components/Paragraph';
-import hooks from 'src/hooks';
 import { Button } from 'src/components/Button';
 import { ArrowRightFromLineIcon, SquarePenIcon, Trash2Icon } from 'lucide-react';
 
@@ -10,8 +9,12 @@ interface NewQueryProps {
 };
 
 const NewQuery = (props: NewQueryProps) => {
-  const newQuery = hooks.useGetNewQuery();
-  if (!newQuery || newQuery?.id === '') return null;
+  const newQuery = {
+    requestId: '',
+    requestBody: '',
+    responseId: '',
+    responseBody: ''
+  }
   
   return (
     <>

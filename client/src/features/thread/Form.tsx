@@ -1,16 +1,14 @@
 import { ChevronDown, MoveUpRightIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import { v4 as uuidV4 } from 'uuid';
 import openai from 'src/responses';
 import postgresDB from 'src/storage/postgresDB';
+import { indexedDB } from 'src/storage/indexedDB';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import { Button } from 'src/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/components/DropdownMenu';
 import { Textarea } from 'src/components/Textarea';
-import { AgentModel } from 'src/types';
-import { indexedDB } from 'src/storage/indexedDB';
-import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import newQueryStorage from 'src/storage/sessionStorage/newQueryStorage';
 import constants from 'src/constants';
+import { AgentModel } from 'src/types';
 
 interface FormProps {
   threadId: string;
@@ -27,13 +25,6 @@ const Form = (props: FormProps) => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    /** Remove previous query (sessionStorage) */
-    newQueryStorage.remove();
-
-    /** Add new query (sessionStorage) */
-    const newQueryId = uuidV4();
-    newQueryStorage.add(newQueryId,'', input, '', '', true);
-
     /** Create response (openai) */
     const responseBody = await openai.createResponse({
       threadId: props.threadId,
@@ -47,9 +38,6 @@ const Form = (props: FormProps) => {
       requestBody: input,
       responseBody
     });
-
-    /** Update new query (sessionStorage) */
-    newQueryStorage.update(newQueryId, requestId, input, responseId, responseBody, true);
 
     setInput('');
 
@@ -71,12 +59,16 @@ const Form = (props: FormProps) => {
     }
 
     /** Update thread (indexedDB) */
-    const thread = await postgresDB.getThread({
-      threadId: props.threadId
+    await indexedDB.addQuery({
+      threadId: props.threadId,
+      newQuery: {
+        requestId: requestId,
+        requestBody: input,
+        responseId: responseId,
+        responseBody,
+        isNew: true
+      }
     });
-    await indexedDB.updateThread({ thread });
-
-    newQueryStorage.remove();
   };
   
   return (

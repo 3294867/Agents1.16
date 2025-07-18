@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { indexedDB } from 'src/storage/indexedDB';
-import { Thread } from 'src/types';
+import { Query, Thread } from 'src/types';
 
 const useGetThread = (threadId: string | undefined) => {
   const [ thread, setThread ] = useState<Thread | null>(null);
@@ -30,20 +30,54 @@ const useGetThread = (threadId: string | undefined) => {
   useEffect(() => {
     fetchThread();
 
-    /** Listen for thread update events */
-    const handleThreadUpdate = (event: CustomEvent) => {
+    /** Listen for query added events */
+    const handleAddQuery = (event: CustomEvent) => {
       if (event.detail.threadId === threadId) {
-        fetchThread();
+        const newQuery: Query = event.detail.newQuery;
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
+          return {
+            ...prevThread,
+            body: [...prevBody, newQuery]
+          };
+        });
       }
     };
-    window.addEventListener('threadUpdated', handleThreadUpdate as EventListener);
+    window.addEventListener('queryAdded', handleAddQuery as EventListener);
+
+    /** Listen for query isNew flag updates */
+    const handleUpdateQueryIsNewFlag = (event: CustomEvent) => {
+      if (event.detail.threadId === threadId) {
+        if (!thread) return null;
+        const threadBody = Array.isArray(thread.body) ? thread.body : [];
+        const queryIndex = threadBody.findIndex(q => q.responseId === event.detail.responseId);
+        if (queryIndex === -1) throw new Error('Query not found.');
+
+        const isNew: boolean = event.detail.isNew;
+        const updatedThreadBody: Query[] = threadBody.map((q, idx) =>
+          idx === queryIndex ? { ...q, isNew } : q
+        );
+
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          return {
+            ...prevThread,
+            body: updatedThreadBody
+          };
+        });
+      }
+    };
+    window.addEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewFlag as EventListener);
 
     return () => {
+      window.removeEventListener('queryAdded', handleAddQuery as EventListener);
+      window.removeEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewFlag as EventListener);
       setThread(null);
       setError(null);
       setIsLoading(false);
     }
-  },[threadId, error])
+  },[threadId, error]);
 
   return { thread, error, isLoading };
 };

@@ -20,19 +20,20 @@ interface NormalizedAgents {
   allIds: string[];
 };
 
-type ThreadBody = {
+type Query = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
-}[] | [];
+  isNew: boolean;
+};
 
 interface Thread {
   id: string;
   userId: string;
   agentId: string;
   title: string | null;
-  body: ThreadBody;
+  body: Query[] | [];
   isActive: boolean;
   isBookmarked: boolean;
   createdAt: Date;
@@ -51,23 +52,13 @@ interface NormalizedThreads {
   allIds: string[];
 };
 
-interface NewQuery {
-  id: string;
-  requestId: string;
-  requestBody: string;
-  responseId: string;
-  responseBody: string;
-  isLoading: boolean;
-}
-
 export type {
   AgentType,
   AgentModel,
   Agent,
   NormalizedAgents,
-  ThreadBody,
+  Query,
   Thread,
   NormalizedThreads,
-  Tab,
-  NewQuery
+  Tab
 };

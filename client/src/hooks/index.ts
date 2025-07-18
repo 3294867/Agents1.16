@@ -5,14 +5,12 @@ import useGetTabs from './data/useGetTabs';
 import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
 import useHandleLayout from 'src/hooks/useHandleLayout';
 import useHandleTheme from 'src/hooks/useHandleTheme';
-import useGetNewQuery from './data/useGetNewQuery';
 
 const hooks = {
   useGetAgents,
   useGetAgent,
   useGetThread,
   useGetTabs,
-  useGetNewQuery,
   useHandleBreakpoint,
   useHandleLayout,
   useHandleTheme

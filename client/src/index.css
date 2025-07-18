@@ -51,6 +51,8 @@
   --border: oklch(82.75% 0.001 106.423);
   --border-focus: oklch(0.7567 0.001 106.423);
   --shadow: oklch(93.14% 0.001 106.423);
+
+  --background-card: oklch(0.865 0.001 106.423);
   
   --text-primary: oklch(6.49% 0.004 49.25);
   --text-secondary: oklch(0.216 0.006 56.043);
@@ -75,6 +77,8 @@
   --border-focus: oklch(0.3056 0.007 34.298);
   --shadow: oklch(0% 0.004 49.25);
 
+  --background-card: oklch(0.2181 0.007 34.298);
+
   --text-primary: oklch(99.7% 0.001 106.423);
   --text-secondary: oklch(0.97 0.001 106.424);
   --text-tertiary: oklch(0.709 0.01 56.259);
@@ -97,14 +101,19 @@
   --color-border: var(--border);
   --color-border-focus: var(--border-focus);
   --color-shadow: var(--shadow);
+
+  --color-background-card: var(--background-card);
+  
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
   --color-text-tertiary: var(--text-tertiary);
   --color-text-button: var(--text-button);
+  
   --color-accent-primary: var(--accent-primary);
   --color-accent-primary-hover: var(--accent-primary-hover);
   --color-accent-secondary: var(--accent-secondary);
   --color-accent-secondary-hover: var(--accent-secondary-hover);
+  
   --color-success: var(--success);
   --color-success-hover: var(--success-hover);
   --color-alert: var(--alert);

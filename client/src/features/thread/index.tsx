@@ -2,8 +2,9 @@ import { LoaderIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import Error from 'src/components/Error';
 import Header from './Header';
-import Chat from './Chat';
+import Chat from './chat';
 import Form from './Form';
+import SideNavigation from './SideNav';
 import hooks from 'src/hooks';
 import { AgentModel } from 'src/types';
 
@@ -16,12 +17,12 @@ interface ThreadProps {
 const Thread = (props: ThreadProps) => {
   const { threadId } = useParams<{ threadId: string | undefined }>();
   const { thread, isLoading, error } = hooks.useGetThread(threadId);
-
+  
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!threadId || !thread) return <Error error='Something went wrong. Try again later.' />;
 
-  const threadBody = thread.body;
+  const threadBody = thread.body ;
   const threadBodyLength = Object.keys(thread.body).length;
   const threadTitle = thread.title
 
@@ -30,6 +31,7 @@ const Thread = (props: ThreadProps) => {
       <Header threadId={threadId} threadTitle={threadTitle} />
       <Chat threadId={threadId} threadBody={threadBody} />
       <Form {...props} threadId={threadId} threadBodyLength={threadBodyLength} />
+      {threadBodyLength > 1 && <SideNavigation threadBody={threadBody} />}
     </main>
   );
 };

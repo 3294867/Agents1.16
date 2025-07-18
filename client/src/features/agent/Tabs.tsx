@@ -23,7 +23,6 @@ const Tabs = (props: TabsProps) => {
       <AddTab userId={props.userId} agent={props.agent} tabs={tabs} />
     </div>
   )
-  
 };
 
 export default Tabs;
@@ -39,10 +38,9 @@ const Tab = (props: TabProps) => {
   
   const handleSelectTab = (threadId: string, agentId: string) => {
     /** Update tabs */
-    let updatedTabs = props.tabs.map(t =>
-      t.agentId === agentId
-        ? { ...t, isActive: t.id === threadId }
-        : t
+    const updatedTabs = props.tabs.map(t => t.agentId === agentId
+      ? { ...t, isActive: t.id === threadId }
+      : t
     );
 
     /** Save updated tabs (localStorage) */
@@ -135,10 +133,9 @@ const AddTab = (props: AddTabProps) => {
     if (!thread) return;
 
     /** Update tabs */
-    const updatedTabs = props.tabs.map(t =>
-      t.agentId === agentId
-        ? { ...t, isActive: false }
-        : t
+    const updatedTabs = props.tabs.map(t => t.agentId === agentId
+      ? { ...t, isActive: false }
+      : t
     )
     const newTab = { id: threadId, agentId: props.agent.id, title: null, isActive: true };
     updatedTabs.push(newTab);
