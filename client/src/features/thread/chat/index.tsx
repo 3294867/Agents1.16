@@ -9,7 +9,7 @@ interface ChatProps {
 
 const Chat = (props: ChatProps) => {
   return (
-    <div className='flex flex-1 flex-col mt-8 pb-48 gap-8 overflow-y-auto scrollbar scrollbar-thumb-border scrollbar-thumb-rounded-full scrollbar-track-card-background scrollbar-w-1 scrollbar-h-1'>
+    <div id='chat' className='flex flex-1 flex-col mt-8 pb-48 gap-8 overflow-y-auto scrollbar scrollbar-thumb-border scrollbar-thumb-rounded-full scrollbar-track-card-background scrollbar-w-1 scrollbar-h-1'>
       {props.threadBody.length > 0 && props.threadBody.map((i, idx) => (
         <div key={idx} className='space-y-2'>
           <Question requestId={i.requestId} requestBody={i.requestBody} />

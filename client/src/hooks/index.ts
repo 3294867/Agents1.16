@@ -5,6 +5,7 @@ import useGetTabs from './data/useGetTabs';
 import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
 import useHandleLayout from 'src/hooks/useHandleLayout';
 import useHandleTheme from 'src/hooks/useHandleTheme';
+import useHandleSideNav from './useHandleSideNav';
 
 const hooks = {
   useGetAgents,
@@ -13,7 +14,8 @@ const hooks = {
   useGetTabs,
   useHandleBreakpoint,
   useHandleLayout,
-  useHandleTheme
+  useHandleTheme,
+  useHandleSideNav,
 };
 
 export default hooks;

@@ -1,28 +1,27 @@
 import { db } from 'src/storage/indexedDB';
 import { Query } from 'src/types';
 
-/**
- * Updates the 'isNew' status of a specific query in a thread's body.
- * @param threadId - The ID of the thread to update
- * @param responseId - The responseId of the query to update
- * @param isNew - The new value for the isNew property
- * @returns {Promise<boolean>} - Returns true if update was successful, false otherwise
- */
-interface updateIsNewQueryProps {
+interface Props {
   threadId: string;
   responseId: string;
   isNew: boolean;
 };
 
-const updateQueryIsNewFlag = async ({ threadId, responseId, isNew }: updateIsNewQueryProps): Promise<boolean> => {
+/**
+ * Updates the 'isNew' property of a specific query in a thread's body.
+ * @param {threadId} - The ID of the thread to update.
+ * @param {responseId} - The responseId of the query to update.
+ * @param {isNew} - The new value for the isNew property.
+ * @returns {Promise<void>} - void.
+ */
+const updateQueryIsNewFlag = async ({ threadId, responseId, isNew }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
     if (!savedThread) throw new Error('Thread not found.');
     const body = Array.isArray(savedThread.body) ? savedThread.body : [];
     const queryIndex = body.findIndex(q => q.responseId === responseId);
-    if (queryIndex === -1) throw new Error('Query not found.');
 
-    // Create a new array with the updated query, preserving order
+    /** Create a new array with the updated query, preserving order */
     const updatedBody: Query[] = body.map((q, idx) =>
       idx === queryIndex ? { ...q, isNew } : q
     );
@@ -34,12 +33,10 @@ const updateQueryIsNewFlag = async ({ threadId, responseId, isNew }: updateIsNew
     const event = new CustomEvent('queryIsNewFlagUpdated', {
       detail: { threadId, responseId, isNew }
     });
-    window.dispatchEvent(event);
-    
-    return true;
+    const dispatch = window.dispatchEvent(event);
+    if (!dispatch) throw new Error('Failed to dispatch event.')
   } catch (error) {
     console.error('Query status error: ', error);
-    return false;
   }
 };
 

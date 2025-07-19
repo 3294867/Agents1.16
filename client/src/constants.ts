@@ -114,12 +114,14 @@ const technologies = [
 ];
 
 const tabMaxLength = 15;
+const queriesMinNumber = 2;
 
 const constants = {
   agentTypes,
   agentModels,
   technologies,
-  tabMaxLength
+  tabMaxLength,
+  queriesMinNumber
 };
 
 export default constants;

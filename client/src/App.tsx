@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { indexedDB } from 'src/storage/indexedDB';
+import indexedDB from 'src/storage/indexedDB';
 import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';

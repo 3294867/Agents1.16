@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { indexedDB } from 'src/storage/indexedDB';
+import indexedDB from 'src/storage/indexedDB';
 import { Query, Thread } from 'src/types';
 
 const useGetThread = (threadId: string | undefined) => {
@@ -52,7 +52,7 @@ const useGetThread = (threadId: string | undefined) => {
         if (!thread) return null;
         const threadBody = Array.isArray(thread.body) ? thread.body : [];
         const queryIndex = threadBody.findIndex(q => q.responseId === event.detail.responseId);
-        if (queryIndex === -1) throw new Error('Query not found.');
+        if (queryIndex === -1) return;
 
         const isNew: boolean = event.detail.isNew;
         const updatedThreadBody: Query[] = threadBody.map((q, idx) =>
@@ -70,9 +70,26 @@ const useGetThread = (threadId: string | undefined) => {
     };
     window.addEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewFlag as EventListener);
 
+    /** Listen for thread title updates */
+    const handleUpdateThreadTitle = (event: CustomEvent) => {
+      const threadTitle: string = event.detail.threadTitle;
+      if (event.detail.threadId === threadId) {
+        if (!thread) return null;
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          return {
+            ...prevThread,
+            title: threadTitle
+          }
+        });
+      }
+    };
+    window.addEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
+
     return () => {
       window.removeEventListener('queryAdded', handleAddQuery as EventListener);
       window.removeEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewFlag as EventListener);
+      window.removeEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
       setThread(null);
       setError(null);
       setIsLoading(false);

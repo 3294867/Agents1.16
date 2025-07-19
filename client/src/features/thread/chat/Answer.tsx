@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Paragraph } from 'src/components/Paragraph';
-import { indexedDB } from 'src/storage/indexedDB';
+import indexedDB from 'src/storage/indexedDB';
 
 interface AnswerProps {
   threadId: string;
@@ -13,7 +13,7 @@ interface AnswerProps {
 const Answer = (props: AnswerProps) => {
   return props.isNew
     ? <ProgressiveParagraph threadId={props.threadId} isNew={props.isNew} responseId={props.responseId} responseBody={props.responseBody} />
-    : <Paragraph variant='thin'>{props.responseBody}</Paragraph>;
+    : <Paragraph variant='thin' className='leading-loose'>{props.responseBody}</Paragraph>;
 };
 
 export default Answer;
@@ -60,7 +60,7 @@ const ProgressiveParagraph = (props: ProgressiveTextProps) => {
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <Paragraph variant='thin'>
+      <Paragraph variant='thin' className='leading-loose'>
         {copy}
       </Paragraph>
     </motion.div>

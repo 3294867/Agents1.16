@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { indexedDB } from 'src/storage/indexedDB';
+import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import { Agent } from 'src/types';
 

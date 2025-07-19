@@ -17,21 +17,21 @@ interface ThreadProps {
 const Thread = (props: ThreadProps) => {
   const { threadId } = useParams<{ threadId: string | undefined }>();
   const { thread, isLoading, error } = hooks.useGetThread(threadId);
-  
+
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!threadId || !thread) return <Error error='Something went wrong. Try again later.' />;
-
-  const threadBody = thread.body ;
+  
+  const threadTitle = thread.title;
+  const threadBody = thread.body;
   const threadBodyLength = Object.keys(thread.body).length;
-  const threadTitle = thread.title
 
   return (
-    <main className='relative w-[640px] mx-auto flex flex-col mt-8'>
+    <main id='thread' className='relative w-[640px] mx-auto flex flex-col mt-8'>
       <Header threadId={threadId} threadTitle={threadTitle} />
       <Chat threadId={threadId} threadBody={threadBody} />
       <Form {...props} threadId={threadId} threadBodyLength={threadBodyLength} />
-      {threadBodyLength > 1 && <SideNavigation threadBody={threadBody} />}
+      <SideNavigation threadBody={threadBody} threadBodyLength={threadBodyLength} />
     </main>
   );
 };

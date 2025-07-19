@@ -4,6 +4,7 @@ import storeAgents from 'src/storage/indexedDB/storeAgents';
 import getAgents from 'src/storage/indexedDB/getAgents';
 import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
+import updateThreadTitle from './updateThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
 import updateQueryIsNewFlag from 'src/storage/indexedDB/updateQueryIsNewFlag';
 import { Agent, Thread } from 'src/types';
@@ -19,8 +20,11 @@ const indexedDB = {
   getAgents,
   getAgent,
   getThread,
+  updateThreadTitle,
   addQuery,
   updateQueryIsNewFlag
 };
 
-export { db, indexedDB };
+export default indexedDB;
+
+export { db }

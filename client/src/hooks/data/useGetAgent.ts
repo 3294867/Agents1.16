@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { indexedDB } from 'src/storage/indexedDB';
+import indexedDB from 'src/storage/indexedDB';
 import { Agent } from 'src/types';
 
 const useGetAgent = (agentName: string | undefined) => {
