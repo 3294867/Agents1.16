@@ -1,25 +1,31 @@
 import { db } from 'src/storage/indexedDB';
 import { Agent } from 'src/types';
 
-interface GetAgentProps {
+interface Props {
   agentName: string | undefined;
-  error: string | null;
   setError: (error: string | null) => void;
 };
 
-const getAgent = async (props: GetAgentProps): Promise<Agent | null> => {
-  if (!props.agentName) {
-    props.setError('Agent name is required');
+/**
+ * Fetches specific agent (IndexedDB).
+ * @param {string | undefined} props.agentName - Agent name property of a specific agent.
+ * @param {React.Dispatch<React.SetStateAction<string | null>>} props.setError - Setter function of a useState hook.  
+ * @returns {Promise<Agent | null>} - Returns Agent or null.
+ */
+const getAgent = async ({ agentName, setError }: Props): Promise<Agent | null> => {
+  if (!agentName) {
+    setError('Agent name is required');
     return null;
   }
 
   try {
-    const agent = await db.agents.where('name').equals(props.agentName).first();
+    const agent = await db.agents.where('name').equals(agentName).first();
     if (!agent) return null;
     return agent;
+    
   } catch (error) {
     console.error(error);
-    props.setError(`IndexedDB error: ${error instanceof Error ? error.name : 'Unknown error'}`);
+    setError(`Failed to fetch agent (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
     return null;
   }
 };

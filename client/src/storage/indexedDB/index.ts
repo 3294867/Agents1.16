@@ -6,7 +6,7 @@ import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
 import updateThreadTitle from './updateThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
-import updateQueryIsNewFlag from 'src/storage/indexedDB/updateQueryIsNewFlag';
+import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
 import { Agent, Thread } from 'src/types';
 
 const db = new Dexie('Agents') as Dexie & {
@@ -22,7 +22,7 @@ const indexedDB = {
   getThread,
   updateThreadTitle,
   addQuery,
-  updateQueryIsNewFlag
+  updateQueryIsNewProp
 };
 
 export default indexedDB;

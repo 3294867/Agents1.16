@@ -21,7 +21,7 @@ const useGetAgents = (userId: string) => {
           return;
         }
     
-        await indexedDB.storeAgents(fetchedAgents);
+        await indexedDB.storeAgents({ agents: fetchedAgents });
         setAgents(fetchedAgents);
         return agents;
       } catch (error) {

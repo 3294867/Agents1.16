@@ -17,7 +17,7 @@ const useGetAgent = (agentName: string | undefined) => {
       setIsLoading(true);
       setError(null);
       
-      const agentData = await indexedDB.getAgent({ agentName, error, setError });
+      const agentData = await indexedDB.getAgent({ agentName, setError });
       
       if (agentData) {
         setAgent(agentData);

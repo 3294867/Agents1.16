@@ -43,7 +43,7 @@ const ProgressiveParagraph = (props: ProgressiveTextProps) => {
     };
     
     animate().then(() => {
-      indexedDB.updateQueryIsNewFlag({
+      indexedDB.updateQueryIsNewProp({
         threadId: props.threadId,
         responseId: props.responseId,
         isNew: false

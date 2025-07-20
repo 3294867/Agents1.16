@@ -20,8 +20,8 @@ const Agent = (props: AgentProps) => {
   if (!agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
 
   return (
-    <div className='ml-[52px] flex flex-col p-2'>
-      <header className='flex justify-between items-center pb-2 border-b-1 border-border'>
+    <div className='relative ml-[52px] flex flex-col px-2'>
+      <header className='z-10 sticky top-0 flex justify-between items-center py-2 border-b-1 border-border bg-background'>
         <Tabs userId={props.userId} agent={agent} />
         <Actions userId={props.userId} agentId={agent.id} />
       </header>

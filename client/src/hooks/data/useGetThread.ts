@@ -16,7 +16,7 @@ const useGetThread = (threadId: string | undefined) => {
     setIsLoading(true);
     setError(null);
 
-    const threadData = await indexedDB.getThread({ threadId, error, setError });
+    const threadData = await indexedDB.getThread({ threadId, setError });
 
     if (threadData) {
       setThread(threadData);

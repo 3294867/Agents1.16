@@ -15,7 +15,12 @@ const SideNavigation = (props: SideNavigationProps) => {
 
   const handleScrollToQuestion = (id: string) => {
     const question = document.getElementById(id);
-    question?.scrollIntoView({
+    if (!question) return;
+    const rect = question.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const offsetPosition = rect.top + scrollTop - 56;
+    window.scrollTo({
+      top: offsetPosition,
       behavior: 'smooth'
     });
   };
@@ -43,7 +48,6 @@ const SideNavigation = (props: SideNavigationProps) => {
       ))}
     </motion.div>
   )
-
 };
 
 export default SideNavigation;

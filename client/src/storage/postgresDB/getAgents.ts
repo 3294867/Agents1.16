@@ -1,32 +1,34 @@
 import { Agent } from 'src/types';
 
-interface Request {
+interface Props {
   userId: string;
 };
 
 /**
- * Get agents.
- * 
- * @param {string} props.userId - User id.
- * @returns {Object} - Data object.
+ * Fetches agents for a specific user (PostgresDB).
+ * @param {string} props.userId - The ID of the user.
+ * @returns {Promise<Agent[] | null>} - Returns an array of agents.
 */
-const getAgents = async (props: Request): Promise<Agent[]> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      userId: props.userId
-    })
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Failed to fetch agents: ${response.status} ${response.statusText} - ${errorText}`);
+const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch agents (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const data: { message: string, data: Agent[] | null } = await response.json();
+    if (data.data === null) throw new Error(data.message);
+    return data.data;
+    
+  } catch (error) {
+    throw new Error(`Failed to fetch agents (PostgresDB): ${error}`);
   }
-  
-  const data: { message: string, data: Agent[] | null } = await response.json();
-  if (data.data === null) throw new Error(data.message);
-  return data.data;
 };
 
 export default getAgents;

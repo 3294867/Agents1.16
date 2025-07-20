@@ -6,15 +6,15 @@ interface Props {
 };
 
 /**
- * Updates the 'title' property of a thread.
- * @param {threadId} - The ID of the thread to update.
- * @param {threadTitle} - The title of the thread.
- * @returns {Promise<void>} - void.
+ * Updates the 'title' property of a thread (IndexedDB).
+ * @param {string} props.threadId - The ID of the thread to update.
+ * @param {string} props.threadTitle - The title of the thread.
+ * @returns {Promise<void>} - Does not have a return value.
  */
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(threadId, { title: threadTitle });
-    if (!updatedThread) throw new Error('Failed to update thread title.');
+    if (updatedThread === 0) throw new Error('Failed to update thread title.');
 
     /** Dispatch threadTitleUpdated event */
     const event = new CustomEvent('threadTitleUpdated', {
@@ -23,7 +23,7 @@ const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void
     window.dispatchEvent(event);
     
   } catch (error) {
-    console.error('Query status error: ', error);
+    console.error('Failed to update thread title (IndexedDB): ', error);
   }
 };
 
