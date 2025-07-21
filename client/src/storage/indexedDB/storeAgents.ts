@@ -12,10 +12,7 @@ interface Props {
  */
 const storeAgents = async ({ agents }: Props): Promise<void> => {
   try {
-    const save = await db.agents.bulkPut(agents);
-    console.log('save', save);
-    if (!save) return;
-    
+    await db.agents.bulkPut(agents);
   } catch (error) {
     console.error('Failed to save agents (IndexedDB): ', error);
   }

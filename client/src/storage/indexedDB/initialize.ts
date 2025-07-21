@@ -3,9 +3,9 @@ import { db } from 'src/storage/indexedDB';
 /** Initializes IndexedDB with agents and threads object stores. */
 const initialize = () => {
   try {
-    db.version(1).stores({
+    db.version(2).stores({
       agents: 'id, userId, name',
-      threads: 'id, userId, agentId, title'
+      threads: 'id, userId, agentId, title, positionY'
     });
     
   } catch (error) {

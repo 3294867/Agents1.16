@@ -14,7 +14,7 @@ const SideNavigation = (props: SideNavigationProps) => {
   const sideNavWidth = 200;
 
   const handleScrollToQuestion = (id: string) => {
-    const question = document.getElementById(id);
+    const question = document.getElementById(`question_${id}`);
     if (!question) return;
     const rect = question.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;

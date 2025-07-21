@@ -6,33 +6,56 @@ const useGetThread = (threadId: string | undefined) => {
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
+  const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
 
-  const fetchThread = async () => {
-    if (!threadId) {
-      setError('Missing thread id.');
-      return;
-    }
-
-    setIsLoading(true);
-    setError(null);
-
-    const threadData = await indexedDB.getThread({ threadId, setError });
-
-    if (threadData) {
-      setThread(threadData);
-    } else {
-      setError('Incorrect thread id.');
-    }
-
-    setIsLoading(false);
-  };
-  
+  /** Scroll to saved 'positionY' value of the thread */
   useEffect(() => {
+    if (thread) {
+      scrollTo({
+        top: thread.positionY,
+        behavior: 'smooth'
+      });
+    }
+  },[thread]);
+  
+  /** Scroll to the new query */
+  useEffect(() => {
+    if (thread && newRequestId) {
+      const question = document.getElementById(`question_${newRequestId}`);
+      if (!question) return;
+      const rect = question.getBoundingClientRect();
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const offsetPositionY = rect.top + scrollTop - 8;
+
+      scrollTo({
+        top: offsetPositionY,
+        behavior: 'smooth'
+      });
+    }
+  },[thread, newRequestId]);
+  
+  /** Fetch thread */
+  useEffect(() => {
+    const fetchThread = async () => {
+      if (!threadId) {
+        setError('Missing thread id.');
+        return;
+      }
+  
+      setIsLoading(true);
+      setError(null);
+  
+      const threadData = await indexedDB.getThread({ threadId, setError });
+      if (!threadData) setError('Incorrect thread id.')
+      setThread(threadData);
+      setIsLoading(false);
+    };
     fetchThread();
 
     /** Listen for query added events */
     const handleAddQuery = (event: CustomEvent) => {
       if (event.detail.threadId === threadId) {
+        /** Add new query to the thread body */
         const newQuery: Query = event.detail.newQuery;
         setThread(prevThread => {
           if (!prevThread) return null;
@@ -42,11 +65,13 @@ const useGetThread = (threadId: string | undefined) => {
             body: [...prevBody, newQuery]
           };
         });
+
+        setNewRequestId(newQuery.requestId);
       }
     };
     window.addEventListener('queryAdded', handleAddQuery as EventListener);
 
-    /** Listen for query isNew flag updates */
+    /** Listen for updates of the 'isNew' property of the query */
     const handleUpdateQueryIsNewFlag = (event: CustomEvent) => {
       if (event.detail.threadId === threadId) {
         if (!thread) return null;
@@ -70,11 +95,11 @@ const useGetThread = (threadId: string | undefined) => {
     };
     window.addEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewFlag as EventListener);
 
-    /** Listen for thread title updates */
+    /** Listen for updates of the 'title' property of the thread */
     const handleUpdateThreadTitle = (event: CustomEvent) => {
       const threadTitle: string = event.detail.threadTitle;
       if (event.detail.threadId === threadId) {
-        if (!thread) return null;
+        if (!thread) return;
         setThread(prevThread => {
           if (!prevThread) return null;
           return {

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { v4 as uuidV4 } from 'uuid';
 import { Button } from 'src/components/Button';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
@@ -7,6 +7,7 @@ import hooks from 'src/hooks';
 import { cn } from 'src/utils/cn';
 import constants from 'src/constants';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
+import indexedDB from 'src/storage/indexedDB';
 
 interface TabsProps {
   userId: string;
@@ -14,13 +15,28 @@ interface TabsProps {
 };
 
 const Tabs = (props: TabsProps) => {
-  const tabs = hooks.useGetTabs(props.agent.name);
-  if (!tabs) return null;
+  const { threadId: currentThreadId } = useParams<{ threadId: string }>();
+  const { tabs, currentThreadPositionY } = hooks.useGetTabs(props.agent.name);
+  if (!tabs || !currentThreadId) return null;
 
   return (
     <div className='max-w-[88%] flex gap-2'>
-      {tabs.map(t => <Tab key={t.id} agent={props.agent} tab={t} tabs={tabs} /> )}
-      <AddTab userId={props.userId} agent={props.agent} tabs={tabs} />
+      {tabs.map(t => (
+        <Tab
+          key={t.id}
+          agent={props.agent}
+          tab={t}
+          tabs={tabs}
+          currentThreadId={currentThreadId}
+          currentThreadPositionY={currentThreadPositionY}
+        />
+      ))}
+      <AddTab
+        {...props}
+        tabs={tabs}
+        currentThreadId={currentThreadId}
+        currentThreadPositionY={currentThreadPositionY}
+      />
     </div>
   )
 };
@@ -31,12 +47,14 @@ interface TabProps {
   agent: AgentType;
   tab: TabType;
   tabs: TabType[];
+  currentThreadId: string;
+  currentThreadPositionY: number;
 };
 
 const Tab = (props: TabProps) => {
   const navigate = useNavigate();
-  
-  const handleSelectTab = (threadId: string, agentId: string) => {
+
+  const handleSelectTab = async (threadId: string, agentId: string) => {
     /** Update tabs */
     const updatedTabs = props.tabs.map(t => t.agentId === agentId
       ? { ...t, isActive: t.id === threadId }
@@ -47,15 +65,21 @@ const Tab = (props: TabProps) => {
     tabsStorage.save(props.agent.name, updatedTabs);
 
     /** Dispatch tabsUpdated event */
-    const event = new CustomEvent('tabsUpdated', {
+    const tabUpdatedEvent = new CustomEvent('tabsUpdated', {
       detail: { agent: props.agent.name }
     });
-    window.dispatchEvent(event);
+    window.dispatchEvent(tabUpdatedEvent);
+
+    /** Update positionY of the current thread */
+    await indexedDB.updateThreadPositionY({
+      threadId: props.currentThreadId,
+      positionY: props.currentThreadPositionY
+    });
     
     navigate(`/${props.agent.name}/${threadId}`);
   };
 
-  const handleRemoveTab = (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {
+  const handleRemoveTab = async (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {
     e.preventDefault();
     e.stopPropagation();
     /** Update tabs */
@@ -76,6 +100,12 @@ const Tab = (props: TabProps) => {
       detail: { agent: props.agent.name }
     });
     window.dispatchEvent(event);
+
+    /** Update positionY of the current thread */
+    await indexedDB.updateThreadPositionY({
+      threadId: props.currentThreadId,
+      positionY: props.currentThreadPositionY
+    });
 
     if (props.tabs.length > 1) {
       navigate(`/${props.agent.name}/${updatedTabs[updatedTabs.length - 1].id}`);
@@ -121,6 +151,8 @@ interface AddTabProps {
   userId: string;
   agent: AgentType;
   tabs: TabType[];
+  currentThreadId: string;
+  currentThreadPositionY: number;
 };
 
 const AddTab = (props: AddTabProps) => {
@@ -149,7 +181,13 @@ const AddTab = (props: AddTabProps) => {
     });
     window.dispatchEvent(event);
     
-    navigate(`/${props.agent.name}/${threadId}`)
+    /** Update positionY of the current thread */
+    await indexedDB.updateThreadPositionY({
+      threadId: props.currentThreadId,
+      positionY: props.currentThreadPositionY
+    });
+    
+    navigate(`/${props.agent.name}/${threadId}`);
   };
   
   return (

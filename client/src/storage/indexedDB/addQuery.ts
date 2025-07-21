@@ -9,7 +9,7 @@ interface Props {
 /**
  * Adds new query to the thread's body (IndexedDB).
  * @param {string} props.threadId - The ID of the thread to update.
- * @param {string} props.newQuery - The responseId of the query to update.
+ * @param {string} props.newQuery - The ID of the response of the query to update.
  * @returns {Promise<void>} - Does not have a return value.
  */
 const addQuery = async ({ threadId, newQuery }: Props): Promise<void> => {

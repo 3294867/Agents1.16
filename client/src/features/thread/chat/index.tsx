@@ -29,7 +29,7 @@ interface QuestionProps {
 
 const Question = (props: QuestionProps) => {
   return (
-    <div id={props.requestId} className='w-full flex justify-end'>
+    <div id={`question_${props.requestId}`} className='w-full flex justify-end'>
       <div className='flex px-4 py-2 rounded-xl bg-white/15 text-text-primary'>
         <Paragraph variant='thick'>
           {props.requestBody}

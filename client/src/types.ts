@@ -38,6 +38,7 @@ interface Thread {
   isBookmarked: boolean;
   createdAt: Date;
   updatedAt: Date;
+  positionY: number;
 };
 
 interface Tab {
