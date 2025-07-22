@@ -15,8 +15,8 @@ interface ThreadProps {
 };
 
 const Thread = (props: ThreadProps) => {
-  const { threadId } = useParams<{ threadId: string | undefined }>();
-  const { thread, isLoading, error } = hooks.useGetThread(threadId);
+  const { threadId } = useParams();
+  const { thread, isLoading, error } = hooks.useHandleThread({ threadId });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;

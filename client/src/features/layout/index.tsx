@@ -9,7 +9,7 @@ interface LayoutProps {
 
 const Layout = (props: LayoutProps) => {
   const isMobile = useHandleBreakpoint({ windowInnerWidth: 480 });
-  const agents = hooks.useGetAgents(props.userId);
+  const agents = hooks.useGetAgents({ userId: props.userId });
   if (!agents) return null;
 
   return (

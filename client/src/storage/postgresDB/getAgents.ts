@@ -5,7 +5,7 @@ interface Props {
 };
 
 /**
- * Fetches agents for a specific user (PostgresDB).
+ * Fetche agents (PostgresDB).
  * @param {string} props.userId - The ID of the user.
  * @returns {Promise<Agent[] | null>} - Returns an array of agents.
 */

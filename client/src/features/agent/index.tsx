@@ -1,19 +1,19 @@
 import { useParams } from 'react-router-dom';
 import { EllipsisVerticalIcon, HistoryIcon, LoaderIcon } from 'lucide-react';
-import Tabs from './Tabs';
+import Tabs from './tabs';
 import Actions from './Actions';
 import Thread from 'src/features/thread';
 import Error from 'src/components/Error';
 import { Button } from 'src/components/Button';
 import hooks from 'src/hooks';
 
-interface AgentProps {
+interface Props {
   userId: string;
 };
 
-const Agent = (props: AgentProps) => {
-  const { agentName } = useParams<{ agentName: string | undefined }>();
-  const { agent, error, isLoading } = hooks.useGetAgent(agentName);
+const Agent = (props: Props) => {
+  const { agentName } = useParams();
+  const { agent, error, isLoading } = hooks.useGetAgent({ userId: props.userId, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;

@@ -5,7 +5,6 @@ interface Props {
 
 /**
  * Update thread title (PostgresDB).
- * 
  * @param {string} props.threadId - Thread id.
  * @param {string} props.threadTitle - Thread title.
 */

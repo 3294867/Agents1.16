@@ -7,8 +7,7 @@ interface Request {
 };
 
 /**
- * Create response.
- * 
+ * Creates response.
  * @param {string} props.threadId - Thread id.
  * @param {string} props.agentModel - AI model.
  * @param {string} props.input - Request input.

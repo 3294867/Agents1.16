@@ -5,7 +5,7 @@ interface Props {
 };
 
 /**
- * Fetches specific thread (PostgresDB).
+ * Fetches thread (PostgresDB).
  * @param {string} props.threadId - The ID of the thread.
  * @returns {Promise<Thread>} - Returns Thread object.
 */

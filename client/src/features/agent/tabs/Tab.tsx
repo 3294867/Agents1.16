@@ -1,49 +1,10 @@
-import { useNavigate, useParams } from 'react-router-dom';
-import { v4 as uuidV4 } from 'uuid';
-import { Button } from 'src/components/Button';
-import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import createThread from 'src/actions/createThread';
-import hooks from 'src/hooks';
-import { cn } from 'src/utils/cn';
-import constants from 'src/constants';
-import { Agent as AgentType, Tab as TabType} from 'src/types';
+import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import { cn } from 'src/utils/cn';
+import { Agent as AgentType, Tab as TabType} from 'src/types';
 
-interface TabsProps {
-  userId: string;
-  agent: AgentType;
-};
-
-const Tabs = (props: TabsProps) => {
-  const { threadId: currentThreadId } = useParams<{ threadId: string }>();
-  const { tabs, currentThreadPositionY } = hooks.useGetTabs(props.agent.name);
-  if (!tabs || !currentThreadId) return null;
-
-  return (
-    <div className='max-w-[88%] flex gap-2'>
-      {tabs.map(t => (
-        <Tab
-          key={t.id}
-          agent={props.agent}
-          tab={t}
-          tabs={tabs}
-          currentThreadId={currentThreadId}
-          currentThreadPositionY={currentThreadPositionY}
-        />
-      ))}
-      <AddTab
-        {...props}
-        tabs={tabs}
-        currentThreadId={currentThreadId}
-        currentThreadPositionY={currentThreadPositionY}
-      />
-    </div>
-  )
-};
-
-export default Tabs;
-
-interface TabProps {
+interface Props {
   agent: AgentType;
   tab: TabType;
   tabs: TabType[];
@@ -51,9 +12,9 @@ interface TabProps {
   currentThreadPositionY: number;
 };
 
-const Tab = (props: TabProps) => {
+const Tab = (props: Props) => {
   const navigate = useNavigate();
-
+  
   const handleSelectTab = async (threadId: string, agentId: string) => {
     /** Update tabs */
     const updatedTabs = props.tabs.map(t => t.agentId === agentId
@@ -147,60 +108,4 @@ const Tab = (props: TabProps) => {
   )
 };
 
-interface AddTabProps {
-  userId: string;
-  agent: AgentType;
-  tabs: TabType[];
-  currentThreadId: string;
-  currentThreadPositionY: number;
-};
-
-const AddTab = (props: AddTabProps) => {
-  const navigate = useNavigate();
-  const isAddTabDisabled = props.tabs.length > constants.tabMaxLength;
-
-  const handleAddTab = async (userId: string, agentId: string) => {
-    const threadId = uuidV4();
-    const thread = await createThread(threadId, userId, agentId, props.agent.name);
-    if (!thread) return;
-
-    /** Update tabs */
-    const updatedTabs = props.tabs.map(t => t.agentId === agentId
-      ? { ...t, isActive: false }
-      : t
-    )
-    const newTab = { id: threadId, agentId: props.agent.id, title: null, isActive: true };
-    updatedTabs.push(newTab);
-
-    /** Save updated tabs (localStorage) */
-    tabsStorage.save(props.agent.name, updatedTabs);
-
-    /** Dispatch tabsUpdated event */
-    const event = new CustomEvent('tabsUpdated', {
-      detail: { agent: props.agent.name }
-    });
-    window.dispatchEvent(event);
-    
-    /** Update positionY of the current thread */
-    await indexedDB.updateThreadPositionY({
-      threadId: props.currentThreadId,
-      positionY: props.currentThreadPositionY
-    });
-    
-    navigate(`/${props.agent.name}/${threadId}`);
-  };
-  
-  return (
-    <Button
-      disabled={isAddTabDisabled}
-      variant='outline'
-      size='icon'
-      className='w-8 h-8 ml-2 p-0 rounded-full'
-      onClick={() => handleAddTab(props.userId, props.agent.id)}
-    >
-      <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='size-4'>
-        <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-      </svg>
-    </Button>
-  )
-};
+export default Tab;

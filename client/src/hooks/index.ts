@@ -1,21 +1,25 @@
-import useGetAgents from 'src/hooks/data/useGetAgents';
-import useGetAgent from './data/useGetAgent';
-import useGetThread from 'src/hooks/data/useGetThread';
-import useGetTabs from './data/useGetTabs';
+import useHandleRedirect from 'src/hooks/useHandleRedirect';
+import useGetAgents from 'src/hooks/useGetAgents';
+import useGetAgent from 'src/hooks/useGetAgent';
+import useHandleThread from 'src/hooks/useHandleThread';
+import useHandleTabs from 'src/hooks/useHandleTabs';
 import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
 import useHandleLayout from 'src/hooks/useHandleLayout';
 import useHandleTheme from 'src/hooks/useHandleTheme';
-import useHandleSideNav from './useHandleSideNav';
+import useHandleSideNav from 'src/hooks/useHandleSideNav';
+import useHandleProgressiveParagraph from './useHandleProgressiveParagraph';
 
 const hooks = {
+  useHandleRedirect,
   useGetAgents,
   useGetAgent,
-  useGetThread,
-  useGetTabs,
+  useHandleThread,
+  useHandleTabs,
   useHandleBreakpoint,
   useHandleLayout,
   useHandleTheme,
   useHandleSideNav,
+  useHandleProgressiveParagraph,
 };
 
 export default hooks;

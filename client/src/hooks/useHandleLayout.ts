@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 
+/** Handles agent layout */
 const useHandleLayout = () => {
   const [layout, setLayout] = useState<'oneColumn' | 'twoColumns'>('twoColumns');
 

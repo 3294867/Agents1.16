@@ -1,7 +1,16 @@
 import { useEffect, useState } from 'react';
 import constants from 'src/constants';
 
-const useHandleSideNav = (threadBodyLength: number): { isVisible: boolean, chatWidth: number } => {
+interface Props {
+  threadBodyLength: number;
+};
+
+/**
+ * Handles fetching agent.
+ * @param {string} props.threadBodyLength - Length of the 'body' property of the thread.
+ * @returns {Object} - Returns isVisible and chatWidth.
+*/
+const useHandleSideNav = ({ threadBodyLength }: Props): { isVisible: boolean, chatWidth: number } => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [chatWidth, setChatWidth] = useState<number>(0);
   
@@ -24,10 +33,10 @@ const useHandleSideNav = (threadBodyLength: number): { isVisible: boolean, chatW
 
     window.addEventListener('resize', update);
 
-    return () => {
-      window.removeEventListener('resize', update);
-    }
+    return () => window.removeEventListener('resize', update);
   },[threadBodyLength]);
+
+  
 
   return { isVisible, chatWidth };
 };

@@ -124,3 +124,16 @@
   nocompatible: true;
   preferredStrategy: 'pseudoelements';
 }
+
+body {
+  background: oklch(0.147 0.004 49.25); /* fallback to dark, or pick your default */
+  transition: background 0.2s;
+}
+body.dark {
+  background: oklch(0.147 0.004 49.25);
+  color: oklch(99.7% 0.001 106.423);
+}
+body.light {
+  background: oklch(0.985 0.001 106.423);
+  color: oklch(6.49% 0.004 49.25);
+}

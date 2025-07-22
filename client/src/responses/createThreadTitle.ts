@@ -4,8 +4,7 @@ interface Request {
 };
 
 /**
- * Create thread title.
- * 
+ * Creates thread title.
  * @param {string} props.question - 1st question.
  * @param {string} props.answer - 1st answer.
  * @returns {string} - Response.

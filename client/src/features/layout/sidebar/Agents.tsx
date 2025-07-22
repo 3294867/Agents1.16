@@ -10,7 +10,7 @@ interface AgentsProps {
 }
 
 const Agents = (props: AgentsProps) => {
-  const { agentName } = useParams<{ agentName: string}>();
+  const { agentName } = useParams();
 
   return (
     <div className='flex flex-col gap-2 mt-28'>

@@ -1,5 +1,5 @@
-import createResponse from './createResponse';
-import createThreadTitle from './createThreadTitle';
+import createResponse from 'src/responses/createResponse';
+import createThreadTitle from 'src/responses/createThreadTitle';
 
 export const openai = {
   createResponse,

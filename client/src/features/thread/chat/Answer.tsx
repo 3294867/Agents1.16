@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Paragraph } from 'src/components/Paragraph';
-import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 
 interface AnswerProps {
   threadId: string;
@@ -12,7 +11,14 @@ interface AnswerProps {
 
 const Answer = (props: AnswerProps) => {
   return props.isNew
-    ? <ProgressiveParagraph threadId={props.threadId} isNew={props.isNew} responseId={props.responseId} responseBody={props.responseBody} />
+    ? (
+      <ProgressiveParagraph
+        threadId={props.threadId}
+        isNew={props.isNew}
+        responseId={props.responseId}
+        responseBody={props.responseBody}
+      />
+    )
     : <Paragraph variant='thin' className='leading-loose'>{props.responseBody}</Paragraph>;
 };
 
@@ -26,33 +32,11 @@ interface ProgressiveTextProps {
 };
 
 const ProgressiveParagraph = (props: ProgressiveTextProps) => {
-  const [copy, setCopy] = useState('');
-
-  useEffect(() => {
-    let timer: NodeJS.Timeout;
-    const animate = async () => {
-      let i = 0;
-      timer = setInterval(() => {
-        if (i < props.responseBody.length) {
-          setCopy(props.responseBody.slice(0, i + 1));
-          i++;
-        } else {
-          clearInterval(timer);
-        }
-      },12);
-    };
-    
-    animate().then(() => {
-      indexedDB.updateQueryIsNewProp({
-        threadId: props.threadId,
-        responseId: props.responseId,
-        isNew: false
-      });
-    });
-    
-        
-    return () => clearInterval(timer);
-  },[props.responseBody, props.threadId, props.responseId, props.isNew]);
+  const copy = hooks.useHandleProgressiveParagraph({
+    threadId: props.threadId,
+    responseId: props.responseId,
+    responseBody: props.responseBody
+  });
 
   return (
     <motion.div

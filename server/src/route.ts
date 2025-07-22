@@ -1,5 +1,6 @@
 import express from "express";
 import getAgents from "./controllers/getAgents";
+import getAgent from './controllers/getAgent';
 import getThread from "./controllers/getThread";
 import createThread from "./controllers/createThread";
 import updateThreadBody from './controllers/updateThreadBody';
@@ -10,6 +11,7 @@ import updateThreadTitle from './controllers/updateThreadTitle';
 const router = express.Router();
 
 router.post("/get-agents", getAgents);
+router.post("/get-agent", getAgent);
 router.post("/get-thread", getThread);
 router.post("/create-thread", createThread);
 router.post("/update-thread-body", updateThreadBody);

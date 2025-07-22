@@ -3,7 +3,16 @@ import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import { Agent } from 'src/types';
 
-const useGetAgents = (userId: string) => {
+interface Props {
+  userId: string;
+};
+
+/**
+ * Handles fetching agents.
+ * @param {string} props.userId - ID of the user.
+ * @returns {Agent[] | null} - Returns array of agents or null.
+*/
+const useGetAgents = ({ userId }: Props): Agent[] | null => {
   const [agents, setAgents] = useState<Agent[] | null>(null);
 
   useEffect(() => {
@@ -25,13 +34,11 @@ const useGetAgents = (userId: string) => {
         setAgents(fetchedAgents);
         return agents;
       } catch (error) {
-        console.error('Error:', error);
-        return null;
+        throw new Error(`Failed to fetch agents: ${error}`);
       }
-    }
+    };
     gettingAgents();
 
-    return () => setAgents(null);
   },[userId]);
 
   return agents;
