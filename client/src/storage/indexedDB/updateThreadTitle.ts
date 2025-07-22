@@ -1,4 +1,5 @@
 import { db } from 'src/storage/indexedDB';
+import dispatchEvent from 'src/events/dispatchEvent';
 
 interface Props {
   threadId: string;
@@ -16,11 +17,7 @@ const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void
     const updatedThread = await db.threads.update(threadId, { title: threadTitle });
     if (updatedThread === 0) throw new Error('Failed to update thread title.');
 
-    /** Dispatch threadTitleUpdated event */
-    const event = new CustomEvent('threadTitleUpdated', {
-      detail: { threadId, threadTitle }
-    });
-    window.dispatchEvent(event);
+    dispatchEvent.threadTitleUpdated(threadId, threadTitle);
     
   } catch (error) {
     console.error('Failed to update thread title (IndexedDB): ', error);

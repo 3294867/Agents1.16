@@ -1,19 +1,19 @@
+import dispatchEvent from 'src/events/dispatchEvent';
 import { Tab } from 'src/types';
 
 const tabsStorage = {
-  save: (agent: string, tabs: Tab[] ): boolean => {
+  save: (agentName: string, tabs: Tab[] ): boolean => {
     try {
-      localStorage.setItem(`${agent}_tabs`, JSON.stringify(tabs));
+      localStorage.setItem(`${agentName}_tabs`, JSON.stringify(tabs));
       return true;
     } catch (error) {
       console.error('Failed to save threads: ', error);
       return false
     }
   },
-
-  load: (agent: string): Tab[] | null => {
+  load: (agentName: string): Tab[] | null => {
     try {
-      const savedTabs = localStorage.getItem(`${agent}_tabs`);
+      const savedTabs = localStorage.getItem(`${agentName}_tabs`);
       if (savedTabs) return JSON.parse(savedTabs);
       return null;
     } catch (error) {
@@ -21,22 +21,18 @@ const tabsStorage = {
       return null;
     }
   },
-
-  update: (agent: string, agentId: string, threadId: string, newTitle: string) => {
+  update: (agentName: string, agentId: string, threadId: string, title: string) => {
     try {
-      const savedTabs = localStorage.getItem(`${agent}_tabs`);
+      const savedTabs = localStorage.getItem(`${agentName}_tabs`);
       if (savedTabs) {
         const remainingTabs = JSON.parse(savedTabs).filter((tab: { id: string, title: string, isActive: boolean }) => tab.id !== threadId);
-        const updatedTab: Tab = { id: threadId, agentId, title: newTitle, isActive: true };
+        const updatedTab: Tab = { id: threadId, agentId, title, isActive: true };
         const updatedTabs = [...remainingTabs, updatedTab] as Tab[];
 
-        localStorage.setItem(`${agent}_tabs`, JSON.stringify(updatedTabs));
+        localStorage.setItem(`${agentName}_tabs`, JSON.stringify(updatedTabs));
 
-        /** Dispatch event */
-        const event = new CustomEvent('tabsUpdated', {
-          detail: { agent: agent }
-        });
-        window.dispatchEvent(event);
+        /** Dispatch tabsUpdated event (Events) */
+        dispatchEvent.tabsUpdated(agentName)
       }
       return null;
     } catch (error) {
@@ -44,10 +40,9 @@ const tabsStorage = {
       return null;
     }
   },
-
-  addTab: (agent: string, tab: Tab) => {
+  addTab: (agentName: string, tab: Tab) => {
     try {
-      const savedTabs = tabsStorage.load(agent);
+      const savedTabs = tabsStorage.load(agentName);
       const newTab = {
         id: tab.id,
         agentId: tab.agentId,
@@ -56,7 +51,7 @@ const tabsStorage = {
       }
 
       if (savedTabs === null) {
-        tabsStorage.save(agent, [newTab]);
+        tabsStorage.save(agentName, [newTab]);
       } else {
         const updatedTabs: Tab[] = [];
         for (const t of savedTabs) {
@@ -65,7 +60,7 @@ const tabsStorage = {
           };
           updatedTabs.push(t);
         }
-        tabsStorage.save(agent, [...updatedTabs, newTab]);
+        tabsStorage.save(agentName, [...updatedTabs, newTab]);
       }
     } catch (error) {
       console.error(`Failed to add tab: `, error);

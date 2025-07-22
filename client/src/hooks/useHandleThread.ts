@@ -8,7 +8,6 @@ interface Props {
 
 /**
  * Handles thread.
- * 
  * @param {string} props.threadId - ID of the thread.
  * @returns {Object} - Returns thread, error, isLoading.
 */
@@ -47,7 +46,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     }
   },[thread]);
   
-  /** Listen for query added events */
+  /** Update thread on query added event (Events) */
   useEffect(() => {
     const handleAddQuery = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
@@ -56,11 +55,11 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
           return {
             ...prevThread,
-            body: [...prevBody, event.detail.newQuery]
+            body: [...prevBody, event.detail.query]
           };
         });
   
-        setNewRequestId(event.detail.newQuery.requestId);
+        setNewRequestId(event.detail.query.requestId);
       }
     };
     window.addEventListener('queryAdded', handleAddQuery as EventListener);
@@ -85,7 +84,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   },[thread, newRequestId]);
 
 
-  /** Listen for updates of the 'isNew' property of the query */
+  /** Update thread on queryIsNewUpdated event (Events) */
   useEffect(() => {
     const handleUpdateQueryIsNewProperty = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
@@ -108,12 +107,12 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         });
       }
     };
-    window.addEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewProperty as EventListener);
+    window.addEventListener('queryIsNewUpdated', handleUpdateQueryIsNewProperty as EventListener);
 
-    return () => window.removeEventListener('queryIsNewFlagUpdated', handleUpdateQueryIsNewProperty as EventListener);
+    return () => window.removeEventListener('queryIsNewUpdated', handleUpdateQueryIsNewProperty as EventListener);
   },[thread, threadId]);
 
-  /** Listen for updates of the 'title' property of the thread */
+  /** Update thread on threadTitleUpdated event (Events) */
   useEffect(() => {
     const handleUpdateThreadTitle = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {

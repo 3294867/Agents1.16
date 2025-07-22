@@ -69,7 +69,7 @@ const Form = (props: FormProps) => {
     /** Update thread body (indexedDB) */
     await indexedDB.addQuery({
       threadId: props.threadId,
-      newQuery: {
+      query: {
         requestId: requestId,
         requestBody: input,
         responseId: responseId,

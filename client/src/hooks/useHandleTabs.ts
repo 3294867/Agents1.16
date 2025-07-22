@@ -30,7 +30,7 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
   /** Update tabs on: seleted tab, removed tab, or added tab */
   useEffect(() => {
     const handleTabsUpdate = (event: CustomEvent) => {
-      if (event.detail.agent === agentName) {
+      if (event.detail.agentName === agentName) {
         const savedTabs = tabsStorage.load(agentName);
         if (savedTabs !== null) setTabs(savedTabs);
       }

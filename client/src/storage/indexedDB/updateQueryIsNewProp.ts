@@ -1,3 +1,4 @@
+import dispatchEvent from 'src/events/dispatchEvent';
 import { db } from 'src/storage/indexedDB';
 import { Query } from 'src/types';
 
@@ -29,11 +30,8 @@ const updateQueryIsNewProp = async ({ threadId, responseId, isNew }: Props): Pro
     const updatedThread = await db.threads.update(threadId, { body: updatedBody });
     if (updatedThread === 0) throw new Error('Failed to update isNew property.');
 
-    /** Dispatch custom event after successful thread update*/
-    const event = new CustomEvent('queryIsNewFlagUpdated', {
-      detail: { threadId, responseId, isNew }
-    });
-    window.dispatchEvent(event);
+    /** Dispatch queryIsNewUpdated event (Events) */
+    dispatchEvent.queryIsNewUpdated(threadId, responseId, isNew);
 
   } catch (error) {
     console.error('Failed to update isNew property (IndexedDB): ', error);

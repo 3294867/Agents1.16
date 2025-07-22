@@ -3,6 +3,7 @@ import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import { cn } from 'src/utils/cn';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
+import dispatchEvent from 'src/events/dispatchEvent';
 
 interface Props {
   agent: AgentType;
@@ -16,22 +17,17 @@ const Tab = (props: Props) => {
   const navigate = useNavigate();
   
   const handleSelectTab = async (threadId: string, agentId: string) => {
-    /** Update tabs */
+    /** Update tabs (localStorage) */
     const updatedTabs = props.tabs.map(t => t.agentId === agentId
       ? { ...t, isActive: t.id === threadId }
       : t
     );
-
-    /** Save updated tabs (localStorage) */
     tabsStorage.save(props.agent.name, updatedTabs);
 
-    /** Dispatch tabsUpdated event */
-    const tabUpdatedEvent = new CustomEvent('tabsUpdated', {
-      detail: { agent: props.agent.name }
-    });
-    window.dispatchEvent(tabUpdatedEvent);
+    /** Dispatch tabsUpdated event (Events) */
+    dispatchEvent.tabsUpdated(props.agent.name);
 
-    /** Update positionY of the current thread */
+    /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
       threadId: props.currentThreadId,
       positionY: props.currentThreadPositionY
@@ -43,26 +39,19 @@ const Tab = (props: Props) => {
   const handleRemoveTab = async (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    /** Update tabs */
+    /** Update tabs (localStorage) */
     const removedTab = props.tabs.find(t => t.id === threadId);
     if (!removedTab) return;
-    
     const updatedTabs = props.tabs.filter(t => t.id !== threadId);
-    
     if (updatedTabs.length > 0 && removedTab.isActive) {
       updatedTabs[updatedTabs.length - 1].isActive = true;
     }
-
-    /** Save updated tabs (localStorage) */
     tabsStorage.save(props.agent.name, updatedTabs);
 
-    /** Dispatch tabsUpdated event */
-    const event = new CustomEvent('tabsUpdated', {
-      detail: { agent: props.agent.name }
-    });
-    window.dispatchEvent(event);
+    /** Dispatch tabsUpdated event (Events) */
+    dispatchEvent.tabsUpdated(props.agent.name);
 
-    /** Update positionY of the current thread */
+    /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
       threadId: props.currentThreadId,
       positionY: props.currentThreadPositionY

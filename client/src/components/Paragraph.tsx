@@ -16,7 +16,7 @@ const paragraphVariants = cva(
       },
       isMuted: {
         true: 'text-text-tertiary',
-        false: 'text-text-primary '
+        false: 'text-text-primary'
       }
     },
     defaultVariants: {

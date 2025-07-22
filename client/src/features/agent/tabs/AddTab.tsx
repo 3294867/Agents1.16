@@ -3,6 +3,7 @@ import { v4 as uuidV4 } from 'uuid';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import dispatchEvent from 'src/events/dispatchEvent';
 import { Button } from 'src/components/Button';
 import constants from 'src/constants';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
@@ -41,10 +42,7 @@ const AddTab = (props: Props) => {
     tabsStorage.save(props.agent.name, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
-    const event = new CustomEvent('tabsUpdated', {
-      detail: { agent: props.agent.name }
-    });
-    window.dispatchEvent(event);
+    dispatchEvent.tabsUpdated(props.agent.name);
     
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({

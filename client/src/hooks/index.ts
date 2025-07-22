@@ -8,6 +8,7 @@ import useHandleLayout from 'src/hooks/useHandleLayout';
 import useHandleTheme from 'src/hooks/useHandleTheme';
 import useHandleSideNav from 'src/hooks/useHandleSideNav';
 import useHandleProgressiveParagraph from './useHandleProgressiveParagraph';
+import useHandleQuestion from './useHandleQuestion';
 
 const hooks = {
   useHandleRedirect,
@@ -20,6 +21,7 @@ const hooks = {
   useHandleTheme,
   useHandleSideNav,
   useHandleProgressiveParagraph,
+  useHandleQuestion
 };
 
 export default hooks;

@@ -126,7 +126,7 @@
 }
 
 body {
-  background: oklch(0.147 0.004 49.25); /* fallback to dark, or pick your default */
+  background: oklch(0.147 0.004 49.25);
   transition: background 0.2s;
 }
 body.dark {
