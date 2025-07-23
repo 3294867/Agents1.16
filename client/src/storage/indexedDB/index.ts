@@ -7,8 +7,10 @@ import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
 import updateThreadTitle from 'src/storage/indexedDB/updateThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
+import updateQuery from 'src/storage/indexedDB/updateQuery';
 import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
 import updateThreadPositionY from 'src/storage/indexedDB/updateThreadPositionY';
+import pauseResponse from 'src/storage/indexedDB/pauseResponse';
 import { Agent, Thread } from 'src/types';
 
 const db = new Dexie('Agents') as Dexie & {
@@ -25,8 +27,10 @@ const indexedDB = {
   getThread,
   updateThreadTitle,
   addQuery,
+  updateQuery,
   updateQueryIsNewProp,
   updateThreadPositionY,
+  pauseResponse
 };
 
 export default indexedDB;

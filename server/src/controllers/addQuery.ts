@@ -9,7 +9,7 @@ interface RequestType {
   responseBody: string;
 };
 
-const updateThreadBody = async (req: Request, res: Response) => {
+const addQuery = async (req: Request, res: Response) => {
   const { threadId, requestBody, responseBody } = req.body as RequestType;
 
   try {
@@ -96,4 +96,4 @@ const updateThreadBody = async (req: Request, res: Response) => {
   }
 }
 
-export default updateThreadBody;
+export default addQuery;

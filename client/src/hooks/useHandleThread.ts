@@ -46,7 +46,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     }
   },[thread]);
   
-  /** Update thread on query added event (Events) */
+  /** Update thread on queryAdded event (Events) */
   useEffect(() => {
     const handleAddQuery = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
@@ -66,6 +66,29 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
 
     return () => window.removeEventListener('queryAdded', handleAddQuery as EventListener);
   },[threadId]);
+
+  /** Update thread on queryUpdated event (Events) */
+  useEffect(() => {
+    const handleUpdateQuery = (event: CustomEvent) => {
+      if (threadId && event.detail.threadId === threadId ) {
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
+          const remainingQueries = prevBody.filter(q => q.requestId !== event.detail.query.requestId);
+          return {
+            ...prevThread,
+            body: [...remainingQueries, event.detail.query]
+          };
+        });
+
+        setNewRequestId(event.detail.query.requestId);
+      }
+    };
+    window.addEventListener('queryUpdated', handleUpdateQuery as EventListener);
+    
+    return () => window.removeEventListener('queryUpdated', handleUpdateQuery as EventListener);
+  },[threadId]);
+  
 
   /** Scroll to the new query */
   useEffect(() => {
@@ -87,8 +110,8 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   /** Update thread on queryIsNewUpdated event (Events) */
   useEffect(() => {
     const handleUpdateQueryIsNewProperty = (event: CustomEvent) => {
+      if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
-        if (!thread) return;
         const threadBody = Array.isArray(thread.body) ? thread.body : [];
         const queryIndex = threadBody.findIndex(q => q.responseId === event.detail.responseId);
         if (queryIndex === -1) return;
@@ -115,8 +138,8 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   /** Update thread on threadTitleUpdated event (Events) */
   useEffect(() => {
     const handleUpdateThreadTitle = (event: CustomEvent) => {
+      if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
-        if (!thread) return;
         setThread(prevThread => {
           if (!prevThread) return null;
           return {
@@ -128,10 +151,8 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     };
     window.addEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
 
-    return () => {
-      window.removeEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
-    }
-  },[threadId]);
+    return () => window.removeEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
+  },[thread, threadId]);
 
   return { thread, error, isLoading };
 };

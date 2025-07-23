@@ -1,16 +1,15 @@
-import { ChevronDown, MoveUpRightIcon, PlusIcon } from 'lucide-react';
+import { MoveUpRightIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
 import openai from 'src/responses';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import { Button } from 'src/components/Button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/components/DropdownMenu';
 import { Textarea } from 'src/components/Textarea';
-import constants from 'src/constants';
 import { AgentModel } from 'src/types';
+import AgentModelDropdown from './AgentModelDropdown';
 
-interface FormProps {
+interface Props {
   threadId: string;
   agentId: string;
   agentName: string;
@@ -18,9 +17,9 @@ interface FormProps {
   threadBodyLength: number;
 };
 
-const Form = (props: FormProps) => {
+const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, threadBodyLength }: Props) => {
   const [input, setInput] = useState<string>('');
-  const [agentModel, setAgentModel] = useState<AgentModel>(props.agentModel);
+  const [agentModel, setAgentModel] = useState<AgentModel>(initialAgentModel);
 
   const formWidth = 480;
 
@@ -28,47 +27,43 @@ const Form = (props: FormProps) => {
     e.preventDefault();
     
     /** Create response (openai) */
-    const responseBody = await openai.createResponse({
-      threadId: props.threadId,
-      agentModel,
-      input
-    });
+    const responseBody = await openai.createResponse({ threadId, agentModel, input });
     
-    /** Update thread body (postgresDB) */
-    const { requestId, responseId } = await postgresDB.updateThreadBody({
-      threadId: props.threadId,
+    /** Update thread body (PostgresDB) */
+    const { requestId, responseId } = await postgresDB.addQuery({
+      threadId: threadId,
       requestBody: input,
       responseBody
     });
     
     setInput('');
 
-    if (props.threadBodyLength === 0) {
+    if (threadBodyLength === 0) {
       /** Create thread title */
       const threadTitle = await openai.createThreadTitle({
         question: input,
         answer: responseBody
       });
 
-      /** Update thread title (postgresDB) */
+      /** Update thread title (PostgresDB) */
       await postgresDB.updateThreadTitle({
-        threadId: props.threadId,
+        threadId: threadId,
         threadTitle
       });
 
-      /** Update thread title (indexedDB) */
+      /** Update thread title (IndexedDB) */
       await indexedDB.updateThreadTitle({
-        threadId: props.threadId,
+        threadId: threadId,
         threadTitle
       });
 
       /** Update tabs (localStorage) */
-      tabsStorage.update(props.agentName, props.agentId, props.threadId, threadTitle);
+      tabsStorage.update(agentName, agentId, threadId, threadTitle);
     }
 
-    /** Update thread body (indexedDB) */
+    /** Update thread body (IndexedDB) */
     await indexedDB.addQuery({
-      threadId: props.threadId,
+      threadId: threadId,
       query: {
         requestId: requestId,
         requestBody: input,
@@ -110,45 +105,3 @@ const Form = (props: FormProps) => {
 };
 
 export default Form;
-
-interface AgentModelDropdownProps {
-  agentModel: AgentModel;
-  setAgentModel: (model: AgentModel) => void;
-};
-
-const AgentModelDropdown = (props: AgentModelDropdownProps) => {
-  const [ isOpen, setIsOpen ] = useState(false);
-
-  const handleModelChange = (agentModel: AgentModel) => {
-    setIsOpen(false);
-    props.setAgentModel(agentModel);
-  };
-
-  return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <DropdownMenuTrigger asChild>
-        <Button variant='outline' size='sm'>
-          {props.agentModel}
-          <ChevronDown className='w-4 h-4 ml-2 -mr-1'/>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align='end' sideOffset={4} >
-        {constants.agentModels
-          .filter(m => m !== props.agentModel)
-          .map(m => (
-            <Button
-              key={m}
-              type='button'
-              onClick={() => handleModelChange(m)}
-              variant='ghost'
-              size='sm'
-              className='w-full justify-start pl-2 text-xs hover:text-text-primary hover:bg-white/15 transition-colors duration-150'
-            >
-              {m}
-            </Button>
-          ))
-        }
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};

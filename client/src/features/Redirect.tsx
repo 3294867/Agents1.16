@@ -1,11 +1,11 @@
 import hooks from 'src/hooks';
 
-interface RedirectProps {
+interface Props {
   userId: string;
 };
 
-const Redirect = (props: RedirectProps) => {
-  hooks.useHandleRedirect({ userId: props.userId });
+const Redirect = ({ userId }: Props) => {
+  hooks.useHandleRedirect({ userId });
   return null;
 };
 

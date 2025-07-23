@@ -12,13 +12,13 @@ interface HeaderProps {
   threadTitle: string | null;
 };
 
-const Header = (props: HeaderProps) => {
+const Header = ({ threadId, threadTitle }: HeaderProps) => {
   return (
     <div className={cn('flex items-start',
-      props.threadTitle === null ? 'justify-end' : 'justify-between'
+      threadTitle === null ? 'justify-end' : 'justify-between'
     )}>
-      <Title threadTitle={props.threadTitle} />
-      <Actions threadId={props.threadId} />
+      <Title threadTitle={threadTitle} />
+      <Actions threadId={threadId} />
     </div>
   );
 };
@@ -29,8 +29,8 @@ interface TitleProps {
   threadTitle: string | null;
 };
 
-const Title = (props: TitleProps) => {
-  if (!props.threadTitle) return null;
+const Title = ({ threadTitle }: TitleProps) => {
+  if (!threadTitle) return null;
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -38,7 +38,7 @@ const Title = (props: TitleProps) => {
       transition={{ duration: 0.2 }}
     >
       <Heading variant='h3' className='w-full'>
-        {props.threadTitle}
+        {threadTitle}
       </Heading>
     </motion.div>
   )
@@ -48,7 +48,7 @@ interface ActionsProps {
   threadId: string;
 };
 
-const Actions = (props: ActionsProps) => {
+const Actions = ({ threadId }: ActionsProps) => {
   return (
     <div className='flex gap-1.5 justify-end items-center'>
       <Tooltip>

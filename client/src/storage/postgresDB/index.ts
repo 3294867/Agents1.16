@@ -2,7 +2,9 @@ import getAgents from 'src/storage/postgresDB/getAgents';
 import getAgent from 'src/storage/postgresDB/getAgent';
 import getThread from 'src/storage/postgresDB/getThread';
 import createThread from 'src/storage/postgresDB/createThread';
-import updateThreadBody from 'src/storage/postgresDB/updateThreadBody';
+import addQuery from 'src/storage/postgresDB/addQuery';
+import updateRequestBody from './updateRequestBody';
+import updateResponseBody from './updateResponseBody';
 import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 
 const postgresDB = {
@@ -10,7 +12,9 @@ const postgresDB = {
   getAgent,
   getThread,
   createThread,
-  updateThreadBody,
+  addQuery,
+  updateRequestBody,
+  updateResponseBody,
   updateThreadTitle
 };
 

@@ -11,9 +11,9 @@ interface Props {
   userId: string;
 };
 
-const Agent = (props: Props) => {
+const Agent = ({ userId }: Props) => {
   const { agentName } = useParams();
-  const { agent, error, isLoading } = hooks.useGetAgent({ userId: props.userId, agentName });
+  const { agent, error, isLoading } = hooks.useGetAgent({ userId, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
@@ -22,8 +22,8 @@ const Agent = (props: Props) => {
   return (
     <div className='relative ml-[52px] flex flex-col px-2'>
       <header className='z-10 sticky top-0 flex justify-between items-center py-2 border-b-1 border-border bg-background'>
-        <Tabs userId={props.userId} agent={agent} />
-        <Actions userId={props.userId} agentId={agent.id} />
+        <Tabs userId={userId} agent={agent} />
+        <Actions userId={userId} agentId={agent.id} />
       </header>
       <Thread agentId={agent.id} agentName={agentName} agentModel={agent.model} />
     </div>

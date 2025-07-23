@@ -6,7 +6,7 @@ interface Props {
 };
 
 /**
- * Handles fetching agent.
+ * Handles SideNav.
  * @param {string} props.threadBodyLength - Length of the 'body' property of the thread.
  * @returns {Object} - Returns isVisible and chatWidth.
 */

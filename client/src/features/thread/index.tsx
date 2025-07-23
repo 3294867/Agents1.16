@@ -3,18 +3,18 @@ import { useParams } from 'react-router-dom';
 import Error from 'src/components/Error';
 import Header from './Header';
 import Chat from './chat';
-import Form from './Form';
 import SideNavigation from './SideNav';
 import hooks from 'src/hooks';
 import { AgentModel } from 'src/types';
+import Form from './form';
 
-interface ThreadProps {
+interface Props {
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
 };
 
-const Thread = (props: ThreadProps) => {
+const Thread = ({ agentId, agentName, agentModel }: Props) => {
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.useHandleThread({ threadId });
 
@@ -29,8 +29,8 @@ const Thread = (props: ThreadProps) => {
   return (
     <main id='thread' className='relative w-[640px] mx-auto flex flex-col mt-8'>
       <Header threadId={threadId} threadTitle={threadTitle} />
-      <Chat threadId={threadId} threadBody={threadBody} />
-      <Form {...props} threadId={threadId} threadBodyLength={threadBodyLength} />
+      <Chat threadId={threadId} threadBody={threadBody} agentModel={agentModel} />
+      <Form agentId={agentId} agentName={agentName} agentModel={agentModel} threadId={threadId} threadBodyLength={threadBodyLength} />
       <SideNavigation threadBody={threadBody} threadBodyLength={threadBodyLength} />
     </main>
   );

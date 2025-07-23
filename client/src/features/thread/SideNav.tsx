@@ -3,13 +3,13 @@ import { Button } from 'src/components/Button';
 import hooks from 'src/hooks';
 import { Query } from 'src/types';
 
-interface SideNavigationProps {
+interface Props {
   threadBody: Query[];
   threadBodyLength: number;
 };
 
-const SideNavigation = (props: SideNavigationProps) => {
-  const { isVisible, chatWidth } = hooks.useHandleSideNav(props.threadBodyLength);
+const SideNavigation = ({ threadBody, threadBodyLength }: Props) => {
+  const { isVisible, chatWidth } = hooks.useHandleSideNav({ threadBodyLength });
 
   const sideNavWidth = 200;
 
@@ -33,7 +33,7 @@ const SideNavigation = (props: SideNavigationProps) => {
       style={{ transform: `translateX(calc(50% + ${chatWidth/2}px + ${sideNavWidth}px + 32px))`, width: sideNavWidth }}
       className='z-10 fixed top-20 flex flex-col p-2 border border-border rounded-md bg-background'
     >
-      {props.threadBody.map(i => (
+      {threadBody.map(i => (
         <Button
           key={i.requestId}
           onClick={() => handleScrollToQuestion(i.requestId)}

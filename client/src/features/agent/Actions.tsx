@@ -3,12 +3,12 @@ import { CogIcon, EllipsisVerticalIcon, FolderClosedIcon, HistoryIcon } from 'lu
 import { Button } from 'src/components/Button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from 'src/components/DropdownMenu';
 
-interface ActionsProps {
+interface Props {
   userId: string;
   agentId: string;
 };
 
-const Actions = (props: ActionsProps) => {
+const Actions = ({ userId, agentId }: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   
   return (

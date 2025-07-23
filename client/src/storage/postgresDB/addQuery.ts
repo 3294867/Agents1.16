@@ -4,16 +4,10 @@ interface Props {
   responseBody: string;
 };
 
-/**
- * Updates thread body (PostgresDB).
- * @param {string} props.threadId - Thread id.
- * @param {string} props.requestBody - Request body.
- * @param {string} props.responseBody - Response body.
- * @returns {Promise<{ requestId: string, responseId: string }>} Returns ids of the response and request.
-*/
-const updateThreadBody = async ({ threadId, requestBody, responseBody }: Props): Promise<{ requestId: string, responseId: string }> => {
+/** Adds query to the thread body (PostgresDB). */
+const addQuery = async ({ threadId, requestBody, responseBody }: Props): Promise<{ requestId: string, responseId: string }> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-thread-body`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/add-query`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ threadId, requestBody, responseBody })
@@ -33,4 +27,4 @@ const updateThreadBody = async ({ threadId, requestBody, responseBody }: Props):
   }
 };
 
-export default updateThreadBody;
+export default addQuery;

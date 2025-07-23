@@ -3,10 +3,12 @@ import getAgents from "./controllers/getAgents";
 import getAgent from './controllers/getAgent';
 import getThread from "./controllers/getThread";
 import createThread from "./controllers/createThread";
-import updateThreadBody from './controllers/updateThreadBody';
+import addQuery from './controllers/addQuery';
+import updateRequestBody from './controllers/updateRequestBody';
+import updateResponseBody from './controllers/updateResponseBody';
 import createThreadTitle from "./controllers/createThreadTitle";
-import createResponse from "./controllers/createResponse";
 import updateThreadTitle from './controllers/updateThreadTitle';
+import createResponse from "./controllers/createResponse";
 
 const router = express.Router();
 
@@ -14,7 +16,9 @@ router.post("/get-agents", getAgents);
 router.post("/get-agent", getAgent);
 router.post("/get-thread", getThread);
 router.post("/create-thread", createThread);
-router.post("/update-thread-body", updateThreadBody);
+router.post("/add-query", addQuery);
+router.post("/update-request-body", updateRequestBody);
+router.post("/update-response-body", updateResponseBody);
 router.post("/create-thread-title", createThreadTitle);
 router.post("/update-thread-title", updateThreadTitle);
 router.post("/create-response", createResponse);

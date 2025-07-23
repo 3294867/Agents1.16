@@ -16,9 +16,9 @@ interface Props {
   currentThreadPositionY: number;
 };
 
-const AddTab = (props: Props) => {
+const AddTab = ({ userId, agent, tabs, currentThreadId, currentThreadPositionY }: Props) => {
   const navigate = useNavigate();
-  const isAddTabDisabled = props.tabs.length > constants.tabMaxLength;
+  const isAddTabDisabled = tabs.length > constants.tabMaxLength;
 
   const handleAddTab = async (userId: string, agentId: string) => {
     /** Create thread (PostgresDB) */
@@ -33,24 +33,24 @@ const AddTab = (props: Props) => {
     await indexedDB.addThread({ thread: updatedThread });
 
     /** Update tabs (localStorage) */
-    const updatedTabs = props.tabs.map(t => t.agentId === agentId
+    const updatedTabs = tabs.map(t => t.agentId === agentId
       ? { ...t, isActive: false }
       : t
     );
-    const newTab = { id: threadId, agentId: props.agent.id, title: null, isActive: true };
+    const newTab = { id: threadId, agentId: agent.id, title: null, isActive: true };
     updatedTabs.push(newTab);
-    tabsStorage.save(props.agent.name, updatedTabs);
+    tabsStorage.save(agent.name, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
-    dispatchEvent.tabsUpdated(props.agent.name);
+    dispatchEvent.tabsUpdated(agent.name);
     
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
-      threadId: props.currentThreadId,
-      positionY: props.currentThreadPositionY
+      threadId: currentThreadId,
+      positionY: currentThreadPositionY
     });
     
-    navigate(`/${props.agent.name}/${threadId}`);
+    navigate(`/${agent.name}/${threadId}`);
   };
   
   return (
@@ -59,7 +59,7 @@ const AddTab = (props: Props) => {
       variant='outline'
       size='icon'
       className='w-8 h-8 ml-2 p-0 rounded-full'
-      onClick={() => handleAddTab(props.userId, props.agent.id)}
+      onClick={() => handleAddTab(userId, agent.id)}
     >
       <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='size-4'>
         <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />

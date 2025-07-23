@@ -4,38 +4,40 @@ import hooks from 'src/hooks';
 
 interface AnswerProps {
   threadId: string;
+  requestId: string;
   responseId: string;
   responseBody: string;
   isNew: boolean;
 };
 
-const Answer = (props: AnswerProps) => {
-  return props.isNew
+const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: AnswerProps) => {
+  return isNew
     ? (
       <ProgressiveParagraph
-        threadId={props.threadId}
-        isNew={props.isNew}
-        responseId={props.responseId}
-        responseBody={props.responseBody}
+        threadId={threadId}
+        requestId={requestId}
+        responseId={responseId}
+        responseBody={responseBody}
       />
     )
-    : <Paragraph variant='thin' className='leading-loose'>{props.responseBody}</Paragraph>;
+    : <Paragraph variant='thin' className='leading-loose'>{responseBody}</Paragraph>;
 };
 
 export default Answer;
 
-interface ProgressiveTextProps {
+interface ProgressiveParagraphProps {
   threadId: string;
-  isNew: boolean;
+  requestId: string;
   responseId: string;
   responseBody: string;
 };
 
-const ProgressiveParagraph = (props: ProgressiveTextProps) => {
+const ProgressiveParagraph = ({ threadId, requestId, responseId, responseBody }: ProgressiveParagraphProps) => {
   const copy = hooks.useHandleProgressiveParagraph({
-    threadId: props.threadId,
-    responseId: props.responseId,
-    responseBody: props.responseBody
+    threadId: threadId,
+    requestId: requestId,
+    responseId: responseId,
+    responseBody: responseBody
   });
 
   return (

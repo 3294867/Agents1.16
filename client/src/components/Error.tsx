@@ -3,17 +3,17 @@ import { Dialog, DialogContent, DialogTitle } from './Dialog';
 import { Paragraph } from './Paragraph';
 
 
-interface ErrorProps {
+interface Props {
   error: string
 };
 
-const Error = (props: ErrorProps) => {
+const Error = ({ error }: Props) => {
   return (
     <Dialog open={true}>
       <DialogContent>
         <DialogTitle>Error</DialogTitle>
         <Paragraph variant='thin' isMuted={true} className='mt-4'>
-          {props.error}
+          {error}
         </Paragraph>
         <div className='w-full flex justify-end'>
           <a href='/'>
