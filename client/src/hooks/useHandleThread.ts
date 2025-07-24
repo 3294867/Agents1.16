@@ -6,17 +6,13 @@ interface Props {
   threadId: string | undefined;
 };
 
-/**
- * Handles thread.
- * @param {string} props.threadId - ID of the thread.
- * @returns {Object} - Returns thread, error, isLoading.
-*/
+/** Handles thread */
 const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
-
+  
   /** Get thread (IndexedDB) */
   useEffect(() => {
     const fetchThread = async () => {
@@ -24,19 +20,17 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         setError('Missing thread id.');
         return;
       }
-  
       setIsLoading(true);
       setError(null);
-  
       const threadData = await indexedDB.getThread({ threadId });
-      if (!threadData) setError('Incorrect thread id.')
+      if (!threadData) setError('Incorrect thread id.');
       setThread(threadData);
       setIsLoading(false);
     };
     fetchThread();
   },[threadId]);
 
-  /** Scroll to saved 'positionY' value of the thread */
+  /** Scroll to saved 'positionY' value of the thread (UI) */
   useEffect(() => {
     if (thread) {
       scrollTo({
@@ -74,10 +68,14 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         setThread(prevThread => {
           if (!prevThread) return null;
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
-          const remainingQueries = prevBody.filter(q => q.requestId !== event.detail.query.requestId);
+          /** Create a new array with the updated query, preserving order */
+          const queryIndex = prevBody.findIndex(q => q.requestId === event.detail.query.requestId);
+          const updatedBody: Query[] = prevBody.map((q, idx) =>
+            idx === queryIndex ? event.detail.query : q
+          );
           return {
             ...prevThread,
-            body: [...remainingQueries, event.detail.query]
+            body: [...updatedBody]
           };
         });
 
@@ -90,7 +88,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   },[threadId]);
   
 
-  /** Scroll to the new query */
+  /** Scroll to the new query (UI) */
   useEffect(() => {
     if (thread && newRequestId) {
       const question = document.getElementById(`question_${newRequestId}`);

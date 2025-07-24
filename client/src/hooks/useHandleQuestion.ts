@@ -5,22 +5,14 @@ interface Props {
   isEditing: boolean;
 };
 
-const useHandleQuestion = ({ input, isEditing }: Props) => {
+/** Handles question */
+const useHandleQuestion = ({ input, isEditing }: Props): React.RefObject<HTMLTextAreaElement | null> => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const spanRef = useRef<HTMLSpanElement>(null);
 
-  /* Auto-resize width and height of the question (UI) **/
+  /* Auto-resize height of the textarea (UI) **/
   useEffect(() => {
-    if (!isEditing) {
-      if (spanRef.current && textareaRef.current) {
-        spanRef.current.textContent = input || '';
-        if (!input) spanRef.current.innerHTML = '&nbsp;';
-        const spanWidth = spanRef.current.offsetWidth;
-        textareaRef.current.style.width = spanWidth < 640 ? (spanWidth - 8) + 'px' : 600 + 'px';
-      }
-    }
     if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = '20px';
       textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
     }
   }, [input, isEditing]);
@@ -32,7 +24,7 @@ const useHandleQuestion = ({ input, isEditing }: Props) => {
       if (textAreaElement) {
         textAreaElement.focus();
         textAreaElement.selectionStart = textAreaElement.selectionEnd = textAreaElement.value.length;
-        textAreaElement.style.width = 540 + 'px';
+        textAreaElement.style.width = '100%';
       }
     };
     window.addEventListener('editingQuestion', handleFocusTextArea as EventListener);
@@ -40,7 +32,7 @@ const useHandleQuestion = ({ input, isEditing }: Props) => {
     return () => window.removeEventListener('editingQuestion', handleFocusTextArea as EventListener);
   },[])
 
-  return { textareaRef, spanRef };
+  return textareaRef;
 };
 
 export default useHandleQuestion;

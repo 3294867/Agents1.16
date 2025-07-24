@@ -6,12 +6,7 @@ interface Props {
   threadTitle: string;
 };
 
-/**
- * Updates the 'title' property of a thread (IndexedDB).
- * @param {string} props.threadId - The ID of the thread to update.
- * @param {string} props.threadTitle - The title of the thread.
- * @returns {Promise<void>} - Does not have a return value.
- */
+/** Updates 'title' property of the thread (IndexedDB) */
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(threadId, { title: threadTitle });

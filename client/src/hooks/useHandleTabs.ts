@@ -6,11 +6,7 @@ interface Props {
   agentName: string;
 };
 
-/**
- * Handles fetching tabs.
- * @param {string} props.userId - ID of the user.
- * @returns {Object} - Returns tabs and currentThreadPositionY.
-*/
+/** Handles tabs */
 const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThreadPositionY: number } => {
   const [tabs, setTabs] = useState<Tab[] | null>(null);
   const [currentThreadPositionY, setCurrentThreadPositionY] = useState<number>(0);
@@ -27,7 +23,7 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
     }
   },[agentName]);
   
-  /** Update tabs on: seleted tab, removed tab, or added tab */
+  /** Update tabs on: seleted tab, removed tab, or added tab (localStorage) */
   useEffect(() => {
     const handleTabsUpdate = (event: CustomEvent) => {
       if (event.detail.agentName === agentName) {
@@ -38,9 +34,9 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
     window.addEventListener('tabsUpdated', handleTabsUpdate as EventListener);
   
     return () => window.removeEventListener('tabsUpdated', handleTabsUpdate as EventListener);
-  },[])
+  },[agentName]);
 
-  /** Set 'positionY' property of the current thread */
+  /** Set 'positionY' property of the current thread (UI) */
   useEffect(() => {
     const handleScroll = () => setCurrentThreadPositionY(window.scrollY);
     window.addEventListener('scroll', handleScroll);

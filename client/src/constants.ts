@@ -115,13 +115,17 @@ const technologies = [
 
 const tabMaxLength = 15;
 const queriesMinNumber = 2;
+const initialPositionY = 0;
+const sideNavWidth = 200;
 
 const constants = {
   agentTypes,
   agentModels,
   technologies,
   tabMaxLength,
-  queriesMinNumber
+  queriesMinNumber,
+  initialPositionY,
+  sideNavWidth
 };
 
 export default constants;

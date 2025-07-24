@@ -7,12 +7,7 @@ interface Props {
   agentName: string | undefined; 
 };
 
-/**
- * Handles fetching agent.
- * @param {string} props.userId - ID of the user.
- * @param {string | undefined} props.agentName - Name property of the agent.
- * @returns {Object} - Returns agent, error, and isLoading.
-*/
+/** Handles fetching agent */
 const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error: string | null, isLoading: boolean } => {
   const [agent, setAgent] = useState<Agent | null>(null);
   const [error, setError] = useState<string | null>(null);

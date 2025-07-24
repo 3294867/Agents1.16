@@ -1,17 +1,21 @@
 import { db } from 'src/storage/indexedDB';
+import { Query } from 'src/types';
 
 interface Props {
   threadId: string;
-  requestId: string;
-  responseBody: string;
+  query: Query;
 };
 
-/** Updates query on pause (IndexedDB) */
-const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Promise<void> => {
+/** Updates query on restart (IndexedDB) */
+const restartResponse = async ({ threadId, query }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
     const threadBodyArray = Array.isArray(savedThread?.body) ? savedThread.body : [];
     if (!savedThread) throw new Error('Thread not found.');
+
+    const updatedThread = threadBodyArray.map(q =>
+      q.requestId === query.requestId ? query : q
+    )
 
     const savedQuery = threadBodyArray.find(q => q.requestId === requestId);
     if (!savedQuery) throw new Error('Query not found.')
@@ -21,7 +25,7 @@ const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Prom
       requestBody: savedQuery.requestBody,
       responseId: savedQuery.responseId,
       responseBody,
-      isNew: false
+      isNew: true
     };
 
     const filteredThreadBodyArray = threadBodyArray.filter(q => q.requestId !== requestId);
@@ -37,4 +41,4 @@ const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Prom
   }
 };
 
-export default pauseResponse;
+export default restartResponse;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-/** Handles agent layout */
-const useHandleLayout = () => {
+/** Handles agent layout (UI) */
+const useHandleAgentLayout = () => {
   const [layout, setLayout] = useState<'oneColumn' | 'twoColumns'>('twoColumns');
 
   useEffect(() => {
@@ -11,4 +11,4 @@ const useHandleLayout = () => {
   return { layout, setLayout };
 };
 
-export default useHandleLayout;
+export default useHandleAgentLayout;

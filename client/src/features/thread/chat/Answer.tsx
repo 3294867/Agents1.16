@@ -13,7 +13,7 @@ interface AnswerProps {
 const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: AnswerProps) => {
   return isNew
     ? (
-      <ProgressiveParagraph
+      <AnimatedParagraph
         threadId={threadId}
         requestId={requestId}
         responseId={responseId}
@@ -32,8 +32,8 @@ interface ProgressiveParagraphProps {
   responseBody: string;
 };
 
-const ProgressiveParagraph = ({ threadId, requestId, responseId, responseBody }: ProgressiveParagraphProps) => {
-  const copy = hooks.useHandleProgressiveParagraph({
+const AnimatedParagraph = ({ threadId, requestId, responseId, responseBody }: ProgressiveParagraphProps) => {
+  const copy = hooks.useHandleAnimatedParagraph({
     threadId: threadId,
     requestId: requestId,
     responseId: responseId,

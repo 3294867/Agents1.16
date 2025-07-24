@@ -9,11 +9,7 @@ interface Props {
   userId: string;
 };
 
-/**
- * Handles redirecting user from '/:agentName' path.
- * @param {string} props.userId - ID of the user.
- * @returns {void} - Does not have a return value.
-*/
+/** Handles redirecting user from '/:agentName' segment */
 const useHandleRedirect = ({ userId }: Props): void => {
   const navigate = useNavigate();
   const { agentName } = useParams();

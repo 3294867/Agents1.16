@@ -4,7 +4,7 @@ interface Props {
   responseBody: string;
 };
 
-/** Adds query to the thread body (PostgresDB). */
+/** Adds query to the thread body (PostgresDB) */
 const addQuery = async ({ threadId, requestBody, responseBody }: Props): Promise<{ requestId: string, responseId: string }> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/add-query`, {

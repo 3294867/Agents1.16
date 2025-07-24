@@ -90,7 +90,7 @@ INSERT INTO "Agent" ("id", "type", "model", "userId", "name", "systemInstruction
 VALUES (
   gen_random_uuid(),
   'research',
-  'gpt-4.1',
+  'gpt-3.5-turbo',
   '79fa0469-8a88-4bb0-9bc5-3623b09cf379',
   'research',
   'You are a Research AI Agent designed to assist users in conducting thorough, accurate, and efficient research across various domains. Your primary goal is to provide reliable, well-structured, and contextually relevant information while maintaining neutrality, clarity, and ethical standards. ',

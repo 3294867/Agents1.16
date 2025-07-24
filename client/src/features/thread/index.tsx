@@ -1,12 +1,12 @@
 import { LoaderIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import hooks from 'src/hooks';
 import Error from 'src/components/Error';
 import Header from './Header';
 import Chat from './chat';
-import SideNavigation from './SideNav';
-import hooks from 'src/hooks';
-import { AgentModel } from 'src/types';
 import Form from './form';
+import SideNavigation from './SideNav';
+import { AgentModel } from 'src/types';
 
 interface Props {
   agentId: string;

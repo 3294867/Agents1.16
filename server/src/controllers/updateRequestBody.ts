@@ -8,22 +8,22 @@ interface Props {
 };
 
 const updateRequestBody = async (req: Request, res: Response) => {
-  const { requestId, requestBody } = req.body as Props;
+  const { requestId, requestBody }: Props = req.body;
 
   try {
+    /** Update request body in the database (PostgresDB) */
     const resultQueryText = `
       UPDATE "Request"
       SET "body" = $1::text
       WHERE "id" = $2::uuid 
     `;
-
     const result = await pool.query(resultQueryText, [
       requestBody,
       requestId
     ]);
     if (!result) return sendResponse(res, 503, "Failed to update request body.");
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Request body updated.",
     });

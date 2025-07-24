@@ -2,28 +2,28 @@ import { Request, Response } from "express";
 import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 
-interface RequestType {
+interface Props {
   threadId: string;
   threadTitle: string;
 };
 
 const updateThreadTitle = async (req: Request, res: Response) => {
-  const { threadId, threadTitle } = req.body as RequestType;
+  const { threadId, threadTitle }: Props = req.body;
 
   try {
+    /** Update thread title in the database (PostgresDB) */
     const queryText = `
       UPDATE "Thread"
       SET "title" = $1::text
       WHERE "id" = $2::uuid;
     `;
-    
     const result = await pool.query(queryText, [
       threadTitle,
       threadId
     ])
     if (!result) return sendResponse(res, 503, "Failed to update thread title.")
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Thread title updated."
     })

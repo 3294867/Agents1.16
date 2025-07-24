@@ -4,11 +4,11 @@ import useGetAgent from 'src/hooks/useGetAgent';
 import useHandleThread from 'src/hooks/useHandleThread';
 import useHandleTabs from 'src/hooks/useHandleTabs';
 import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
-import useHandleLayout from 'src/hooks/useHandleLayout';
+import useHandleAgentLayout from 'src/hooks/useHandleAgentLayout';
 import useHandleTheme from 'src/hooks/useHandleTheme';
 import useHandleSideNav from 'src/hooks/useHandleSideNav';
-import useHandleProgressiveParagraph from './useHandleProgressiveParagraph';
-import useHandleQuestion from './useHandleQuestion';
+import useHandleAnimatedParagraph from 'src/hooks/useHandleAnimatedParagraph';
+import useHandleQuestion from 'src/hooks/useHandleQuestion';
 
 const hooks = {
   useHandleRedirect,
@@ -17,11 +17,11 @@ const hooks = {
   useHandleThread,
   useHandleTabs,
   useHandleBreakpoint,
-  useHandleLayout,
+  useHandleAgentLayout,
   useHandleTheme,
   useHandleSideNav,
-  useHandleProgressiveParagraph,
-  useHandleQuestion
+  useHandleAnimatedParagraph,
+  useHandleQuestion,
 };
 
 export default hooks;

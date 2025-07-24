@@ -53,6 +53,7 @@
   --shadow: oklch(93.14% 0.001 106.423);
 
   --background-card: oklch(0.865 0.001 106.423);
+  --background-card-hover: oklch(0.5326 0.001 106.423);
   
   --text-primary: oklch(6.49% 0.004 49.25);
   --text-secondary: oklch(0.216 0.006 56.043);
@@ -78,6 +79,7 @@
   --shadow: oklch(0% 0.004 49.25);
 
   --background-card: oklch(0.2181 0.007 34.298);
+  --background-card-hover: oklch(0.3398 0.007 34.298);
 
   --text-primary: oklch(99.7% 0.001 106.423);
   --text-secondary: oklch(0.97 0.001 106.424);
@@ -103,6 +105,7 @@
   --color-shadow: var(--shadow);
 
   --color-background-card: var(--background-card);
+  --color-background-card-hover: var(--background-card-hover);
   
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);

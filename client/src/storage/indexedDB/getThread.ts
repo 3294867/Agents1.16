@@ -5,12 +5,7 @@ interface Props {
   threadId: string | undefined;
 };
 
-/**
- * Fetches thread (IndexedDB).
- * @param {string} props.threadId - The ID of the thread to fetch.
- * @param {React.Dispatch<React.SetStateAction<string | null>>} props.setError - Setter function of a useState hook. 
- * @returns {Promise<Thread>} - Returns Thread.
- */
+/** Fetches thread (IndexedDB) */
 const getThread = async ({ threadId }: Props): Promise<Thread> => {
   if (!threadId) throw new Error('Thread id is required.');
   
@@ -22,6 +17,6 @@ const getThread = async ({ threadId }: Props): Promise<Thread> => {
   } catch (error) {
     throw new Error(`IndexedDB error: ${error instanceof Error ? error.name : 'Unknown error'}`);
   }
-}
+};
 
 export default getThread;

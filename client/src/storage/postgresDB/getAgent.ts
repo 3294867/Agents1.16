@@ -5,12 +5,7 @@ interface Props {
   agentName: string;
 };
 
-/**
- * Fetches agent (PostgresDB).
- * @param {string} props.userId - The ID of the user.
- * @param {string} props.agentName - Name property of the agent.
- * @returns {Promise<Agent>} - Returns an agent.
-*/
+/** Fetches agent (PostgresDB) */
 const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agent`, {

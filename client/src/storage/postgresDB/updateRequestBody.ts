@@ -3,7 +3,7 @@ interface Props {
   requestBody: string;
 };
 
-/** Updates request body on edited question (PostgresDB). */
+/** Updates request body on edited question (PostgresDB) */
 const updateRequestBody = async ({ requestId, requestBody }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-request-body`, {

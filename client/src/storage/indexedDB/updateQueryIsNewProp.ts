@@ -8,13 +8,7 @@ interface Props {
   isNew: boolean;
 };
 
-/**
- * Updates the 'isNew' property of a specific query in a thread's body (IndexedDB).
- * @param {string} props.threadId - The ID of the thread to update.
- * @param {string} props.responseId - The responseId of the query to update.
- * @param {boolean} props.isNew - The new value for the isNew property.
- * @returns {Promise<void>} - Does not have a return value.
- */
+/** Updates the 'isNew' property of a specific query in a thread's body (IndexedDB) */
 const updateQueryIsNewProp = async ({ threadId, responseId, isNew }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);

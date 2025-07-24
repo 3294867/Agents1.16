@@ -8,9 +8,10 @@ interface Props {
 };
 
 const updateResponseBody = async (req: Request, res: Response) => {
-  const { responseId, responseBody } = req.body as Props;
+  const { responseId, responseBody }: Props = req.body;
 
   try {
+    /** Update response body in the database (PostgresDB) */
     const resultQueryText = `
       UPDATE "Response"
       SET "body" = $1::text
@@ -23,7 +24,7 @@ const updateResponseBody = async (req: Request, res: Response) => {
     ]);
     if (!result) return sendResponse(res, 503, "Failed to update response body.");
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Response body updated.",
     });

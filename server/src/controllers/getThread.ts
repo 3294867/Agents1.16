@@ -3,14 +3,15 @@ import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 import { Thread, ThreadBody } from '../types';
 
-interface RequestType {
+interface Props {
   threadId: string;
 };
 
 const getThread = async (req: Request, res: Response) => {
-  const { threadId } = req.body as RequestType;
+  const { threadId } = req.body as Props;
 
   try {
+    /** Get thread from the database (PostgresDB) */
     const resultQueryText = `
       WITH ordered_requests AS (
         SELECT 
@@ -50,7 +51,6 @@ const getThread = async (req: Request, res: Response) => {
       WHERE t.id = $1::uuid
       GROUP BY t."id", t."userId", t."agentId", t."title", t."isBookmarked", t."createdAt", t."updatedAt";
     `;
-
     const result = await pool.query(resultQueryText, [ threadId ]);
     if (!result) sendResponse(res, 404, "Failed to fetch thread.")
 
@@ -69,7 +69,7 @@ const getThread = async (req: Request, res: Response) => {
       updatedAt: result.rows[0].updatedAt,
     };
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Thread fetched.",
       data: thread

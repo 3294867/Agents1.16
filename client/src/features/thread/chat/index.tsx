@@ -1,6 +1,6 @@
 import Answer from './Answer';
-import Question from './question';
 import { AgentModel, Query } from 'src/types';
+import Question from './question';
 
 interface Props {
   threadId: string;

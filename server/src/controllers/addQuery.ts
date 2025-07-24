@@ -3,19 +3,19 @@ import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 import { ThreadBody } from '../types';
 
-interface RequestType {
+interface Props {
   threadId: string;
   requestBody: string;
   responseBody: string;
 };
 
 const addQuery = async (req: Request, res: Response) => {
-  const { threadId, requestBody, responseBody } = req.body as RequestType;
+  const { threadId, requestBody, responseBody }: Props = req.body;
 
   try {
     await pool.query("BEGIN");
 
-    /** Store request in the database */
+    /** Store request in the database (PostgresDB) */
     const requestQueryText = `
       INSERT INTO "Request" ("threadId", "body")
       VALUES ($1::uuid, $2::text)
@@ -24,7 +24,7 @@ const addQuery = async (req: Request, res: Response) => {
     const request = await pool.query(requestQueryText, [threadId, requestBody]);
     if (!request) return sendResponse(res, 503, "Failed to add request.");
 
-    /** Store response in the database */
+    /** Store response in the database (PostgresDB) */
     const responseQueryText = `
       INSERT INTO "Response" (
         "threadId",
@@ -41,7 +41,7 @@ const addQuery = async (req: Request, res: Response) => {
     ]);
     if (!response) return sendResponse(res, 503, "Failed to add response.");
     
-    /** Get current thread body from database */
+    /** Get current thread body from database (PostgresDB) */
     const threadBodyQueryText = `
       SELECT "body"
       FROM "Thread"
@@ -62,7 +62,7 @@ const addQuery = async (req: Request, res: Response) => {
       responseId: response.rows[0].id
     }];
 
-    /** Update thread body in the database */
+    /** Update thread body in the database (PostgresDB) */
     const threadQueryText = `
       UPDATE "Thread"
       SET "body" = $1::jsonb
@@ -76,7 +76,7 @@ const addQuery = async (req: Request, res: Response) => {
 
     await pool.query("COMMIT");
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Thread updated.",
       data: {

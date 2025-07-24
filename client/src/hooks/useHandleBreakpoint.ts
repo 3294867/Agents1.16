@@ -4,11 +4,7 @@ interface Props {
   windowInnerWidth: number;
 };
 
-/**
- * Handles breakpoint (UI).
- * @param {string} props.windowInnerWidth - Inner width of the window.
- * @returns {boolean} - Returns isBreakpoint.
-*/
+/** Handles breakpoint (UI) */
 const useHandleBreakpoint = ({ windowInnerWidth }: Props): boolean => {
   const [ isBreakpoint, setIsBreakpoint ] = useState<boolean>(false);
 

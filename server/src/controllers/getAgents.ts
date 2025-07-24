@@ -2,10 +2,15 @@ import { Request, Response } from "express";
 import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 
+interface Props {
+  userId: string;
+};
+
 const getAgents = async (req: Request, res: Response) => {
-  const { userId } = req.body as { userId: string };
+  const { userId }: Props = req.body;
 
   try {
+    /** Get agents from the database (PostgresDB) */
     const queryText = `
       SELECT * FROM "Agent" WHERE "userId" = $1::uuid
       ORDER BY "createdAt";
@@ -15,7 +20,7 @@ const getAgents = async (req: Request, res: Response) => {
     ])
     if (!result) return sendResponse(res, 404, "Failed to fetch agents.");
     
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "Agents have been fetched.",
       data: result.rows

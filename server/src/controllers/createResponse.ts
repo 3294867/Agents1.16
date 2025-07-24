@@ -3,17 +3,17 @@ import { client, pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 import { AgentModel } from '../types';
 
-interface RequestType {
+interface Props {
   threadId: string;
   agentModel: AgentModel;
   input: string;
 }
 
 const createResponse = async (req: Request, res: Response) => {
-  const { threadId, agentModel, input } = req.body as RequestType;
+  const { threadId, agentModel, input }: Props = req.body;
 
   try {
-    /** Get instructions from the database */
+    /** Get instructions from the database (PostgresDB) */
     const instructionsQueryText = `
       WITH thread_info AS (
         SELECT "agentId"
@@ -28,7 +28,7 @@ const createResponse = async (req: Request, res: Response) => {
     const instructions = await pool.query(instructionsQueryText, [threadId]);
     if (!instructions) return sendResponse(res, 404, "Failed to get instructions.");
 
-    /** Create openai response */
+    /** Create response (OpenAI) */
     const apiResponse = await client.responses.create({
       model: agentModel,
       input,
@@ -36,7 +36,7 @@ const createResponse = async (req: Request, res: Response) => {
     });
     if (!apiResponse) return sendResponse(res, 503, "Failed to get response.");
 
-    /** Send response to the client */
+    /** On success send data (Client) */
     res.status(200).json({
       message: "apiResponse created.",
       data: apiResponse.output_text

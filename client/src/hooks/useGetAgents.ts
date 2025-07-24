@@ -7,11 +7,7 @@ interface Props {
   userId: string;
 };
 
-/**
- * Handles fetching agents.
- * @param {string} props.userId - ID of the user.
- * @returns {Agent[] | null} - Returns array of agents or null.
-*/
+/** Handles fetching agents */
 const useGetAgents = ({ userId }: Props): Agent[] | null => {
   const [agents, setAgents] = useState<Agent[] | null>(null);
 

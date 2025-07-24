@@ -1,10 +1,7 @@
 import { db } from 'src/storage/indexedDB';
 import { Agent } from 'src/types';
 
-/**
- * Fetches all agents (IndexedDB).
- * @returns {Promise<Agent[] | null>} - Returns array of agents or null.
- */
+/** Fetches agents (IndexedDB) */
 const getAgents = async (): Promise<Agent[] | null> => {
   try {
     const gettingAgents = await db.agents.toArray();

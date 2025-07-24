@@ -4,11 +4,7 @@ interface Props {
   threadId: string;
 };
 
-/**
- * Fetches thread (PostgresDB).
- * @param {string} props.threadId - The ID of the thread.
- * @returns {Promise<Thread>} - Returns Thread object.
-*/
+/** Fetches thread (PostgresDB) */
 const getThread = async ({ threadId }: Props): Promise<Thread> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread`, {

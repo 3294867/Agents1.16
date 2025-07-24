@@ -6,13 +6,7 @@ interface Props {
   agentId: string;
 };
 
-/**
- * Create thread (PostgresDB).
- * @param {string} props.id - ID of the thread.
- * @param {string} props.userId - ID of the user.
- * @param {string} props.agentName - Name property of the agent.
- * @returns {Promise<Agent>} - Returns an agent.
-*/
+/** Creates thread (PostgresDB) */
 const createThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-thread`, {
     method: 'POST',

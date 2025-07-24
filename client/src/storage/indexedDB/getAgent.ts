@@ -6,12 +6,7 @@ interface Props {
   agentName: string | undefined;
 };
 
-/**
- * Fetches specific agent (IndexedDB).
- * @param {string | undefined} props.agentName - 'name' property of a specific agent.
- * @param {React.Dispatch<React.SetStateAction<string | null>>} props.setError - Setter function of a useState hook.  
- * @returns {Promise<Agent>} - Returns Agent.
- */
+/** Fetches agent (IndexedDB) */
 const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
   if (!agentName) throw new Error('Agent name is required');
 

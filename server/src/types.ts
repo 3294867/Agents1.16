@@ -1,5 +1,5 @@
 type AgentType = 'research' | 'code';
-type AgentModel = 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
+type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
 
 interface Agent {
   id: string;
