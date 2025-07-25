@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
-import { ThreadBody } from '../types';
+import { Query } from '../types';
 
 interface Props {
   threadId: string;
@@ -57,7 +57,7 @@ const addQuery = async (req: Request, res: Response) => {
       currentBody = [];
     };
 
-    const newBody: ThreadBody = [...currentBody, {
+    const newBody: Query[] = [...currentBody, {
       requestId: request.rows[0].id,
       responseId: response.rows[0].id
     }];

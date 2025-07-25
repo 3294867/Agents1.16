@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
-import { Thread, ThreadBody } from '../types';
+import { Query, Thread } from '../types';
 
 interface Props {
   threadId: string;
@@ -54,7 +54,7 @@ const getThread = async (req: Request, res: Response) => {
     const result = await pool.query(resultQueryText, [ threadId ]);
     if (!result) sendResponse(res, 404, "Failed to fetch thread.")
 
-    const threadBody: ThreadBody = result.rows[0].body[0].requestId === null
+    const threadBody: Query[] = result.rows[0].body[0].requestId === null
       ? []
       : result.rows[0].body;
 

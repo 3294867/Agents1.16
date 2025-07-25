@@ -20,19 +20,19 @@ interface NormalizedAgents {
   allIds: string[];
 };
 
-type ThreadBody = {
+type Query = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
-}[] | [];
+};
 
 interface Thread {
   id: string;
   userId: string;
   agentId: string;
   title: string | null;
-  body: ThreadBody;
+  body: Query[] | [];
   isBookmarked: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -48,7 +48,7 @@ export {
   AgentModel,
   Agent,
   NormalizedAgents,
-  ThreadBody,
+  Query,
   Thread,
   NormalizedThreads
 }
