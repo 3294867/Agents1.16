@@ -9,12 +9,13 @@ import SideNavigation from './SideNav';
 import { AgentModel } from 'src/types';
 
 interface Props {
+  userId: string;
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
 };
 
-const Thread = ({ agentId, agentName, agentModel }: Props) => {
+const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.useHandleThread({ threadId });
 
@@ -29,8 +30,21 @@ const Thread = ({ agentId, agentName, agentModel }: Props) => {
   return (
     <main id='thread' className='relative w-[640px] mx-auto flex flex-col mt-8'>
       <Header threadId={threadId} threadTitle={threadTitle} />
-      <Chat threadId={threadId} threadBody={threadBody} agentModel={agentModel} />
-      <Form agentId={agentId} agentName={agentName} agentModel={agentModel} threadId={threadId} threadBodyLength={threadBodyLength} />
+      <Chat
+        userId={userId}
+        agentId={agentId}
+        agentName={agentName}
+        threadId={threadId}
+        threadBody={threadBody}
+        agentModel={agentModel}
+      />
+      <Form
+        agentId={agentId}
+        agentName={agentName}
+        agentModel={agentModel}
+        threadId={threadId}
+        threadBodyLength={threadBodyLength}
+      />
       <SideNavigation threadBody={threadBody} threadBodyLength={threadBodyLength} />
     </main>
   );

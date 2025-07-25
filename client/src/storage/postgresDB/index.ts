@@ -3,8 +3,9 @@ import getAgent from 'src/storage/postgresDB/getAgent';
 import getThread from 'src/storage/postgresDB/getThread';
 import createThread from 'src/storage/postgresDB/createThread';
 import addQuery from 'src/storage/postgresDB/addQuery';
-import updateRequestBody from './updateRequestBody';
-import updateResponseBody from './updateResponseBody';
+import deleteQuery from 'src/storage/postgresDB/deleteQuery';
+import updateRequestBody from 'src/storage/postgresDB/updateRequestBody';
+import updateResponseBody from 'src/storage/postgresDB/updateResponseBody';
 import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 
 const postgresDB = {
@@ -13,6 +14,7 @@ const postgresDB = {
   getThread,
   createThread,
   addQuery,
+  deleteQuery,
   updateRequestBody,
   updateResponseBody,
   updateThreadTitle

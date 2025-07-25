@@ -9,6 +9,7 @@ import useHandleTheme from 'src/hooks/useHandleTheme';
 import useHandleSideNav from 'src/hooks/useHandleSideNav';
 import useHandleAnimatedParagraph from 'src/hooks/useHandleAnimatedParagraph';
 import useHandleQuestion from 'src/hooks/useHandleQuestion';
+import useHandleMoveButton from 'src/hooks/useHandleMoveButton';
 
 const hooks = {
   useHandleRedirect,
@@ -22,6 +23,7 @@ const hooks = {
   useHandleSideNav,
   useHandleAnimatedParagraph,
   useHandleQuestion,
+  useHandleMoveButton,
 };
 
 export default hooks;

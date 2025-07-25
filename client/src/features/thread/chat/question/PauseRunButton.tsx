@@ -1,4 +1,4 @@
-import openai from 'src/responses';
+import openai from 'src/opanai';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';

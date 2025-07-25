@@ -1,6 +1,6 @@
 import { MoveUpRightIcon, PlusIcon } from 'lucide-react';
 import { useState } from 'react';
-import openai from 'src/responses';
+import openai from 'src/opanai';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
@@ -26,7 +26,7 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     
-    /** Create response (openai) */
+    /** Create response (OpenAI) */
     const responseBody = await openai.createResponse({ threadId, agentModel, input });
     
     /** Update thread body (PostgresDB) */
@@ -39,7 +39,7 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
     setInput('');
 
     if (threadBodyLength === 0) {
-      /** Create thread title */
+      /** Create thread title (OpenAI) */
       const threadTitle = await openai.createThreadTitle({
         question: input,
         answer: responseBody

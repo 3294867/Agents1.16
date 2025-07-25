@@ -40,7 +40,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     }
   },[thread]);
   
-  /** Update thread on queryAdded event (Events) */
+  /** Update thread on queryAdded event (UI) */
   useEffect(() => {
     const handleAddQuery = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
@@ -61,7 +61,27 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     return () => window.removeEventListener('queryAdded', handleAddQuery as EventListener);
   },[threadId]);
 
-  /** Update thread on queryUpdated event (Events) */
+  /** Update thread on queryDeleted event (UI) */
+  useEffect(() => {
+    const handleDeleteQuery = (event: CustomEvent) => {
+      if (threadId && event.detail.threadId === threadId) {
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
+          const updatedBody = prevBody.filter(q => q.requestId !== event.detail.requestId);
+          return {
+            ...prevThread,
+            body: [...updatedBody]
+          };
+        });
+      }
+    };
+    window.addEventListener('queryDeleted', handleDeleteQuery as EventListener);
+
+    return () => window.removeEventListener('queryDeleted', handleDeleteQuery as EventListener);
+  },[threadId]);
+
+  /** Update thread on queryUpdated event (UI) */
   useEffect(() => {
     const handleUpdateQuery = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId ) {
@@ -105,7 +125,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   },[thread, newRequestId]);
 
 
-  /** Update thread on queryIsNewUpdated event (Events) */
+  /** Update thread on queryIsNewUpdated event (UI) */
   useEffect(() => {
     const handleUpdateQueryIsNewProperty = (event: CustomEvent) => {
       if (!thread) return;
@@ -133,7 +153,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     return () => window.removeEventListener('queryIsNewUpdated', handleUpdateQueryIsNewProperty as EventListener);
   },[thread, threadId]);
 
-  /** Update thread on threadTitleUpdated event (Events) */
+  /** Update thread on threadTitleUpdated event (UI) */
   useEffect(() => {
     const handleUpdateThreadTitle = (event: CustomEvent) => {
       if (!thread) return;

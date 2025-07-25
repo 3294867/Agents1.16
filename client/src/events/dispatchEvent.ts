@@ -19,6 +19,12 @@ const dispatchEvent = {
     });
     window.dispatchEvent(event);
   },
+  queryDeleted: (threadId: string, requestId: string) => {
+    const event = new CustomEvent('queryDeleted', {
+      detail: { threadId, requestId }
+    });
+    window.dispatchEvent(event);
+  },
   queryUpdated: (threadId: string, query: Query) => {
     const event = new CustomEvent('queryUpdated', {
       detail: { threadId, query }

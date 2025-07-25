@@ -8,6 +8,7 @@ import getThread from 'src/storage/indexedDB/getThread';
 import updateThreadTitle from 'src/storage/indexedDB/updateThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
 import updateQuery from 'src/storage/indexedDB/updateQuery';
+import deleteQuery from './deleteQuery';
 import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
 import updateThreadPositionY from 'src/storage/indexedDB/updateThreadPositionY';
 import pauseResponse from 'src/storage/indexedDB/pauseResponse';
@@ -28,6 +29,7 @@ const indexedDB = {
   updateThreadTitle,
   addQuery,
   updateQuery,
+  deleteQuery,
   updateQueryIsNewProp,
   updateThreadPositionY,
   pauseResponse

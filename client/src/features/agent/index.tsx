@@ -25,7 +25,12 @@ const Agent = ({ userId }: Props) => {
         <Tabs userId={userId} agent={agent} />
         <Actions userId={userId} agentId={agent.id} />
       </header>
-      <Thread agentId={agent.id} agentName={agentName} agentModel={agent.model} />
+      <Thread
+        userId={userId}
+        agentId={agent.id}
+        agentName={agentName}
+        agentModel={agent.model}
+      />
     </div>
   )
 };

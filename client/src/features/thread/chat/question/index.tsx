@@ -7,15 +7,19 @@ import DeleteButton from './DeleteButton';
 import MoveButton from './MoveButton';
 
 interface Props {
+  userId: string;
+  agentId: string;
+  agentName: string;
   threadId: string;
   requestId: string;
   requestBody: string;
   responseId: string;
+  responseBody: string;
   isNew: boolean;
   agentModel: AgentModel;
 };
 
-const Question = ({ threadId, requestId, requestBody, responseId, isNew, agentModel }: Props) => {
+const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody, responseId, responseBody, isNew, agentModel }: Props) => {
   const [input, setInput] = useState(requestBody);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
@@ -31,9 +35,26 @@ const Question = ({ threadId, requestId, requestBody, responseId, isNew, agentMo
         style={{ paddingTop: 16, paddingBottom: isNew ? 0 : 16, paddingRight: isNew ? 0 : 16, paddingLeft: isNew ? 0 : 16 }}
       >
         <div className='absolute top-3 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1.5'>
-          <EditButton requestId={requestId} setIsEditing={setIsEditing} setIsDisabled={setIsDisabled} />
-          <DeleteButton requestId={requestId} />
-          <MoveButton requestId={requestId} />
+          <EditButton
+            requestId={requestId}
+            setIsEditing={setIsEditing}
+            setIsDisabled={setIsDisabled}
+          />
+          <DeleteButton
+            threadId={threadId}
+            requestId={requestId}
+            responseId={responseId}
+          />
+          <MoveButton
+            userId={userId}
+            agentId={agentId}
+            agentName={agentName}
+            threadId={threadId}
+            requestId={requestId}
+            requestBody={requestBody}
+            responseId={responseId}
+            responseBody={responseBody}
+          />
         </div>
         <div
           className='w-full flex items-center justify between'

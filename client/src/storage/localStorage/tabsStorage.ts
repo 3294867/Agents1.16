@@ -62,6 +62,10 @@ const tabsStorage = {
         }
         tabsStorage.save(agentName, [...updatedTabs, newTab]);
       }
+
+      /** Dispatch tabsUpdated event (Events) */
+      dispatchEvent.tabsUpdated(agentName);
+
     } catch (error) {
       console.error(`Failed to add tab: `, error);
     }
