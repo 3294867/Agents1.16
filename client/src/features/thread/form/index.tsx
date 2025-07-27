@@ -4,10 +4,10 @@ import openai from 'src/opanai';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import AgentModelDropdown from './AgentModelDropdown';
 import { Button } from 'src/components/Button';
 import { Textarea } from 'src/components/Textarea';
 import { AgentModel } from 'src/types';
-import AgentModelDropdown from './AgentModelDropdown';
 
 interface Props {
   threadId: string;

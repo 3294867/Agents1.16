@@ -23,10 +23,8 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
   const [input, setInput] = useState(requestBody);
   const [isDisabled, setIsDisabled] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const textareaRef = hooks.useHandleQuestion({ input, isEditing });
+  const { textareaRef, progressBarLength } = hooks.useHandleQuestion({ input, isEditing });
   
-  const progressBarWidth = '67%';
-
   return (
     <div className='relative w-full pt-12'>
       <div
@@ -88,7 +86,7 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
             />
           </div>
         </div>
-        {isNew && <div style={{ width: progressBarWidth }} className='h-1 mt-1 transition-all duration-300 ease-in-out rounded-r-full bg-text-primary'/>}
+        {isNew && <div style={{ width: progressBarLength }} className='h-1 mt-3 transition-all duration-300 ease-in-out rounded-r-full bg-text-primary'/>}
       </div>
     </div>
   )

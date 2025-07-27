@@ -49,6 +49,11 @@ const dispatchEvent = {
     })
     window.dispatchEvent(event);
   },
+  progressBarLengthUpdated: (length: string) => {
+    const event = new CustomEvent('progressBarLengthUpdated', {
+      detail: { length }});
+    window.dispatchEvent(event);
+  }
 };
 
 export default dispatchEvent;

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import indexedDB from 'src/storage/indexedDB';
+import progressBarLength from 'src/storage/localStorage/progressBarLength';
 
 interface Props {
   threadId: string;
@@ -13,7 +14,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
   const [copy, setCopy] = useState('');
   const [isPaused, setIsPaused] = useState(false);
 
-  /** Animate answer (UI) */
+  /** Animate answer and set progress bar length (UI) */
   useEffect(() => {
     if (isPaused) return;
     let timer: NodeJS.Timeout;
@@ -23,9 +24,12 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
         timer = setInterval(() => {
           if (i < responseBody.length) {
             setCopy(responseBody.slice(0, i + 1));
+            const adjustment = responseBody.length < 400 ? .2 : 0
+            progressBarLength.update(String(i/responseBody.length + adjustment));
             i++;
           } else {
             clearInterval(timer);
+            progressBarLength.update('0');
             resolve();
           }
         }, 12);
@@ -47,6 +51,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
       if (event.detail.requestId === requestId) {
         const update = async () => {
           setIsPaused(true);
+          progressBarLength.update('0');
           await indexedDB.pauseResponse({
             threadId, requestId, responseBody: copy 
           });
