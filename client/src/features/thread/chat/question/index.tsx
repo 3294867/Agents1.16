@@ -86,7 +86,7 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
             />
           </div>
         </div>
-        {isNew && <div style={{ width: progressBarLength }} className='h-1 mt-3 transition-all duration-300 ease-in-out rounded-r-full bg-text-primary'/>}
+        {isNew && <div style={{ width: progressBarLength }} className='h-1 mt-3 transition-all duration-300 ease-in-out rounded-r-full bg-text-primary' />}
       </div>
     </div>
   )

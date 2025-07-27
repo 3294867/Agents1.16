@@ -24,7 +24,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
         timer = setInterval(() => {
           if (i < responseBody.length) {
             setCopy(responseBody.slice(0, i + 1));
-            const adjustment = responseBody.length < 400 ? .2 : 0
+            const adjustment = responseBody.length < 400 ? .3 : 0
             progressBarLength.update(String(i/responseBody.length + adjustment));
             i++;
           } else {
