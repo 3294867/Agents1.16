@@ -17,11 +17,23 @@ interface Props {
   responseBody: string;
   isNew: boolean;
   agentModel: AgentModel;
+  threadBodyLength: number;
 };
 
-const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody, responseId, responseBody, isNew, agentModel }: Props) => {
+const Question = ({
+  userId,
+  agentId,
+  agentName,
+  threadId,
+  requestId,
+  requestBody,
+  responseId,
+  responseBody,
+  isNew,
+  agentModel,
+  threadBodyLength
+}: Props) => {
   const [input, setInput] = useState(requestBody);
-  const [isDisabled, setIsDisabled] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const { textareaRef, progressBarLength } = hooks.useHandleQuestion({ input, isEditing });
   
@@ -33,15 +45,14 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
         style={{ paddingTop: 16, paddingBottom: isNew ? 0 : 16, paddingRight: isNew ? 0 : 16, paddingLeft: isNew ? 0 : 16 }}
       >
         <div className='absolute top-3 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1.5'>
-          <EditButton
-            requestId={requestId}
-            setIsEditing={setIsEditing}
-            setIsDisabled={setIsDisabled}
-          />
+          <EditButton requestId={requestId} setIsEditing={setIsEditing} />
           <DeleteButton
             threadId={threadId}
             requestId={requestId}
             responseId={responseId}
+            threadBodyLength={threadBodyLength}
+            agentId={agentId}
+            agentName={agentName}
           />
           <MoveButton
             userId={userId}
@@ -61,11 +72,10 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
           <textarea
             id={`textarea_${requestId}`}
             ref={textareaRef}
-            disabled={isDisabled}
+            disabled={!isEditing}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onBlur={() => setTimeout(() => {
-              setIsDisabled(true);
               setIsEditing(false);
             }, 100)}
             spellCheck='false'
@@ -78,7 +88,6 @@ const Question = ({ userId, agentId, agentName, threadId, requestId, requestBody
               requestId={requestId}
               responseId={responseId}
               input={input}
-              isDisabled={isDisabled}
               isNew={isNew}
               isEditing={isEditing}
               setIsEditing={setIsEditing}

@@ -29,7 +29,11 @@ const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
 
   return (
     <main id='thread' className='relative w-[640px] mx-auto flex flex-col mt-8'>
-      <Header threadId={threadId} threadTitle={threadTitle} />
+      <Header
+        threadId={threadId}
+        threadTitle={threadTitle}
+        isBookmarked={thread.isBookmarked}
+      />
       <Chat
         userId={userId}
         agentId={agentId}

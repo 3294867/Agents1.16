@@ -27,6 +27,7 @@ const Chat = ({ userId, agentId, agentName, threadId, threadBody, agentModel }: 
             responseBody={i.responseBody}
             isNew={i.isNew}
             agentModel={agentModel}
+            threadBodyLength={threadBody.length}
           />
           <Answer
             threadId={threadId}

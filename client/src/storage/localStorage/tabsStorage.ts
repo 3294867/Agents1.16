@@ -21,7 +21,7 @@ const tabsStorage = {
       return null;
     }
   },
-  update: (agentName: string, agentId: string, threadId: string, title: string) => {
+  update: (agentName: string, agentId: string, threadId: string, title: string | null) => {
     try {
       const savedTabs = localStorage.getItem(`${agentName}_tabs`);
       if (savedTabs) {

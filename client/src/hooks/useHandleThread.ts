@@ -172,6 +172,25 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     return () => window.removeEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
   },[thread, threadId]);
 
+  /** Update thread on threadIsBookmarkedUpdated event (UI)*/
+  useEffect(() => {
+    const handleThreadIsBookmarkedUpdated = (event: CustomEvent) => {
+      if (!thread) return;
+      if (threadId && event.detail.threadId === threadId) {
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          return {
+            ...prevThread,
+            isBookmarked: event.detail.isBookmarked
+          }
+        })
+      }
+    };
+    window.addEventListener('threadIsBookmarkedUpdated', handleThreadIsBookmarkedUpdated as EventListener);
+
+    return () => window.removeEventListener('threadIsBookmarkedUpdated', handleThreadIsBookmarkedUpdated as EventListener);
+  },[thread, threadId]);
+
   return { thread, error, isLoading };
 };
 

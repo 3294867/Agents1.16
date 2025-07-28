@@ -18,11 +18,12 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
     try {
       const savedTabs = tabsStorage.load(agentName);
       if (savedTabs !== null) setTabs(savedTabs);
+
     } catch (error) {
       throw new Error(`Failed to fetch tabs: ${error}`);
     }
   },[agentName]);
-  
+
   /** Update tabs on: seleted tab, removed tab, or added tab (localStorage) */
   useEffect(() => {
     const handleTabsUpdate = (event: CustomEvent) => {
@@ -34,6 +35,17 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
     window.addEventListener('tabsUpdated', handleTabsUpdate as EventListener);
   
     return () => window.removeEventListener('tabsUpdated', handleTabsUpdate as EventListener);
+  },[agentName]);
+
+  /** Update tabs on threadTitleUpdated event (Events) */
+  useEffect(() => {
+    const handleThreadTitleUpdated = () => {
+      const savedTabs = tabsStorage.load(agentName);
+      if (savedTabs !== null) setTabs(savedTabs);
+    };
+
+    window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
+    return () => window.removeEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
   },[agentName]);
 
   /** Set 'positionY' property of the current thread (UI) */

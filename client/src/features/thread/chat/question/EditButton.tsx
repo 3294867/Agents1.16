@@ -3,15 +3,13 @@ import dispatchEvent from 'src/events/dispatchEvent';
 interface Props {
   requestId: string;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const EditButton = ({ requestId, setIsEditing, setIsDisabled }: Props) => {
+const EditButton = ({ requestId, setIsEditing }: Props) => {
   const handleEdit = () => {
     const update = () => {
       return new Promise<void>((resolve) => {
         dispatchEvent.responsePaused(requestId);
-        setIsDisabled(false);
         setIsEditing(true);
         resolve();
       });

@@ -7,6 +7,8 @@ import deleteQuery from 'src/storage/postgresDB/deleteQuery';
 import updateRequestBody from 'src/storage/postgresDB/updateRequestBody';
 import updateResponseBody from 'src/storage/postgresDB/updateResponseBody';
 import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
+import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
+import updatedThreadIsBookmarked from './updateIsBookmarked';
 
 const postgresDB = {
   getAgents,
@@ -17,7 +19,9 @@ const postgresDB = {
   deleteQuery,
   updateRequestBody,
   updateResponseBody,
-  updateThreadTitle
+  updateThreadTitle,
+  removeThreadTitle,
+  updatedThreadIsBookmarked
 };
 
 export default postgresDB;

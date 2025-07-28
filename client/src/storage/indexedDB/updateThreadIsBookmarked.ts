@@ -1,0 +1,19 @@
+import { db } from 'src/storage/indexedDB';
+
+interface Props {
+  threadId: string;
+  isBookmarked: boolean;
+};
+
+/** Updates 'isBookmarked' property of the thread (IndexedDB) */
+const updateThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
+  try {
+    const updatedThread = await db.threads.update(threadId, { isBookmarked });
+    if (updatedThread === 0) throw new Error(`Failed to update 'isBookmarked' property of the thread.`);
+
+  } catch (error) {
+    console.error(`Failed to update 'isBookmarked' property of the thread (IndexedDB): `, error);
+  }
+};
+
+export default updateThreadIsBookmarked;

@@ -9,6 +9,8 @@ import updateRequestBody from './controllers/updateRequestBody';
 import updateResponseBody from './controllers/updateResponseBody';
 import createThreadTitle from "./controllers/createThreadTitle";
 import updateThreadTitle from './controllers/updateThreadTitle';
+import removeThreadTitle from './controllers/removeThreadTitle';
+import updateThreadIsBookmarked from './controllers/updateThreadIsBookmarked';
 import createResponse from "./controllers/createResponse";
 
 const router = express.Router();
@@ -23,6 +25,8 @@ router.post("/update-request-body", updateRequestBody);
 router.post("/update-response-body", updateResponseBody);
 router.post("/create-thread-title", createThreadTitle);
 router.post("/update-thread-title", updateThreadTitle);
+router.post("/remove-thread-title", removeThreadTitle);
+router.post("/update-thread-is-bookmarked", updateThreadIsBookmarked);
 router.post("/create-response", createResponse);
 
 export default router;

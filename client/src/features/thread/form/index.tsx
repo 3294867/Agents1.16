@@ -46,16 +46,10 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
       });
 
       /** Update thread title (PostgresDB) */
-      await postgresDB.updateThreadTitle({
-        threadId: threadId,
-        threadTitle
-      });
+      await postgresDB.updateThreadTitle({ threadId, threadTitle });
 
       /** Update thread title (IndexedDB) */
-      await indexedDB.updateThreadTitle({
-        threadId: threadId,
-        threadTitle
-      });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle });
 
       /** Update tabs (localStorage) */
       tabsStorage.update(agentName, agentId, threadId, threadTitle);

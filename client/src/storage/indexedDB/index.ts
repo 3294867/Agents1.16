@@ -6,11 +6,13 @@ import getAgents from 'src/storage/indexedDB/getAgents';
 import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
 import updateThreadTitle from 'src/storage/indexedDB/updateThreadTitle';
+import removeThreadTitle from 'src/storage/indexedDB/removeThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
 import updateQuery from 'src/storage/indexedDB/updateQuery';
-import deleteQuery from './deleteQuery';
+import deleteQuery from 'src/storage/indexedDB/deleteQuery';
 import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
 import updateThreadPositionY from 'src/storage/indexedDB/updateThreadPositionY';
+import updateThreadIsBookmarked from 'src/storage/indexedDB/updateThreadIsBookmarked';
 import pauseResponse from 'src/storage/indexedDB/pauseResponse';
 import { Agent, Thread } from 'src/types';
 
@@ -27,11 +29,13 @@ const indexedDB = {
   getAgent,
   getThread,
   updateThreadTitle,
+  removeThreadTitle,
   addQuery,
   updateQuery,
   deleteQuery,
   updateQueryIsNewProp,
   updateThreadPositionY,
+  updateThreadIsBookmarked,
   pauseResponse
 };
 

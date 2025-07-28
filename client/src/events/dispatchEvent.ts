@@ -1,7 +1,7 @@
 import { Query } from 'src/types';
 
 const dispatchEvent = {
-  threadTitleUpdated: (threadId: string, threadTitle: string) => {
+  threadTitleUpdated: (threadId: string, threadTitle: string | null) => {
     const event = new CustomEvent('threadTitleUpdated', {
       detail: { threadId, threadTitle }
     });
@@ -51,7 +51,14 @@ const dispatchEvent = {
   },
   progressBarLengthUpdated: (length: string) => {
     const event = new CustomEvent('progressBarLengthUpdated', {
-      detail: { length }});
+      detail: { length }
+    });
+    window.dispatchEvent(event);
+  },
+  threadIsBookmarkedUpdated: (threadId: string, isBookmarked: boolean) => {
+    const event = new CustomEvent('threadIsBookmarkedUpdated', {
+      detail: { threadId, isBookmarked }
+    });
     window.dispatchEvent(event);
   }
 };
