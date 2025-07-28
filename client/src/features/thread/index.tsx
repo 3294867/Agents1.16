@@ -2,7 +2,7 @@ import { LoaderIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/Error';
-import Header from './Header';
+import Header from './header';
 import Chat from './chat';
 import Form from './form';
 import SideNavigation from './SideNav';
@@ -33,6 +33,7 @@ const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
         threadId={threadId}
         threadTitle={threadTitle}
         isBookmarked={thread.isBookmarked}
+        agentName={agentName}
       />
       <Chat
         userId={userId}

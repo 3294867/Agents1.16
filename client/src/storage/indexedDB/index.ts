@@ -1,10 +1,11 @@
 import Dexie, { type  EntityTable } from 'dexie';
 import initialize from 'src/storage/indexedDB/initialize';
 import storeAgents from 'src/storage/indexedDB/storeAgents';
-import addThread from 'src/storage/indexedDB/addThread';
 import getAgents from 'src/storage/indexedDB/getAgents';
 import getAgent from 'src/storage/indexedDB/getAgent';
 import getThread from 'src/storage/indexedDB/getThread';
+import addThread from 'src/storage/indexedDB/addThread';
+import deleteThread from 'src/storage/indexedDB/deleteThread';
 import updateThreadTitle from 'src/storage/indexedDB/updateThreadTitle';
 import removeThreadTitle from 'src/storage/indexedDB/removeThreadTitle';
 import addQuery from 'src/storage/indexedDB/addQuery';
@@ -24,10 +25,11 @@ const db = new Dexie('Agents') as Dexie & {
 const indexedDB = {
   initialize,
   storeAgents,
-  addThread,
   getAgents,
   getAgent,
   getThread,
+  addThread,
+  deleteThread,
   updateThreadTitle,
   removeThreadTitle,
   addQuery,

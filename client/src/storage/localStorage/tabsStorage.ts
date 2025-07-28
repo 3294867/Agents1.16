@@ -1,5 +1,5 @@
 import dispatchEvent from 'src/events/dispatchEvent';
-import { Tab } from 'src/types';
+import { Tab, Thread } from 'src/types';
 
 const tabsStorage = {
   save: (agentName: string, tabs: Tab[] ): boolean => {
@@ -69,7 +69,33 @@ const tabsStorage = {
     } catch (error) {
       console.error(`Failed to add tab: `, error);
     }
-  }
+  },
+  deleteTab: (agentName: string, threadId: string): string | null => {
+    try {
+      const savedTabs = localStorage.getItem(`${agentName}_tabs`);
+      if (savedTabs) {
+        const threadIndex = JSON.parse(savedTabs).findIndex((t: Thread) => t.id === threadId);
+        if (threadIndex === -1) return null;
+
+        const remainingTabs = JSON.parse(savedTabs)
+          .filter((t: { id: string, title: string, isActive: boolean }) => t.id !== threadId)
+          .map((t: { id: string, title: string, isActive: boolean }, idx: number) =>
+            idx === threadIndex - 1 ? { ...t, isActive: true } : t
+          );
+
+        const updatedTabs = [...remainingTabs] as Tab[];
+
+        localStorage.setItem(`${agentName}_tabs`, JSON.stringify(updatedTabs));
+
+        /** Dispatch tabsUpdated event (Events) */
+        dispatchEvent.tabsUpdated(agentName)
+      }
+      return null;
+    } catch (error) {
+      console.error(`Failed to udpate tabs: `, error);
+      return null;
+    }
+  },
 };
 
 export default tabsStorage;
