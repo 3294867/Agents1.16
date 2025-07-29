@@ -1,0 +1,78 @@
+.tooltipContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltipContent {
+  position: absolute;
+  z-index: 1000;
+  background: #222;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.tooltipContentVisible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Positioning */
+.tooltipContentBottom {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(var(--side-offset, 4px));
+}
+.tooltipContentTop {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(-1 * var(--side-offset, 4px)));
+}
+.tooltipContentLeft {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(calc(-1 * var(--side-offset, 4px)));
+}
+.tooltipContentRight {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%) translateX(var(--side-offset, 4px));
+}
+
+/* Simple fade/slide in */
+.tooltipContentVisible.tooltipContentBottom {
+  animation: slideInFromTop 0.15s;
+}
+.tooltipContentVisible.tooltipContentTop {
+  animation: slideInFromBottom 0.15s;
+}
+.tooltipContentVisible.tooltipContentLeft {
+  animation: slideInFromRight 0.15s;
+}
+.tooltipContentVisible.tooltipContentRight {
+  animation: slideInFromLeft 0.15s;
+}
+
+@keyframes slideInFromTop {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(var(--side-offset, 4px)); }
+}
+@keyframes slideInFromBottom {
+  from { opacity: 0; transform: translateX(-50%) translateY(8px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(calc(-1 * var(--side-offset, 4px))); }
+}
+@keyframes slideInFromRight {
+  from { opacity: 0; transform: translateY(-50%) translateX(8px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(var(--side-offset, 4px)); }
+}
+@keyframes slideInFromLeft {
+  from { opacity: 0; transform: translateY(-50%) translateX(-8px); }
+  to { opacity: 1; transform: translateY(-50%) translateX(calc(-1 * var(--side-offset, 4px))); }
+} 

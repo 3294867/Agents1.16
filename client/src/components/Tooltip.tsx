@@ -1,27 +1,99 @@
-import * as React from 'react';
-import { Tooltip as TooltipPrimitive } from 'radix-ui';
-import { cn } from 'src/utils/cn';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React, { useState, useRef, cloneElement, isValidElement } from 'react';
+import styles from './Tooltip.module.css';
 
-const TooltipProvider = TooltipPrimitive.Provider
+export const TooltipProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => <>{children}</>;
 
-const Tooltip = TooltipPrimitive.Root
+const TooltipContext = React.createContext<{
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  triggerRef: React.RefObject<HTMLElement | null>;
+} | null>(null);
 
-const TooltipTrigger = TooltipPrimitive.Trigger
+export const Tooltip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLElement | null>(null);
 
-const TooltipContent = React.forwardRef<
-  React.ComponentRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  <TooltipPrimitive.Content
-    ref={ref}
-    sideOffset={sideOffset}
-    className={cn(
-      'z-50 overflow-hidden border border-border rounded-md border bg-background-hover px-2 py-1 text-xs text-text-primary font-semibold shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-      className
-    )}
-    {...props}
-  />
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+  return (
+    <TooltipContext.Provider value={{ open, setOpen, triggerRef }}>
+      <span className={styles.tooltipContainer}>{children}</span>
+    </TooltipContext.Provider>
+  );
+};
 
-export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider }
+interface TooltipTriggerProps {
+  asChild?: boolean;
+  children: React.ReactElement;
+}
+
+export const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ asChild, children }) => {
+  const ctx = React.useContext(TooltipContext);
+  if (!ctx) throw new Error('TooltipTrigger must be used within a Tooltip');
+  const { setOpen, triggerRef } = ctx;
+
+  const childProps = {
+    ref: (node: HTMLElement) => {
+      triggerRef.current = node;
+      const childRef = (children as any).ref;
+      if (typeof childRef === 'function') childRef(node);
+      else if (childRef && typeof childRef === 'object') childRef.current = node;
+    },
+    onMouseEnter: () => setOpen(true),
+    onMouseLeave: () => setOpen(false),
+    onFocus: () => setOpen(true),
+    onBlur: () => setOpen(false),
+    'aria-describedby': undefined as string | undefined,
+    tabIndex: 0,
+  };
+
+  if (asChild && isValidElement(children)) {
+    return cloneElement(children, Object.assign({}, children.props, childProps));
+  }
+  return <span {...childProps}>{children}</span>;
+};
+
+interface TooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  side?: 'top' | 'bottom' | 'left' | 'right';
+  sideOffset?: number;
+  children: React.ReactNode;
+}
+
+export const TooltipContent = React.forwardRef<HTMLDivElement, TooltipContentProps>(
+  ({ side = 'bottom', sideOffset = 4, style, children, ...props }, ref) => {
+    const ctx = React.useContext(TooltipContext);
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    const setRefs = (node: HTMLDivElement) => {
+      if (typeof ref === 'function') ref(node);
+      else if (ref && typeof ref === 'object') (ref as React.RefObject<any>).current = node;
+      contentRef.current = node;
+    };
+    if (!ctx) throw new Error('TooltipContent must be used within a Tooltip');
+    const { open } = ctx;
+
+    const sideClass =
+      side === 'top' ? styles.tooltipContentTop :
+      side === 'left' ? styles.tooltipContentLeft :
+      side === 'right' ? styles.tooltipContentRight :
+      styles.tooltipContentBottom;
+
+    const className = [
+      styles.tooltipContent,
+      sideClass,
+      open ? styles.tooltipContentVisible : '',
+    ].filter(Boolean).join(' ');
+
+    return (
+      <div
+        ref={setRefs}
+        role='tooltip'
+        className={className}
+        style={{ ...style, ['--side-offset' as any]: `${sideOffset}px` }}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+TooltipContent.displayName = 'TooltipContent';

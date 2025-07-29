@@ -1,6 +1,6 @@
 import { cn } from 'src/utils/cn';
 import Title from './Title';
-import Actions from './Actions';
+import Actions from './actions';
 
 interface Props {
   threadId: string;
