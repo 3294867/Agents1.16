@@ -2,8 +2,6 @@
 import React, { useState, useRef, cloneElement, isValidElement } from 'react';
 import styles from './Tooltip.module.css';
 
-export const TooltipProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => <>{children}</>;
-
 const TooltipContext = React.createContext<{
   open: boolean;
   setOpen: (open: boolean) => void;

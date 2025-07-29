@@ -1,12 +1,10 @@
 import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';
 import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
-import { TooltipProvider } from 'src/components/Tooltip';
 
 const App = () => {
   const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';
@@ -25,12 +23,7 @@ const App = () => {
     }
   ]),[userId]);
 
-  return (
-    <TooltipProvider>
-      <RouterProvider router={router} />
-      <Toaster />
-    </TooltipProvider>
-  )
+  return <RouterProvider router={router} />;
 };
 
 export default App;

@@ -1,0 +1,79 @@
+.dropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdownContent {
+  position: absolute;
+  z-index: 1000;
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: #fff;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
+}
+
+.dropdownContentVisible {
+  opacity: 1;
+  pointer-events: auto;
+  animation: fadeIn 0.15s;
+}
+
+.dropdownContentNotVisible {
+  opacity: 0;
+  pointer-events: none;
+  animation: fadeIn 0.15s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+/* Positioning */
+.dropdownContentBottom {
+  top: 100%;
+  transform: translateY(var(--side-offset, 4px));
+}
+
+.dropdownContentTop {
+  bottom: 100%;
+  transform: translateY(calc(-1 * var(--side-offset, 4px)));
+}
+
+.dropdownContentLeft {
+  right: 100%;
+  top: 0;
+  transform: translateX(calc(-1 * var(--side-offset, 4px)));
+}
+
+.dropdownContentRight {
+  left: 100%;
+  top: 0;
+  transform: translateX(var(--side-offset, 4px));
+}
+.dropdownContentStart {
+  left: 0;
+  right: auto;
+}
+
+.dropdownContentCenter {
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+}
+
+.dropdownContentEnd {
+  left: auto;
+  right: 0;
+}
