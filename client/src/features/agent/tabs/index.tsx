@@ -7,7 +7,7 @@ import { Agent } from 'src/types';
 interface Props {
   userId: string;
   agent: Agent;
-};
+}
 
 const Tabs = ({ userId, agent }: Props) => {
   const { threadId: currentThreadId } = useParams();
@@ -15,7 +15,7 @@ const Tabs = ({ userId, agent }: Props) => {
   if (!tabs || !currentThreadId) return null;
 
   return (
-    <div className='max-w-[88%] flex gap-2'>
+    <div style={{ maxWidth: '88%', display: 'flex', gap: '8px' }}>
       {tabs.map(t => (
         <Tab
           key={t.id}
@@ -34,7 +34,7 @@ const Tabs = ({ userId, agent }: Props) => {
         currentThreadPositionY={currentThreadPositionY}
       />
     </div>
-  )
+  );
 };
 
 export default Tabs;

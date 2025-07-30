@@ -5,6 +5,8 @@ import indexedDB from 'src/storage/indexedDB';
 import openai from 'src/opanai';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import Icons from 'src/assets/Icons';
+import { Button } from 'src/components/Button';
 
 interface Props {
   userId: string;
@@ -15,7 +17,7 @@ interface Props {
   requestBody: string;
   responseId: string;
   responseBody: string;
-};
+}
 
 const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBody, responseId, responseBody }: Props) => {
   const navigate = useNavigate();
@@ -81,10 +83,10 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
   };
   
   return (
-    <button onClick={handleClick} className='h-8 w-8 text-text-button flex justify-center items-center rounded-full transition-colors duration-200 cursor-pointer hover:bg-border'>
-      <svg className='w-4 h-4' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'><path d='M3 5v14'/><path d='M21 12H7'/><path d='m15 18 6-6-6-6'/></svg>
-    </button>
-  )
+    <Button onClick={handleClick} variant='ghost' size='icon' style={{ width: '2rem', height: '2rem' }}>
+      <Icons.Move />
+    </Button>
+  );
 };
 
 export default MoveButton;

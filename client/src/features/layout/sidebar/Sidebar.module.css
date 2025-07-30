@@ -1,0 +1,16 @@
+.sidebar {
+  position: fixed;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem;
+  padding-top: 1rem;
+  border-right: 1px solid var(--border);
+}
+
+.bottomSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+} 

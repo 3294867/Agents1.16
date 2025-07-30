@@ -1,6 +1,8 @@
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
+import Icons from 'src/assets/Icons';
+import { Button } from 'src/components/Button';
 
 interface Props {
   threadId: string;
@@ -20,13 +22,10 @@ const BookmarkButton = ({ threadId, currentIsBookmarked }: Props) => {
   };
   
   return (
-    <button
-      onClick={handleClick}
-      className='h-8 text-text-button gap-2 flex items-center justify-start px-2 rounded-md focus-visible:outline-none cursor-pointer shadow-sm hover:bg-gray-100/10'
-    >
-      <svg className='w-4 h-4 mr-1' xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' ><path d='m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z'/></svg>
+    <Button variant='dropdown' onClick={handleClick}>
+      <Icons.BookmarkOutlined style={{ marginRight: '0.5rem' }}/>
       Bookmark
-    </button>
+    </Button>
   );
 };
 

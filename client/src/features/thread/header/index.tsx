@@ -1,4 +1,3 @@
-import { cn } from 'src/utils/cn';
 import Title from './Title';
 import Actions from './actions';
 
@@ -7,11 +6,11 @@ interface Props {
   threadTitle: string | null;
   isBookmarked: boolean;
   agentName: string;
-};
+}
 
 const Header = ({ threadId, threadTitle, isBookmarked, agentName }: Props) => {
   return (
-    <div className={cn('flex items-start', threadTitle === null ? 'justify-end' : 'justify-between')}>
+    <div style={{ display: 'flex', alignItems: 'start', justifyContent: threadTitle === null ? 'end' : 'space-between' }}>
       <Title threadId={threadId} threadTitle={threadTitle} isBookmarked={isBookmarked} />
       <Actions threadId={threadId} currentIsBookmarked={isBookmarked} agentName={agentName} />
     </div>

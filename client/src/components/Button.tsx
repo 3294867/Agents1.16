@@ -1,52 +1,56 @@
-import * as React from 'react';
-import { cva, type VariantProps } from 'class-variance-authority';
-import { cn } from 'src/utils/cn';
+import { ButtonHTMLAttributes, cloneElement, forwardRef, isValidElement, ReactNode }from 'react';
+import styles from './Button.module.css';
 
-const buttonVariants = cva(
-  'text-text-button cursor-pointer flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50',
-  {
-    variants: {
-      variant: {
-        default: 'bg-accent-primary hover:bg-accent-primary-hover shadow',
-        secondary: 'bg-accent-secondary hover:bg-accent-secondary-hover shadow',
-        alert: 'bg-alert hover:alert-hover shadow-sm',
-        outline: 'text-text-primary border border-border hover:border-white/20 bg-background hover:bg-background-hover shadow-sm',
-        ghost: 'text-text-primary hover:bg-background-hover hover:text-text-tertiary',
-        link: 'text-accent-primary hover:accent-primary-hover underline-offset-4 hover:underline',
-      },
-      size: {
-        default: 'h-9 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
-        icon: 'h-9 w-9',
-      },
-      isPressed: {
-        true: 'bg-text-tertiary/25',
-        false: '',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-      size: 'default',
-      isPressed: false,
-    },
-  }
-)
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
+  variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'alert' | 'link' | 'dropdown';
+  size?: 'default' | 'sm' | 'lg' | 'icon';
+  isPressed?: boolean;
+  className?: string;
+  asChild?: boolean;
+  children?: ReactNode;
+}
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-  VariantProps<typeof buttonVariants> { asChild?: boolean }
+export const Button = forwardRef<HTMLButtonElement, Props>(
+  ({ variant = 'default', size = 'default', isPressed = false, className, asChild, children, ...props }, ref) => {
+    
+    const variantClass =
+      variant === 'default' ? styles.defaultVariant :
+      variant === 'secondary' ? styles.secondaryVariant :
+      variant === 'outline' ? styles.outlineVariant :
+      variant === 'ghost' ? styles.ghostVariant :
+      variant === 'alert' ? styles.alertVariant :
+      variant === 'link' ? styles.linkVariant :
+      styles.dropdownVariant;
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, isPressed, ...props }, ref) => {
+    const sizeClass =
+      size === 'default' ? styles.defaultSize :
+      size === 'sm' ? styles.smSize :
+      size === 'lg' ? styles.lgSize :
+      styles.iconSize;
+    
+    const isPressedClass = isPressed ? styles.isPressed : '';  
+
+    const joinedClassNames = [
+      styles.base,
+      variantClass,
+      sizeClass,
+      isPressedClass,
+      className
+    ].filter(Boolean).join(' ');
+    
+    if (asChild && isValidElement(children)) {
+      return cloneElement(children, Object.assign({}, children.props, joinedClassNames));
+    }
+    
     return (
       <button
-        className={cn(buttonVariants({ variant, size, isPressed, className }))}
         ref={ref}
+        className={joinedClassNames}
         {...props}
-      />
-    )
+      >
+        {children}
+      </button>
+    );
   }
-)
-Button.displayName = 'Button'
-
-export { Button, buttonVariants }
+);
+Button.displayName = 'Button';

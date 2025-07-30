@@ -1,27 +1,29 @@
 import { Link, useParams } from 'react-router-dom';
 import { Button } from 'src/components/Button';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'src/components/Tooltip';
+import styles from './Agents.module.css';
 import { Agent } from 'src/types';
-import { PlusIcon } from 'lucide-react';
+import Icons from 'src/assets/Icons';
 
-interface AgentsProps {
+interface Props {
   userId: string;
   agents: Agent[];
 }
 
-const Agents = (props: AgentsProps) => {
+const Agents = ({ userId, agents }: Props) => {
   const { agentName } = useParams();
 
   return (
     <div className='flex flex-col gap-2 mt-28'>
-      {props.agents.map(a => (
+      {agents.map(a => (
         <Tooltip key={a.name}>
           <TooltipTrigger asChild>
             <Link prefetch='intent' to={`/${a.name}`}> 
-              <Button variant='outline' size='icon' className={`
-                rounded-full
-                ${agentName === a.name ? 'bg-blue-600 hover:bg-blue-600/80' : ''}
-              `}>
+              <Button
+                variant='outline'
+                size='icon'
+                className={`${agentName === a.name ?  styles.agentButton: ''}`}
+              >
                 {a.name[0].toUpperCase()}
               </Button>
             </Link>
@@ -31,11 +33,11 @@ const Agents = (props: AgentsProps) => {
           </TooltipContent>
         </Tooltip>
       ))}
-      <Button variant='outline' size='icon' className='rounded-full'>
-        <PlusIcon className='w-4 h-4'/>
+      <Button variant='outline' size='icon'>
+        <Icons.Add />
       </Button>
     </div>
-  )
+  );
 };
 
 export default Agents;

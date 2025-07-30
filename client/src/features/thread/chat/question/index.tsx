@@ -5,6 +5,7 @@ import PauseRunButton from './PauseRunButton';
 import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
 import MoveButton from './MoveButton';
+import styles from './Question.module.css';
 
 interface Props {
   userId: string;
@@ -18,7 +19,7 @@ interface Props {
   isNew: boolean;
   agentModel: AgentModel;
   threadBodyLength: number;
-};
+}
 
 const Question = ({
   userId,
@@ -38,37 +39,30 @@ const Question = ({
   const { textareaRef, progressBarLength } = hooks.useHandleQuestion({ input, isEditing });
   
   return (
-    <div className='relative w-full pt-12'>
-      <div
-        id={`question_${requestId}`}
-        className='w-full group flex flex-col border border-border rounded-xl shadow-sm shadow-black bg-background-card overflow-hidden'
-        style={{ paddingTop: 16, paddingBottom: isNew ? 0 : 16, paddingRight: isNew ? 0 : 16, paddingLeft: isNew ? 0 : 16 }}
-      >
-        <div className='absolute top-3 right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex gap-1.5'>
-          <EditButton requestId={requestId} setIsEditing={setIsEditing} />
-          <DeleteButton
-            threadId={threadId}
-            requestId={requestId}
-            responseId={responseId}
-            threadBodyLength={threadBodyLength}
-            agentId={agentId}
-            agentName={agentName}
-          />
-          <MoveButton
-            userId={userId}
-            agentId={agentId}
-            agentName={agentName}
-            threadId={threadId}
-            requestId={requestId}
-            requestBody={requestBody}
-            responseId={responseId}
-            responseBody={responseBody}
-          />
-        </div>
-        <div
-          className='w-full flex items-center justify between'
-          style={{ paddingRight: isNew ? 16 : 0, paddingLeft: isNew ? 16 : 0, gap: isNew ? 16 : 0 }}
-        >
+    <div className={styles.relativeWrapper}>
+      <div className={styles.actionButtons}>
+        <EditButton requestId={requestId} setIsEditing={setIsEditing} />
+        <DeleteButton
+          threadId={threadId}
+          requestId={requestId}
+          responseId={responseId}
+          threadBodyLength={threadBodyLength}
+          agentId={agentId}
+          agentName={agentName}
+        />
+        <MoveButton
+          userId={userId}
+          agentId={agentId}
+          agentName={agentName}
+          threadId={threadId}
+          requestId={requestId}
+          requestBody={requestBody}
+          responseId={responseId}
+          responseBody={responseBody}
+        />
+      </div>
+      <div id={`question_${requestId}`} className={styles.questionCard + (isNew ? ` ${styles.isNew}` : '')}>
+        <div className={styles.inputRow + (isNew ? ` ${styles.isNew}` : '')}>
           <textarea
             id={`textarea_${requestId}`}
             ref={textareaRef}
@@ -79,10 +73,9 @@ const Question = ({
               setIsEditing(false);
             }, 100)}
             spellCheck='false'
-            className='h-fit resize-none text-sm font-medium text-text-primary placeholder:text-text-primary leading-loose focus-visible:outline-none'
-            style={{ width: '100%' }}
+            className={styles.textarea}
           />
-          <div className='flex items-center'>
+          <div className={styles.pauseRunWrapper}>
             <PauseRunButton
               threadId={threadId}
               requestId={requestId}
@@ -95,10 +88,10 @@ const Question = ({
             />
           </div>
         </div>
-        {isNew && <div style={{ width: progressBarLength }} className='h-1 mt-3 transition-all duration-300 ease-in-out rounded-r-full bg-text-primary' />}
+        {isNew && <div style={{ width: progressBarLength }} className={styles.progressBar} />}
       </div>
     </div>
-  )
+  );
 };
 
 export default Question;

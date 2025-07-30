@@ -1,0 +1,32 @@
+.chat {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 2rem;
+  padding-bottom: 12rem;
+  gap: 2rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Custom scrollbar styles */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) var(--card-background);
+}
+
+/* For webkit browsers */
+.chat::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.chat::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
+.chat::-webkit-scrollbar-track {
+  background: var(--card-background);
+}
+
+.messageGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+} 

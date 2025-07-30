@@ -6,6 +6,7 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import { Button } from 'src/components/Button';
 import constants from 'src/constants';
+import Icons from 'src/assets/Icons';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
 
 interface Props {
@@ -14,7 +15,7 @@ interface Props {
   tabs: TabType[];
   currentThreadId: string;
   currentThreadPositionY: number;
-};
+}
 
 const AddTab = ({ userId, agent, tabs, currentThreadId, currentThreadPositionY }: Props) => {
   const navigate = useNavigate();
@@ -58,14 +59,12 @@ const AddTab = ({ userId, agent, tabs, currentThreadId, currentThreadPositionY }
       disabled={isAddTabDisabled}
       variant='outline'
       size='icon'
-      className='w-8 h-8 ml-2 p-0 rounded-full'
+      style={{ width: '2rem', height: '2rem' }}
       onClick={() => handleAddTab(userId, agent.id)}
     >
-      <svg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={1.5} stroke='currentColor' className='size-4'>
-        <path strokeLinecap='round' strokeLinejoin='round' d='M12 4.5v15m7.5-7.5h-15' />
-      </svg>
+      <Icons.Add />
     </Button>
-  )
+  );
 };
 
 export default AddTab;

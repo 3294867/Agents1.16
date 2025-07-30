@@ -1,0 +1,33 @@
+.main {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+  width: 640px;
+  margin-inline: auto;
+}
+
+.loadingContainer {
+  width: 640px;
+  height: 100%;
+  margin-inline: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} 

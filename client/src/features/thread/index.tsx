@@ -1,4 +1,3 @@
-import { LoaderIcon } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/Error';
@@ -6,7 +5,9 @@ import Header from './header';
 import Chat from './chat';
 import Form from './form';
 import SideNavigation from './SideNav';
+import styles from './Thread.module.css'
 import { AgentModel } from 'src/types';
+import Icons from 'src/assets/Icons';
 
 interface Props {
   userId: string;
@@ -28,7 +29,7 @@ const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
   const threadBodyLength = Object.keys(thread.body).length;
 
   return (
-    <main id='thread' className='relative w-[640px] mx-auto flex flex-col mt-8'>
+    <main id='thread' className={styles.main}>
       <Header
         threadId={threadId}
         threadTitle={threadTitle}
@@ -59,8 +60,8 @@ export default Thread;
 
 const Loading = () => {
   return (
-    <div className='w-[640px] h-full mx-auto flex justify-center items-center'>
-      <LoaderIcon className='w-5 h-5 text-white animate-spin' />
+    <div className={styles.loadingContainer}>
+      <Icons.Loader className={styles.loadingSpinner} />
     </div>
   );
 };

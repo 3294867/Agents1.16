@@ -1,0 +1,65 @@
+.form {
+  position: fixed;
+  bottom: 2rem;
+  transform: translateX(calc(50% + 52px - 240px));
+  width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.textarea {
+  margin-top: 0.5rem;
+  width: 100%;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: inherit;
+}
+
+.textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.textarea:focus {
+  border-color: var(--border-focus);
+}
+
+.controls {
+  display: flex;
+  padding: 0.5rem;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.leftControls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.rightControls {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.addButton {
+  height: 2rem;
+  width: 2rem;
+  padding: 0;
+  border-radius: 9999px;
+}
+
+.sendButton {
+  height: 2rem;
+  width: 2rem;
+} 

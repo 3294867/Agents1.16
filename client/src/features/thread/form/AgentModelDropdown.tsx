@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import Icons from 'src/assets/Icons';
 import { Button } from 'src/components/Button';
 import { Dropdown, DropdownContent, DropdownTrigger } from 'src/components/Dropdown';
 import constants from 'src/constants';
@@ -15,7 +15,7 @@ const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
       <DropdownTrigger asChild>
         <Button variant='outline' size='sm'>
           {agentModel}
-          <ChevronDown className='w-4 h-4 ml-2 -mr-1'/>
+          <Icons.ChevronDown style={{ marginLeft: '0.5rem', marginRight: '-0.25rem' }}/>
         </Button>
       </DropdownTrigger>
       <DropdownContent align='end' sideOffset={4} >
@@ -26,9 +26,8 @@ const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
               key={m}
               type='button'
               onClick={() => setAgentModel(m)}
-              variant='ghost'
+              variant='dropdown'
               size='sm'
-              className='w-full justify-start pl-2 text-xs hover:text-text-primary hover:bg-white/15 transition-colors duration-150'
             >
               {m}
             </Button>

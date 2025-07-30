@@ -7,7 +7,7 @@ const DropdownContext = createContext<{
   setIsOpen: (open: boolean) => void;
 } | null>(null);
 
-export const Dropdown: FC<{ children: ReactNode }> = ({ children }) => {
+const Dropdown: FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleBlur = () => {
@@ -30,7 +30,7 @@ interface DropdownTriggerProps {
   children: ReactElement;
 }
 
-export const DropdownTrigger: FC<DropdownTriggerProps> = ({ asChild, children }) => {
+const DropdownTrigger: FC<DropdownTriggerProps> = ({ asChild, children }) => {
   const ctx = useContext(DropdownContext);
   if (!ctx) throw new Error('DropdownTrigger must be used within a Dropdown');
   const { setIsOpen } = ctx;
@@ -55,7 +55,7 @@ interface DropdownContentProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-export const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
+const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
   ({ side = 'bottom', sideOffset = 4, align = 'start', style, children, ...props }, ref) => {
     const ctx = useContext(DropdownContext);
     if (!ctx) throw new Error('DropdownContent must be used within a Dropdown');
@@ -92,3 +92,9 @@ export const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
   }
 );
 DropdownContent.displayName = 'DropdownContent';
+
+export {
+  Dropdown,
+  DropdownTrigger,
+  DropdownContent
+};

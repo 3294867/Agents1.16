@@ -1,0 +1,80 @@
+.tab {
+  position: relative;
+  height: 2rem;
+  min-width: 0;
+  max-width: 140px;
+  cursor: pointer;
+  display: flex;
+  flex: 1 1 0%;
+  align-items: center;
+  padding-left: 0.75rem;
+  padding-right: 1.25rem;
+  color: #fff;
+  border-radius: 9999px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.active {
+  border: 1px solid var(--accent-primary);
+  background-color: var(--accent-primary-hover);
+}
+
+.active:hover {
+  background-color: var(--accent-primary-hover);
+}
+
+.inactive {
+  border: 1px solid var(--border);
+}
+
+.inactive:hover {
+  border-color: var(--border-hover)
+}
+
+.title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 0%;
+  min-width: 0;
+  max-width: 100px;
+}
+
+.closeBtn {
+  position: absolute;
+  right: 0.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.tab:hover .closeBtn {
+  opacity: 1;
+}
+
+.icon {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+
+.iconActive {
+  color: rgba(255,255,255,0.8);
+}
+
+.iconActive:hover {
+  color: #fff;
+}
+
+.iconInactive {
+  color: #a3a3a3;
+}
+
+.iconInactive:hover {
+  color: #888888;
+} 

@@ -1,6 +1,7 @@
 import Answer from './Answer';
 import { AgentModel, Query } from 'src/types';
 import Question from './question';
+import styles from './Chat.module.css';
 
 interface Props {
   userId: string;
@@ -9,13 +10,13 @@ interface Props {
   threadId: string;
   threadBody: Query[] | [];
   agentModel: AgentModel;
-};
+}
 
 const Chat = ({ userId, agentId, agentName, threadId, threadBody, agentModel }: Props) => {
   return (
-    <div id='chat' className='flex flex-1 flex-col mt-8 pb-48 gap-8 overflow-x-hidden overflow-y-auto scrollbar scrollbar-thumb-border scrollbar-thumb-rounded-full scrollbar-track-card-background scrollbar-w-1 scrollbar-h-1'>
+    <div id='chat' className={styles.chat}>
       {threadBody.length > 0 && threadBody.map((i, idx) => (
-        <div key={idx} className='space-y-8'>
+        <div key={idx} className={styles.messageGroup}>
           <Question
             userId={userId}
             agentId={agentId}

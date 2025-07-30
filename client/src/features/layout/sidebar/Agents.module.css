@@ -1,0 +1,8 @@
+.agentButton {
+  background-color: var(--accent-primary);
+  transition: background-color 0.15s;
+}
+
+.agentButton:hover {
+  background-color: var(--accent-primary-hover);
+}

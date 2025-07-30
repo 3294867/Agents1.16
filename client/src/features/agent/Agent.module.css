@@ -1,0 +1,73 @@
+.container {
+  position: relative;
+  margin-left: 52px;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0.5rem;
+}
+
+.header {
+  z-index: 10;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--background);
+}
+
+.loadingContainer {
+  margin-left: 52px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem;
+}
+
+.loadingHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.loadingTab {
+  height: 2rem;
+  width: 140px;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+}
+
+.loadingActions {
+  display: flex;
+  gap: 0.375rem;
+  align-items: center;
+}
+
+.loadingContent {
+  width: 640px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loadingSpinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: white;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+} 

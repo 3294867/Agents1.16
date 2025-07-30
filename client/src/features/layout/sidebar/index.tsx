@@ -2,20 +2,21 @@ import Agents from './Agents';
 import ThemeToggle from 'src/features/layout/sidebar/ThemeToggle';
 import Account from './Account';
 import { Agent } from 'src/types';
+import styles from './Sidebar.module.css';
 
-interface SidebarProps {
+interface Props {
   userId: string;
   agents: Agent[];
   isMobile: boolean;
 }
 
-const Sidebar = (props: SidebarProps) => {
-  return !props.isMobile && (
-    <aside className='fixed h-screen flex flex-col justify-between p-2 pt-4 border-r-[1px] border-border'>
-      <Agents userId={props.userId} agents={props.agents} />
-      <div className='flex flex-col gap-2'>
+const Sidebar = ({ userId, agents, isMobile }: Props) => {
+  return !isMobile && (
+    <aside className={styles.sidebar}>
+      <Agents userId={userId} agents={agents} />
+      <div className={styles.bottomSection}>
         <ThemeToggle />
-        <Account userId={props.userId} />
+        <Account userId={userId} />
       </div>
     </aside>
   )

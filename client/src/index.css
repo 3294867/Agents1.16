@@ -48,12 +48,18 @@
 :root {
   --background: oklch(0.985 0.001 106.423);
   --background-hover: oklch(93.14% 0.001 106.423);
+  
   --border: oklch(82.75% 0.001 106.423);
+  --border-hover: oklch(0.7516 0.001 106.423);
   --border-focus: oklch(0.7567 0.001 106.423);
+  
   --shadow: oklch(93.14% 0.001 106.423);
 
   --background-card: oklch(0.865 0.001 106.423);
   --background-card-hover: oklch(0.5326 0.001 106.423);
+
+  --background-dropdown-button-hover: oklch(0.7516 0.001 106.423); 
+  --background-is-pressed-button: oklch(0.7516 0.001 106.423);
   
   --text-primary: oklch(6.49% 0.004 49.25);
   --text-secondary: oklch(0.216 0.006 56.043);
@@ -74,12 +80,18 @@
 .dark {
   --background: oklch(0.147 0.004 49.25);
   --background-hover: oklch(7.08% 0.004 49.25);
+  
   --border: oklch(0.268 0.007 34.298);
+  --border-hover: oklch(0.3095 0.007 34.298);
   --border-focus: oklch(0.3056 0.007 34.298);
+  
   --shadow: oklch(0% 0.004 49.25);
 
   --background-card: oklch(0.2181 0.007 34.298);
   --background-card-hover: oklch(0.3398 0.007 34.298);
+
+  --background-dropdown-button-hover:oklch(0.3095 0.007 34.298);
+  --background-is-pressed-button: oklch(0.3095 0.007 34.298);
 
   --text-primary: oklch(99.7% 0.001 106.423);
   --text-secondary: oklch(0.97 0.001 106.424);
@@ -100,12 +112,18 @@
 @theme inline {
   --color-background: var(--background);
   --color-background-hover: var(--background-hover);
+  
   --color-border: var(--border);
+  --color-border-hover: var(--border-hover);
   --color-border-focus: var(--border-focus);
+  
   --color-shadow: var(--shadow);
 
   --color-background-card: var(--background-card);
   --color-background-card-hover: var(--background-card-hover);
+
+  --color-background-dropdown-button-hover: var(--background-dropdown-button-hover);
+  --color-background-is-pressed-button: var(--background-is-pressed-button);
   
   --color-text-primary: var(--text-primary);
   --color-text-secondary: var(--text-secondary);
@@ -129,14 +147,14 @@
 }
 
 body {
-  background: oklch(0.147 0.004 49.25);
-  transition: background 0.2s;
+  background-color: oklch(0.147 0.004 49.25);
+  transition: background-color 0.2s;
 }
 body.dark {
-  background: oklch(0.147 0.004 49.25);
+  background-color: oklch(0.147 0.004 49.25);
   color: oklch(99.7% 0.001 106.423);
 }
 body.light {
-  background: oklch(0.985 0.001 106.423);
+  background-color: oklch(0.985 0.001 106.423);
   color: oklch(6.49% 0.004 49.25);
 }

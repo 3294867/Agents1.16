@@ -1,37 +1,38 @@
-import { CogIcon, EllipsisVerticalIcon, FolderClosedIcon, HistoryIcon } from 'lucide-react';
+import Icons from 'src/assets/Icons';
 import { Button } from 'src/components/Button';
 import { Dropdown, DropdownContent, DropdownTrigger } from 'src/components/Dropdown';
+import styles from './Actions.module.css'
 
 interface Props {
   userId: string;
   agentId: string;
-};
+}
 
 const Actions = ({ userId, agentId }: Props) => {
   return (
-    <div className='flex gap-1.5 items-center'>
-      <Button variant='outline' size='icon' className='w-8 h-8 p-0 rounded-full'>
-        <HistoryIcon className='w-4 h-4' />
+    <div className={styles.container}>
+      <Button variant='outline' size='icon' style={{ width: '2rem', height: '2rem' }}>
+        <Icons.History />
       </Button>
       <Dropdown>
         <DropdownTrigger asChild>
-          <Button variant='outline' size='icon' className='w-8 h-8 p-0 rounded-full'>
-            <EllipsisVerticalIcon className='size-4' />
+          <Button variant='outline' size='icon' style={{ width: '2rem', height: '2rem' }}>
+            <Icons.More />
           </Button>
         </DropdownTrigger>
-        <DropdownContent>
-          <Button variant='outline' size='icon' className='w-full justify-start pl-2 text-xs hover:text-text-primary hover:bg-white/15 transition-colors duration-150'>
-            <FolderClosedIcon className='mr-2 w-4 h-4 text-text-primary/80' />
+        <DropdownContent align='end' sideOffset={12}>
+          <Button variant='dropdown'>
+            <Icons.Library style={{ marginRight: '0.5rem' }} />
             Library
           </Button>
-          <Button variant='outline' size='icon' className='w-full justify-start pl-2 text-xs hover:text-text-primary hover:bg-white/15 transition-colors duration-150'>
-            <CogIcon className='mr-2 w-4 h-4 text-text-primary/80' />
+          <Button variant='dropdown'>
+            <Icons.Settings style={{ marginRight: '0.5rem' }} />
             Settings
           </Button>
         </DropdownContent>
       </Dropdown>
     </div>    
-  )
+  );
 };
 
 export default Actions;
