@@ -5,7 +5,7 @@ import { Query } from 'src/types';
 interface Props {
   threadId: string;
   requestId: string;
-};
+}
 
 /** Adds new query to the thread's body (IndexedDB). */
 const deleteQuery = async ({ threadId, requestId }: Props): Promise<void> => {
@@ -25,6 +25,6 @@ const deleteQuery = async ({ threadId, requestId }: Props): Promise<void> => {
   } catch (error) {
     console.error('Failed to add query (IndexedDB): ', error);
   }
-}
+};
 
 export default deleteQuery;

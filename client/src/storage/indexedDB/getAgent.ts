@@ -4,7 +4,7 @@ import { Agent } from 'src/types';
 interface Props {
   userId: string;
   agentName: string | undefined;
-};
+}
 
 /** Fetches agent (IndexedDB) */
 const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {

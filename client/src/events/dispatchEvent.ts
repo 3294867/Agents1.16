@@ -1,4 +1,4 @@
-import { Query } from 'src/types';
+import { Query, Thread } from 'src/types';
 
 const dispatchEvent = {
   threadTitleUpdated: (threadId: string, threadTitle: string | null) => {
@@ -58,6 +58,12 @@ const dispatchEvent = {
   threadIsBookmarkedUpdated: (threadId: string, isBookmarked: boolean) => {
     const event = new CustomEvent('threadIsBookmarkedUpdated', {
       detail: { threadId, isBookmarked }
+    });
+    window.dispatchEvent(event);
+  },
+  threadUpdated: (threadId: string, thread: Thread) => {
+    const event = new CustomEvent('threadUpdated', {
+      detail: { threadId, thread }
     });
     window.dispatchEvent(event);
   }

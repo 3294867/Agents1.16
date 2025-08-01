@@ -3,8 +3,8 @@ import dispatchEvent from 'src/events/dispatchEvent';
 
 interface Props {
   threadId: string;
-  threadTitle: string;
-};
+  threadTitle: string | null;
+}
 
 /** Updates 'title' property of the thread (IndexedDB) */
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {

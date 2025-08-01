@@ -3,7 +3,7 @@ import { Agent } from 'src/types';
 
 interface Props {
   agents: Agent[];
-};
+}
 
 /** Saves fetched agents from postgresDB in the indexedDB */
 const storeAgents = async ({ agents }: Props): Promise<void> => {

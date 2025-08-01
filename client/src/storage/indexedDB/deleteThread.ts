@@ -2,7 +2,7 @@ import { db } from 'src/storage/indexedDB';
 
 interface Props {
   threadId: string;
-};
+}
 
 /** Deletes thread (IndexedDB) */
 const deleteThread = async ({ threadId }: Props): Promise<void> => {

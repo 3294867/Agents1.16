@@ -5,7 +5,7 @@ import { Query } from 'src/types';
 interface Props {
   threadId: string;
   query: Query;
-};
+}
 
 /** Updates query in the thread body on edited question (IndexedDB) */
 const updateQuery = async ({ threadId, query }: Props): Promise<void> => {

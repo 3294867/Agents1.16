@@ -50,16 +50,18 @@ const Question = ({
           agentId={agentId}
           agentName={agentName}
         />
-        <MoveButton
-          userId={userId}
-          agentId={agentId}
-          agentName={agentName}
-          threadId={threadId}
-          requestId={requestId}
-          requestBody={requestBody}
-          responseId={responseId}
-          responseBody={responseBody}
-        />
+        {threadBodyLength > 1 && (
+          <MoveButton
+            userId={userId}
+            agentId={agentId}
+            agentName={agentName}
+            threadId={threadId}
+            requestId={requestId}
+            requestBody={requestBody}
+            responseId={responseId}
+            responseBody={responseBody}
+          />
+        )}
       </div>
       <div id={`question_${requestId}`} className={styles.questionCard + (isNew ? ` ${styles.isNew}` : '')}>
         <div className={styles.inputRow + (isNew ? ` ${styles.isNew}` : '')}>

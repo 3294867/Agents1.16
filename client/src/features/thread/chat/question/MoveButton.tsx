@@ -24,13 +24,40 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
   const currentThreadPositionY = hooks.useHandleMoveButton();
   
   const handleClick = async () => {
-    /** Update thread body of the current thread (IndexedDB) */
+    /** Update 'body' property of the current thread (IndexedDB) */
     await indexedDB.deleteQuery({ threadId, requestId });
 
-    /** Update thread body of the current thread  (PostgresDB) */
+    /** Update 'body' property of the current thread  (PostgresDB) */
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
     
-    /** Update positionY of the current thread (IndexedDB) */
+    /** Get first query of the thread */
+    const firstQuery = await indexedDB.getFirstQuery({ threadId });
+
+    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB) */
+    if (firstQuery) {
+      const threadTitle = await openai.createThreadTitle({
+        question: firstQuery.requestBody,
+        answer: firstQuery.responseBody
+      }) 
+
+      await postgresDB.updateThreadTitle({
+        threadId, threadTitle
+      });
+      
+      await indexedDB.updateThreadTitle({
+        threadId, threadTitle
+      });      
+    } else {
+      await postgresDB.updateThreadTitle({
+        threadId, threadTitle: null
+      });
+
+      await indexedDB.updateThreadTitle({
+        threadId, threadTitle: null
+      });  
+    }
+
+    /** Update 'positionY' property of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
       threadId,
       positionY: currentThreadPositionY
@@ -47,12 +74,12 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
     const updatedNewThread = { ...newThread, positionY: 0 };
     await indexedDB.addThread({ thread: updatedNewThread });
 
-    /** Add query to the thread body (PostgresDB) */
+    /** Add query to the 'body' property of the current thread (PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addQuery({
       threadId: newThreadId, requestBody, responseBody
     });
 
-    /** Add query to the thread body (IndexedDB) */
+    /** Add query to the 'body' property of the current thread (IndexedDB) */
     const query ={ requestId: newRequestId, requestBody, responseId: newResponseId, responseBody, isNew: true }
     await indexedDB.addQuery({ threadId: newThreadId, query });
 
@@ -62,19 +89,19 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
       answer: responseBody
     });
 
-    /** Update thread title (PostgresDB) */
+    /** Update 'title' property of the new thread (PostgresDB) */
     await postgresDB.updateThreadTitle({
       threadId: newThreadId,
       threadTitle: newThreadTitle
     });
 
-    /** Update thread title (IndexedDB) */
+    /** Update 'title' property of the new thread (IndexedDB) */
     await indexedDB.updateThreadTitle({
       threadId: newThreadId,
       threadTitle: newThreadTitle
     });
 
-    /** Add tab (localStorage) */
+    /** Add tab for the new thread (localStorage) */
     tabsStorage.addTab(agentName, {
       id: newThreadId, agentId, title: newThreadTitle, isActive: true
     });

@@ -3,7 +3,7 @@ import { db } from 'src/storage/indexedDB';
 interface Props {
   threadId: string;
   positionY: number;
-};
+}
 
 /** Updates 'positionY' property of the thread (IndexedDB) */
 const updateThreadPositionY = async ({ threadId, positionY }: Props): Promise<void> => {

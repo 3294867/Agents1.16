@@ -5,7 +5,7 @@ import { Agent } from 'src/types';
 interface Props {
   userId: string;
   agentName: string | undefined; 
-};
+}
 
 /** Handles fetching agent */
 const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error: string | null, isLoading: boolean } => {

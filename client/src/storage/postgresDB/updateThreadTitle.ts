@@ -1,6 +1,6 @@
 interface Props {
   threadId: string;
-  threadTitle: string;
+  threadTitle: string | null;
 };
 
 /** Updates 'title' property of the thread (PostgresDB) */

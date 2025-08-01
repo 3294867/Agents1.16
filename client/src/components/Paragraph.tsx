@@ -3,7 +3,7 @@ import { cva, VariantProps } from 'class-variance-authority';
 import { cn } from 'src/utils/cn';
 
 const paragraphVariants = cva(
-  'font-poppins antialiased leading-snug',
+  'font-poppins leading-snug',
   {
     variants: {
       variant: {

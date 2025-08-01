@@ -11,7 +11,7 @@
   border: 1px solid var(--border, #e5e7eb);
   border-radius: 0.75rem; /* rounded-xl */
   box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); /* shadow-sm */
-  background: var(--background-card, #fff);
+  background-color: var(--background-card, #fff);
   overflow: hidden;
   position: relative;
   padding-top: 16px;
@@ -61,7 +61,7 @@
   font-size: 0.875rem; /* text-sm */
   font-weight: 500; /* font-medium */
   color: var(--text-primary, #111827);
-  background: transparent;
+  background-color: transparent;
   border: none;
   outline: none;
   width: 100%;
@@ -80,7 +80,7 @@
 .progressBar {
   height: 0.25rem; /* h-1 */
   margin-top: 0.75rem; /* mt-3 */
-  transition: width 0.3s, background 0.3s;
+  transition: width 0.3s, background-color 0.3s;
   border-radius: 9999px 0 0 9999px; /* rounded-r-full */
-  background: var(--text-primary, #111827);
+  background-color: var(--text-primary, #111827);
 } 

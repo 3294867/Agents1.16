@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import indexedDB from 'src/storage/indexedDB';
+import postgresDB from 'src/storage/postgresDB';
 import { Query, Thread } from 'src/types';
 
 interface Props {
@@ -22,9 +23,17 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
       }
       setIsLoading(true);
       setError(null);
-      const threadData = await indexedDB.getThread({ threadId });
-      if (!threadData) setError('Incorrect thread id.');
-      setThread(threadData);
+      const threadIDB = await indexedDB.getThread({ threadId });
+      if (!threadIDB) setError('Incorrect thread id.');
+
+      const threadUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
+      if (new Date(threadIDB.updatedAt).getTime() === new Date(threadUpdatedAt).getTime()) {
+        setThread(threadIDB);
+      } else {
+        const threadPostgres = await postgresDB.getThread({ threadId });
+        await indexedDB.updateThread({ thread: threadPostgres });
+        setThread(threadPostgres);
+      }
       setIsLoading(false);
     };
     fetchThread();
@@ -189,6 +198,24 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     window.addEventListener('threadIsBookmarkedUpdated', handleThreadIsBookmarkedUpdated as EventListener);
 
     return () => window.removeEventListener('threadIsBookmarkedUpdated', handleThreadIsBookmarkedUpdated as EventListener);
+  },[thread, threadId]);
+
+  /** Update thread on threadUpdated event (UI) */
+  useEffect(() => {
+    const handleThreadUpdated = (event: CustomEvent) => {
+      if (!thread) return;
+      if (threadId && event.detail.threadId === threadId) {
+        setThread(prevThread => {
+          if (!prevThread) return null;
+          return {
+            ...event.detail.thread
+          }
+        })
+      }
+    };
+    window.addEventListener('threadUpdated', handleThreadUpdated as EventListener);
+
+    return () => window.removeEventListener('threadUpdated', handleThreadUpdated as EventListener);
   },[thread, threadId]);
 
   return { thread, error, isLoading };

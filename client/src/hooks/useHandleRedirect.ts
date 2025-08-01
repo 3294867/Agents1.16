@@ -7,7 +7,7 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {
   userId: string;
-};
+}
 
 /** Handles redirecting user from '/:agentName' segment */
 const useHandleRedirect = ({ userId }: Props): void => {

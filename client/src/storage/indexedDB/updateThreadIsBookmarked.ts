@@ -3,7 +3,7 @@ import { db } from 'src/storage/indexedDB';
 interface Props {
   threadId: string;
   isBookmarked: boolean;
-};
+}
 
 /** Updates 'isBookmarked' property of the thread (IndexedDB) */
 const updateThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {

@@ -3,7 +3,7 @@ import dispatchEvent from 'src/events/dispatchEvent';
 
 interface Props {
   threadId: string;
-};
+}
 
 /** Sets 'title' property of the thread to null (IndexedDB) */
 const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
