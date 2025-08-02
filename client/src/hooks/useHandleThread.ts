@@ -5,7 +5,7 @@ import { Query, Thread } from 'src/types';
 
 interface Props {
   threadId: string | undefined;
-};
+}
 
 /** Handles thread */
 const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
@@ -14,29 +14,35 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
   
-  /** Get thread (IndexedDB) */
+  /** Get thread (IndexedDB, PostgresDB) */
   useEffect(() => {
-    const fetchThread = async () => {
-      if (!threadId) {
-        setError('Missing thread id.');
-        return;
-      }
-      setIsLoading(true);
-      setError(null);
-      const threadIDB = await indexedDB.getThread({ threadId });
-      if (!threadIDB) setError('Incorrect thread id.');
-
-      const threadUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
-      if (new Date(threadIDB.updatedAt).getTime() === new Date(threadUpdatedAt).getTime()) {
+    const getThread = async () => {
+      try {
+        if (!threadId) {
+          setError('Missing thread id.');
+          return;
+        }
+        setIsLoading(true);
+        setError(null);
+  
+        const threadIDB = await indexedDB.getThread({ threadId });
+        const threadPostgresUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
+  
+        if (!threadIDB || new Date(threadIDB.updatedAt).getTime() !== new Date(threadPostgresUpdatedAt).getTime()) {
+          const threadPostgres = await postgresDB.getThread({ threadId });
+          await indexedDB.updateThread({ thread: threadPostgres });
+          setThread(threadPostgres);
+          setIsLoading(false);
+          return;
+        }
+        
         setThread(threadIDB);
-      } else {
-        const threadPostgres = await postgresDB.getThread({ threadId });
-        await indexedDB.updateThread({ thread: threadPostgres });
-        setThread(threadPostgres);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to get thread: ', error)
       }
-      setIsLoading(false);
     };
-    fetchThread();
+    getThread();
   },[threadId]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */

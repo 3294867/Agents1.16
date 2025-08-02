@@ -2,7 +2,7 @@ interface Props {
   threadId: string;
   requestBody: string;
   responseBody: string;
-};
+}
 
 /** Adds query to the thread body (PostgresDB) */
 const addQuery = async ({ threadId, requestBody, responseBody }: Props): Promise<{ requestId: string, responseId: string }> => {
@@ -19,7 +19,7 @@ const addQuery = async ({ threadId, requestBody, responseBody }: Props): Promise
     }
     
     const data: { message: string, data: { requestId: string, responseId: string } | null } = await response.json();
-    if (data.data === null) throw new Error(data.message);
+    if (!data.data) throw new Error(data.message);
     return data.data;
 
   } catch (error) {

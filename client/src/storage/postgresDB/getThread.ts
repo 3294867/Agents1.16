@@ -2,7 +2,7 @@ import { Thread } from 'src/types';
 
 interface Props {
   threadId: string;
-};
+}
 
 /** Fetches thread (PostgresDB) */
 const getThread = async ({ threadId }: Props): Promise<Thread> => {
@@ -19,7 +19,7 @@ const getThread = async ({ threadId }: Props): Promise<Thread> => {
     }
     
     const data: { message: string, data: Thread | null } = await response.json();
-    if (data.data === null) throw new Error(data.message);
+    if (!data.data) throw new Error(data.message);
     return data.data;
 
   } catch (error) {

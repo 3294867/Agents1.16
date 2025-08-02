@@ -10,7 +10,8 @@ import updateResponseBody from 'src/storage/postgresDB/updateResponseBody';
 import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
-import getThreadUpdatedAt from './getThreadUpdatedAt';
+import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
+import getAgentsUpdatedAt from 'src/storage/postgresDB//getAgentsUpdatedAt';
 
 const postgresDB = {
   getAgents,
@@ -25,7 +26,8 @@ const postgresDB = {
   updateThreadTitle,
   removeThreadTitle,
   updatedThreadIsBookmarked,
-  getThreadUpdatedAt
+  getThreadUpdatedAt,
+  getAgentsUpdatedAt
 };
 
 export default postgresDB;

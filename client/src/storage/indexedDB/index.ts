@@ -15,9 +15,9 @@ import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
 import updateThreadPositionY from 'src/storage/indexedDB/updateThreadPositionY';
 import updateThreadIsBookmarked from 'src/storage/indexedDB/updateThreadIsBookmarked';
 import pauseResponse from 'src/storage/indexedDB/pauseResponse';
+import getFirstQuery from 'src/storage/indexedDB/getFirstQuery';
+import updateThread from 'src/storage/indexedDB/updateThread';
 import { Agent, Thread } from 'src/types';
-import getFirstQuery from './getFirstQuery';
-import updateThread from './updateThread';
 
 const db = new Dexie('Agents') as Dexie & {
   agents: EntityTable<Agent, 'id'>,
@@ -47,4 +47,4 @@ const indexedDB = {
 
 export default indexedDB;
 
-export { db }
+export { db };

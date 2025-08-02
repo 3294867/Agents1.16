@@ -5,35 +5,40 @@ import { Agent } from 'src/types';
 
 interface Props {
   userId: string;
-};
+}
 
-/** Handles fetching agents */
+/** Handles fetching agents (IndexedDB, PostgresDB)*/
 const useGetAgents = ({ userId }: Props): Agent[] | null => {
   const [agents, setAgents] = useState<Agent[] | null>(null);
 
   useEffect(() => {
-    const gettingAgents = async () => {
+    const getAgents = async () => {
       try {
-        const storedAgents = await indexedDB.getAgents();
-        if (storedAgents && storedAgents.length > 0) {
-          setAgents(storedAgents);
+        const agentsIDB = await indexedDB.getAgents();
+        
+        const agentsIDBUpdatedAt: {id: string, updatedAt: Date}[] = [];
+        for (const agentIDB of agentsIDB) {
+          agentsIDBUpdatedAt.push({
+            id: agentIDB.id,
+            updatedAt: agentIDB.updatedAt
+          });
+        }
+
+        const agentsPostgresUpdatedAt = await postgresDB.getAgentsUpdatedAt({ userId });
+        
+        if (agentsIDB.length === 0 ||  agentsIDBUpdatedAt !== agentsPostgresUpdatedAt) {
+          const agentsPostgres = await postgresDB.getAgents({ userId });
+          await indexedDB.storeAgents({ agents: agentsPostgres });
+          setAgents(agentsPostgres);
           return;
         }
         
-        const fetchedAgents = await postgresDB.getAgents({ userId });
-        if (!fetchedAgents) {
-          setAgents(null);
-          return;
-        }
-    
-        await indexedDB.storeAgents({ agents: fetchedAgents });
-        setAgents(fetchedAgents);
-        return agents;
+        setAgents(agentsIDB);
       } catch (error) {
         throw new Error(`Failed to fetch agents: ${error}`);
       }
     };
-    gettingAgents();
+    getAgents();
 
   },[userId]);
 

@@ -1,6 +1,6 @@
 interface Props {
   threadId: string;
-};
+}
 
 /** Sets 'title' property of the thread to null (PostgresDB) */
 const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
@@ -17,7 +17,7 @@ const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
   }
 
   const data: { message: string } = await response.json();
-  if (data.message !== 'Thread title removed.') throw new Error(`Failed to remove thread title: ${data.message}`);
+  if (data.message !== 'Thread title removed') throw new Error(`Failed to remove thread title: ${data.message}`);
 
   } catch (error) {
     throw new Error(`Failed to remove thread title (PostresDB): ${error}`);

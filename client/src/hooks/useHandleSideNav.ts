@@ -3,7 +3,7 @@ import constants from 'src/constants';
 
 interface Props {
   threadBodyLength: number;
-};
+}
 
 /** Handles SideNav (UI) */
 const useHandleSideNav = ({ threadBodyLength }: Props): { isVisible: boolean, chatWidth: number } => {

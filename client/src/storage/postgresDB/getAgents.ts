@@ -2,9 +2,9 @@ import { Agent } from 'src/types';
 
 interface Props {
   userId: string;
-};
+}
 
-/** Fetche agents (PostgresDB) */
+/** Fetches agents (PostgresDB) */
 const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {
@@ -19,7 +19,7 @@ const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
     }
     
     const data: { message: string, data: Agent[] | null } = await response.json();
-    if (data.data === null) throw new Error(data.message);
+    if (!data.data) throw new Error(data.message);
     return data.data;
     
   } catch (error) {

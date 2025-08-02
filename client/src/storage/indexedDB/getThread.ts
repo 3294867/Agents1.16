@@ -6,14 +6,12 @@ interface Props {
 }
 
 /** Fetches thread (IndexedDB) */
-const getThread = async ({ threadId }: Props): Promise<Thread> => {
+const getThread = async ({ threadId }: Props): Promise<Thread | undefined> => {
   if (!threadId) throw new Error('Thread id is required.');
   
   try {
     const thread = await db.threads.where('id').equals(threadId).first();
-    if (!thread) throw new Error('Failed to fetch thread (IndexedDB).');
     return thread;
-    
   } catch (error) {
     throw new Error(`IndexedDB error: ${error instanceof Error ? error.name : 'Unknown error'}`);
   }

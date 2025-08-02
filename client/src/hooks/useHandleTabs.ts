@@ -4,7 +4,7 @@ import { Tab } from 'src/types';
 
 interface Props {
   agentName: string;
-};
+}
 
 /** Handles tabs */
 const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThreadPositionY: number } => {

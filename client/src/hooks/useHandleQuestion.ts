@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 interface Props {
   input: string;
   isEditing: boolean;
-};
+}
 
 /** Handles question */
 const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.RefObject<HTMLTextAreaElement | null>, progressBarLength: string } => {

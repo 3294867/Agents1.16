@@ -1,6 +1,6 @@
 interface Props {
   threadId: string;
-};
+}
 
 /** Deletes thread (PostgresDB) */
 const deleteThread = async ({ threadId }: Props): Promise<void> => {
@@ -18,7 +18,7 @@ const deleteThread = async ({ threadId }: Props): Promise<void> => {
   }
 
   const data: { message: string } = await response.json();
-  if (data.message !== 'Thread deleted.') throw new Error('Failed to delete thread.');
+  if (data.message !== 'Thread deleted') throw new Error('Failed to delete thread');
 };
 
 export default deleteThread;

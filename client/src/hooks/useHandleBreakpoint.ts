@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 interface Props {
   windowInnerWidth: number;
-};
+}
 
 /** Handles breakpoint (UI) */
 const useHandleBreakpoint = ({ windowInnerWidth }: Props): boolean => {

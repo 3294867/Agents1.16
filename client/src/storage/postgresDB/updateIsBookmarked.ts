@@ -1,7 +1,7 @@
 interface Props {
   threadId: string;
   isBookmarked: boolean;
-};
+}
 
 /** Updates 'isBookmarked' property of the thread (PostgresDB) */
 const updatedThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
@@ -18,8 +18,8 @@ const updatedThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Pro
   }
 
   const data: { message: string } = await response.json();
-  if (data.message !== `'isBookmarked' property of the thread updated.`) {
-    throw new Error(`Failed to update thread 'isBookmarked' property of the thread.`);
+  if (data.message !== `'isBookmarked' property of the thread updated`) {
+    throw new Error(`Failed to update thread 'isBookmarked' property of the thread`);
   }
 
   } catch (error) {

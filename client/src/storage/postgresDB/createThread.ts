@@ -4,7 +4,7 @@ interface Props {
   id: string;
   userId: string;
   agentId: string;
-};
+}
 
 /** Creates thread (PostgresDB) */
 const createThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
@@ -22,7 +22,7 @@ const createThread = async ({ id, userId, agentId }: Props): Promise<Thread> => 
   }
 
   const data: { message: string, data: Thread | null } = await response.json();
-  if (data.data === null) throw new Error('Failed to create thread.');
+  if (!data.data) throw new Error('Failed to create thread');
 
   return data.data;
 };

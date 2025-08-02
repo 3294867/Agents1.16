@@ -1,7 +1,7 @@
 interface Props {
   threadId: string;
   threadTitle: string | null;
-};
+}
 
 /** Updates 'title' property of the thread (PostgresDB) */
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {

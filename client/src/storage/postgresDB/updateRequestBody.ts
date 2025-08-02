@@ -1,7 +1,7 @@
 interface Props {
   requestId: string;
   requestBody: string;
-};
+}
 
 /** Updates request body on edited question (PostgresDB) */
 const updateRequestBody = async ({ requestId, requestBody }: Props): Promise<void> => {
@@ -18,7 +18,7 @@ const updateRequestBody = async ({ requestId, requestBody }: Props): Promise<voi
     }
     
     const data: { message: string } = await response.json();
-    if (data.message !== 'Request body updated.') throw new Error(data.message);
+    if (data.message !== 'Request body updated') throw new Error(data.message);
 
   } catch (error) {
     throw new Error(`Failed to update request body (PostgresDB): ${error}`);

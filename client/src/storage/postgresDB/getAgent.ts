@@ -3,7 +3,7 @@ import { Agent } from 'src/types';
 interface Props {
   userId: string;
   agentName: string;
-};
+}
 
 /** Fetches agent (PostgresDB) */
 const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
@@ -20,7 +20,7 @@ const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
     }
     
     const data: { message: string, data: Agent | null } = await response.json();
-    if (data.data === null) throw new Error(data.message);
+    if (!data.data) throw new Error(data.message);
     return data.data;
     
   } catch (error) {

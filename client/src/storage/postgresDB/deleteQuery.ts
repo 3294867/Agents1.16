@@ -2,7 +2,7 @@ interface Props {
   threadId: string;
   requestId: string;
   responseId: string;
-};
+}
 
 /** Deletes query from the thread body (PostgresDB) */
 const deleteQuery = async ({ threadId, requestId, responseId }: Props): Promise<void> => {
@@ -19,7 +19,7 @@ const deleteQuery = async ({ threadId, requestId, responseId }: Props): Promise<
     }
     
     const data: { message: string } = await response.json();
-    if (data.message !== 'Query deleted.') throw new Error(data.message);
+    if (data.message !== 'Query deleted') throw new Error(data.message);
 
   } catch (error) {
     throw new Error(`Failed to delete query (PostgresDB): ${error}`);

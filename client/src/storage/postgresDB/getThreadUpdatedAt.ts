@@ -1,8 +1,8 @@
 interface Props {
   threadId: string;
-};
+}
 
-/** Updates request body on edited question (PostgresDB) */
+/** Fetches 'updatedAt' property of the thread (PostgresDB) */
 const getThreadUpdatedAt = async ({ threadId }: Props): Promise<Date> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread-updated-at`, {

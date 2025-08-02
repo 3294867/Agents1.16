@@ -1,0 +1,28 @@
+interface Props {
+  userId: string;
+}
+
+/** Fetches 'id' and 'updatedAt' properties for each agent (PostgresDB) */
+const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, updatedAt: Date }[]> => {
+  try {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents-updated-at`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId })
+    });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
+    }
+    
+    const data: { message: string, data: { id: string, updatedAt: Date }[] } = await response.json();
+    if (!data.data) throw new Error(data.message);
+
+    return data.data
+  } catch (error) {
+    throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${error}`);
+  }
+};
+
+export default getAgentsUpdatedAt;
