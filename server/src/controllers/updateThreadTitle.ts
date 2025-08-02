@@ -5,7 +5,7 @@ import { sendResponse } from "../utils/sendResponse";
 interface Props {
   threadId: string;
   threadTitle: string;
-};
+}
 
 const updateThreadTitle = async (req: Request, res: Response) => {
   const { threadId, threadTitle }: Props = req.body;
@@ -21,15 +21,15 @@ const updateThreadTitle = async (req: Request, res: Response) => {
       threadTitle,
       threadId
     ])
-    if (!result) return sendResponse(res, 503, "Failed to update thread title.")
+    if (!result) return sendResponse(res, 503, "Failed to update thread title")
 
     /** On success send data (Client) */
     res.status(200).json({
-      message: "Thread title updated."
+      message: "Thread title updated"
     })
   } catch (error) {
     console.error("Failed to update thread title: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

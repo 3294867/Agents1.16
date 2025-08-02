@@ -7,7 +7,7 @@ interface Props {
   threadId: string;
   requestId: string;
   responseId: string;
-};
+}
 
 const deleteQuery = async (req: Request, res: Response) => {
   const { threadId, requestId, responseId }: Props = req.body;
@@ -21,7 +21,7 @@ const deleteQuery = async (req: Request, res: Response) => {
       WHERE "id" = $1::uuid
     `;
     const requestDeleted = await pool.query(requestDeletedQueryText, [requestId]);
-    if (!requestDeleted) sendResponse(res, 503, "Failed to delete request.");
+    if (!requestDeleted) sendResponse(res, 503, "Failed to delete request");
   
     /** Delete response from Response Table (PostgresDB) */
     const responseDeletedQueryText = `
@@ -29,7 +29,7 @@ const deleteQuery = async (req: Request, res: Response) => {
       WHERE "id" = $1::uuid
     `;
     const responseDeleted = await pool.query(responseDeletedQueryText, [responseId]);
-    if (!responseDeleted) sendResponse(res, 503, "Failed to delete response.");
+    if (!responseDeleted) sendResponse(res, 503, "Failed to delete response");
 
     /** Get thread body from the Thread Table (PostgresDB) */
     const threadBodyQueryText = `
@@ -38,7 +38,7 @@ const deleteQuery = async (req: Request, res: Response) => {
     const threadBody = await pool.query(threadBodyQueryText, [
       threadId,
     ]);
-    if (!threadBody) sendResponse(res, 404, "Failed to fetch thread body.");
+    if (!threadBody) sendResponse(res, 404, "Failed to fetch thread body");
     
     /** Update thread body in the Thread Table (PostgresDB) */
     const updatedThreadBody: Query[] = threadBody.rows[0].body.filter((q: Query) => q.requestId !== requestId);
@@ -55,7 +55,7 @@ const deleteQuery = async (req: Request, res: Response) => {
 
     /** On success send message (Client) */
     res.status(200).json({
-      message: "Query deleted.",
+      message: "Query deleted",
     });
 
   } catch (error) {
@@ -65,7 +65,7 @@ const deleteQuery = async (req: Request, res: Response) => {
       console.error("Failed to roll back changes: ", rollbackError);
     }
     console.error("Failed to update thread: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

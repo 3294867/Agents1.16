@@ -26,7 +26,7 @@ const createResponse = async (req: Request, res: Response) => {
     `;
     
     const instructions = await pool.query(instructionsQueryText, [threadId]);
-    if (!instructions) return sendResponse(res, 404, "Failed to get instructions.");
+    if (!instructions) return sendResponse(res, 404, "Failed to get instructions");
 
     /** Create response (OpenAI) */
     const apiResponse = await client.responses.create({
@@ -34,17 +34,17 @@ const createResponse = async (req: Request, res: Response) => {
       input,
       instructions: instructions.rows[0].systemInstructions
     });
-    if (!apiResponse) return sendResponse(res, 503, "Failed to get response.");
+    if (!apiResponse) return sendResponse(res, 503, "Failed to get response");
 
     /** On success send data (Client) */
     res.status(200).json({
-      message: "apiResponse created.",
+      message: "apiResponse created",
       data: apiResponse.output_text
     });
     
   } catch (error) {
     console.error("Failed to create apiResponse: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

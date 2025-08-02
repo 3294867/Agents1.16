@@ -10,7 +10,7 @@ interface Props {
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(threadId, { title: threadTitle });
-    if (updatedThread === 0) throw new Error('Failed to update thread title.');
+    if (updatedThread === 0) throw new Error('Failed to update thread title');
 
     dispatchEvent.threadTitleUpdated(threadId, threadTitle);
     

@@ -14,32 +14,31 @@ const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (!agentName) {
-      setError('Missing agent name.');
-      return;
-    }
-
     try {
-      const fetchAgent = async () => {
+      if (!agentName) {
+        setError('Missing agent name');
+        return;
+      }
+      const getAgent = async () => {
         setIsLoading(true);
         setError(null);
         
         const agentData = await indexedDB.getAgent({ userId, agentName });
         
-        if (agentData) {
-          setAgent(agentData);
-        } else {
-          setError('Incorrect agent name.');
+        if (!agentData) {
+          setError('Incorrect agent name');
+          return;
         }
-        
+
+        setAgent(agentData);
         setIsLoading(false);
       };
       
-      fetchAgent();
+      getAgent();
     } catch (error) {
       throw new Error(`Failed to fetch agent: ${error}`);
     }
-  }, [userId, agentName]);
+  }, [agentName, userId]);
   
   return { agent, error, isLoading };
 };

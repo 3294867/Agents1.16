@@ -7,7 +7,7 @@ interface Props {
 
 /** Fetches thread (IndexedDB) */
 const getThread = async ({ threadId }: Props): Promise<Thread | undefined> => {
-  if (!threadId) throw new Error('Thread id is required.');
+  if (!threadId) throw new Error('Thread id is required');
   
   try {
     const thread = await db.threads.where('id').equals(threadId).first();

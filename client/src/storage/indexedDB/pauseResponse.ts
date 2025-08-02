@@ -11,10 +11,10 @@ const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Prom
   try {
     const savedThread = await db.threads.get(threadId);
     const threadBodyArray = Array.isArray(savedThread?.body) ? savedThread.body : [];
-    if (!savedThread) throw new Error('Thread not found.');
+    if (!savedThread) throw new Error('Thread not found');
 
     const savedQuery = threadBodyArray.find(q => q.requestId === requestId);
-    if (!savedQuery) throw new Error('Query not found.')
+    if (!savedQuery) throw new Error('Query not found')
       
     const updatedQuery = {
       requestId: savedQuery.requestId,
@@ -29,7 +29,7 @@ const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Prom
     const updatedThread = await db.threads.update(threadId, {
       body: [...filteredThreadBodyArray, updatedQuery]
     });
-    if (updatedThread === 0) throw new Error('Failed to update thread.');
+    if (updatedThread === 0) throw new Error('Failed to update thread');
 
 
   } catch (error) {

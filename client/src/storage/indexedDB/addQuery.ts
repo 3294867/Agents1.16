@@ -11,12 +11,12 @@ interface Props {
 const addQuery = async ({ threadId, query }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
-    if (!savedThread) throw new Error('Thread not found.');
+    if (!savedThread) throw new Error('Thread not found');
     const threadBodyArray = Array.isArray(savedThread.body) ? savedThread.body : [];
     const updatedThread = await db.threads.update(threadId, {
       body: [...threadBodyArray, query]
     });
-    if (updatedThread === 0) throw new Error('Failed to update thread.');
+    if (updatedThread === 0) throw new Error('Failed to update thread');
 
     /** Dispatch queryAdded event (Events) */
     dispatchEvent.queryAdded(threadId, query);

@@ -5,7 +5,7 @@ import { sendResponse } from "../utils/sendResponse";
 interface Props {
   responseId: string;
   responseBody: string;
-};
+}
 
 const updateResponseBody = async (req: Request, res: Response) => {
   const { responseId, responseBody }: Props = req.body;
@@ -22,16 +22,16 @@ const updateResponseBody = async (req: Request, res: Response) => {
       responseBody,
       responseId
     ]);
-    if (!result) return sendResponse(res, 503, "Failed to update response body.");
+    if (!result) return sendResponse(res, 503, "Failed to update response body");
 
     /** On success send data (Client) */
     res.status(200).json({
-      message: "Response body updated.",
+      message: "Response body updated",
     });
 
   } catch (error) {
     console.error("Failed to update response body: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

@@ -19,7 +19,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     const getThread = async () => {
       try {
         if (!threadId) {
-          setError('Missing thread id.');
+          setError('Missing thread id');
           return;
         }
         setIsLoading(true);

@@ -9,7 +9,7 @@ interface Props {
 const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(threadId, { title: null });
-    if (updatedThread === 0) throw new Error('Failed to remove thread title.');
+    if (updatedThread === 0) throw new Error('Failed to remove thread title');
 
     dispatchEvent.threadTitleUpdated(threadId, null);
     

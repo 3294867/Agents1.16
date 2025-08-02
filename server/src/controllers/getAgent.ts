@@ -5,7 +5,7 @@ import { sendResponse } from "../utils/sendResponse";
 interface Props {
   userId: string;
   agentName: string;
-};
+}
 
 const getAgent = async (req: Request, res: Response) => {
   const { userId, agentName }: Props = req.body;
@@ -21,17 +21,17 @@ const getAgent = async (req: Request, res: Response) => {
       userId,
       agentName
     ])
-    if (!result) return sendResponse(res, 404, "Failed to fetch agent.");
+    if (!result) return sendResponse(res, 404, "Failed to fetch agent");
     
     /** On success send data (Client) */
     res.status(200).json({
-      message: "Agent has been fetched.",
+      message: "Agent has been fetched",
       data: result.rows[0]
     });
 
   } catch (error) {
     console.error("Failed to fetch agent: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

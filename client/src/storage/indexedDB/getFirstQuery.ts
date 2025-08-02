@@ -11,7 +11,7 @@ const getFirstQuery = async ({ threadId }: Props): Promise<Query | null> => {
   
   try {
     const thread = await db.threads.where('id').equals(threadId).first();
-    if (!thread) throw new Error('Failed to fetch thread (IndexedDB).');
+    if (!thread) throw new Error('Failed to fetch thread (IndexedDB)');
     if (thread.body.length === 0) return null;
     return thread.body[0];
   } catch (error) {

@@ -5,7 +5,7 @@ import { Query, Thread } from '../types';
 
 interface Props {
   threadId: string;
-};
+}
 
 const getThread = async (req: Request, res: Response) => {
   const { threadId } = req.body as Props;
@@ -52,7 +52,7 @@ const getThread = async (req: Request, res: Response) => {
       GROUP BY t."id", t."userId", t."agentId", t."title", t."isBookmarked", t."createdAt", t."updatedAt";
     `;
     const result = await pool.query(resultQueryText, [ threadId ]);
-    if (!result) sendResponse(res, 404, "Failed to fetch thread.")
+    if (!result) sendResponse(res, 404, "Failed to fetch thread")
 
     const threadBody: Query[] = result.rows[0].body[0].requestId === null
       ? []
@@ -71,13 +71,13 @@ const getThread = async (req: Request, res: Response) => {
 
     /** On success send data (Client) */
     res.status(200).json({
-      message: "Thread fetched.",
+      message: "Thread fetched",
       data: thread
     });
 
   } catch (error) {
     console.error("Failed to fetch thread.: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

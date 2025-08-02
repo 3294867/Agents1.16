@@ -12,7 +12,7 @@ interface Props {
 const updateQueryIsNewProp = async ({ threadId, responseId, isNew }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
-    if (!savedThread) throw new Error('Thread not found.');
+    if (!savedThread) throw new Error('Thread not found');
     const body = Array.isArray(savedThread.body) ? savedThread.body : [];
     const queryIndex = body.findIndex(q => q.responseId === responseId);
 
@@ -22,7 +22,7 @@ const updateQueryIsNewProp = async ({ threadId, responseId, isNew }: Props): Pro
     );
 
     const updatedThread = await db.threads.update(threadId, { body: updatedBody });
-    if (updatedThread === 0) throw new Error('Failed to update isNew property.');
+    if (updatedThread === 0) throw new Error('Failed to update isNew property');
 
     /** Dispatch queryIsNewUpdated event (Events) */
     dispatchEvent.queryIsNewUpdated(threadId, responseId, isNew);

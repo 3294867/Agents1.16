@@ -7,7 +7,7 @@ interface Props {
   threadId: string;
   requestBody: string;
   responseBody: string;
-};
+}
 
 const addQuery = async (req: Request, res: Response) => {
   const { threadId, requestBody, responseBody }: Props = req.body;
@@ -22,7 +22,7 @@ const addQuery = async (req: Request, res: Response) => {
       RETURNING "id", "createdAt";
     `;
     const request = await pool.query(requestQueryText, [threadId, requestBody]);
-    if (!request) return sendResponse(res, 503, "Failed to add request.");
+    if (!request) return sendResponse(res, 503, "Failed to add request");
 
     /** Store response in the database (PostgresDB) */
     const responseQueryText = `
@@ -39,7 +39,7 @@ const addQuery = async (req: Request, res: Response) => {
       threadId,
       responseBody
     ]);
-    if (!response) return sendResponse(res, 503, "Failed to add response.");
+    if (!response) return sendResponse(res, 503, "Failed to add response");
     
     /** Get current thread body from database (PostgresDB) */
     const threadBodyQueryText = `
@@ -50,7 +50,7 @@ const addQuery = async (req: Request, res: Response) => {
     const threadBody = await pool.query(threadBodyQueryText, [
       threadId
     ]);
-    if (!threadBody) return sendResponse(res, 404, "Failed to fetch thread body.");
+    if (!threadBody) return sendResponse(res, 404, "Failed to fetch thread body");
 
     let currentBody = threadBody.rows[0].body;
     if (!Array.isArray(currentBody)) {
@@ -72,13 +72,13 @@ const addQuery = async (req: Request, res: Response) => {
       JSON.stringify(newBody),
       threadId
     ]);
-    if (!thread) return sendResponse(res, 503, "Failed to update thread.");
+    if (!thread) return sendResponse(res, 503, "Failed to update thread");
 
     await pool.query("COMMIT");
 
     /** On success send data (Client) */
     res.status(200).json({
-      message: "Thread updated.",
+      message: "Thread updated",
       data: {
         requestId: request.rows[0].id,
         responseId: response.rows[0].id
@@ -92,7 +92,7 @@ const addQuery = async (req: Request, res: Response) => {
       console.error("Failed to roll back changes: ", rollbackError);
     }
     console.error("Failed to update thread: ", error);
-    res.status(500).json({ error: "Internal server error." });
+    res.status(500).json({ error: "Internal server error" });
   }
 }
 

@@ -14,6 +14,7 @@ import removeThreadTitle from './controllers/removeThreadTitle';
 import updateThreadIsBookmarked from './controllers/updateThreadIsBookmarked';
 import createResponse from "./controllers/createResponse";
 import getThreadUpdatedAt from './controllers/getThreadUpdatedAt';
+import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
 
 const router = express.Router();
 
@@ -32,5 +33,6 @@ router.post("/remove-thread-title", removeThreadTitle);
 router.post("/update-thread-is-bookmarked", updateThreadIsBookmarked);
 router.post("/create-response", createResponse);
 router.post("/get-thread-updated-at", getThreadUpdatedAt);
+router.post("/get-agents-updated-at", getAgentsUpdatedAt)
 
 export default router;
