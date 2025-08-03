@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Paragraph } from 'src/components/Paragraph';
+import Paragraph from 'src/components/Paragraph';
 import hooks from 'src/hooks';
 
 interface AnswerProps {
@@ -20,7 +20,7 @@ const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: Answer
         responseBody={responseBody}
       />
     )
-    : <Paragraph variant='thin' className='leading-loose'>{responseBody}</Paragraph>;
+    : <Paragraph style={{ lineHeight: '2' }}>{responseBody}</Paragraph>;
 };
 
 export default Answer;

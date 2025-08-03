@@ -1,0 +1,35 @@
+.base {
+  font-family: var(--font-inter);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.h1 {
+  font-size: 2.25rem;
+  line-height: 2.25;
+}
+
+.h2 {
+  font-size: 1.875rem;
+  line-height: calc(2.25 / 1.875);
+}
+
+.h3 {
+  font-size: 1.5rem;
+  line-height: calc(2 / 1.5);
+}
+
+.h4 {
+  font-size: 1.25rem;
+  line-height: calc(1.75 / 1.25);
+}
+
+.h5 {
+  font-size: 1.125rem;
+  line-height: calc(1.75 / 1.125);
+}
+
+.h6 {
+  font-size: 1rem;
+  line-height: 1.5;
+}

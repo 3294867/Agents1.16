@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import { cn } from 'src/utils/cn';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/Icons';
-import styles from './Tab.module.css';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
+import styles from './Tab.module.css';
+import cn from 'src/utils/cn';
 
 interface Props {
   agent: AgentType;
@@ -69,10 +69,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
   return (
     <a
       href={`/${agent.name}/${tab.id}`}
-      className={cn(
-        styles.tab,
-        tab.isActive ? styles.active : styles.inactive
-      )}
+      className={cn(styles.tab, tab.isActive ? styles.active : styles.inactive)}
       onClick={() => handleSelectTab(tab.id, tab.agentId)}
     >
       <span className={styles.title}>

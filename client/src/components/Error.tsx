@@ -1,6 +1,6 @@
 import { Button } from './Button';
 import { Dialog, DialogContent, DialogTitle } from './Dialog';
-import { Paragraph } from './Paragraph';
+import Paragraph from './Paragraph';
 
 
 interface Props {
