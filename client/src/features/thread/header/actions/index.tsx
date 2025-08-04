@@ -1,42 +1,42 @@
-import { Dropdown, DropdownContent, DropdownTrigger } from 'src/components/Dropdown';
-import { Tooltip, TooltipContent, TooltipTrigger } from 'src/components/Tooltip';
 import BookmarkButton from './BookmarkButton';
-import DeleteButton from './DeleteButton';
+import Dropdown from 'src/components/Dropdown';
+import Tooltip from 'src/components/Tooltip';
+import DeleteDialog from './DeleteDialog';
+import Button from 'src/components/Button';
 import Icons from 'src/assets/Icons';
-import { Button } from 'src/components/Button';
 
 interface Props {
   threadId: string;
   currentIsBookmarked: boolean;
   agentName: string;
-};
+}
 
 const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
   return (
-    <div className='flex gap-1.5 justify-end items-start'>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button variant='outline' size='icon' style={{ width: '2rem', height: '2rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '1.5', justifyContent: 'end', alignItems: 'start'}}>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
+          <Button variant='outline' size='icon'>
             <Icons.Share />
           </Button>
-        </TooltipTrigger>
-        <TooltipContent side='bottom' sideOffset={4}>
+        </Tooltip.Trigger>
+        <Tooltip.Content side='bottom' sideOffset={4}>
           Share
-        </TooltipContent>
-      </Tooltip>
-      <Dropdown>
-        <DropdownTrigger asChild>
-          <Button variant='outline' size='icon' style={{ width: '2rem', height: '2rem' }}>
+        </Tooltip.Content>
+      </Tooltip.Root>
+      <Dropdown.Root>
+        <Dropdown.Trigger asChild>
+          <Button variant='outline' size='icon'>
             <Icons.More />
           </Button>
-        </DropdownTrigger>
-        <DropdownContent align='end'>
+        </Dropdown.Trigger>
+        <Dropdown.Content align='end'>
           {!currentIsBookmarked && <BookmarkButton threadId={threadId} currentIsBookmarked={currentIsBookmarked} />}
-          <DeleteButton threadId={threadId} agentName={agentName} />
-        </DropdownContent>
-      </Dropdown>
+          <DeleteDialog threadId={threadId} agentName={agentName} isNestedInDropdown={true} />
+        </Dropdown.Content>
+      </Dropdown.Root>
     </div>
-  )
+  );
 };
 
 export default Actions;

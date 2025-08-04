@@ -6,7 +6,7 @@ import openai from 'src/opanai';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Icons from 'src/assets/Icons';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 
 interface Props {
   userId: string;
@@ -110,7 +110,7 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
   };
   
   return (
-    <Button onClick={handleClick} variant='ghost' size='icon' style={{ width: '2rem', height: '2rem' }}>
+    <Button onClick={handleClick} variant='ghost' size='icon'>
       <Icons.Move />
     </Button>
   );

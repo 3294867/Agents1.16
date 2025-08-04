@@ -4,7 +4,7 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 import constants from 'src/constants';
 import Icons from 'src/assets/Icons';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
@@ -59,7 +59,6 @@ const AddTab = ({ userId, agent, tabs, currentThreadId, currentThreadPositionY }
       disabled={isAddTabDisabled}
       variant='outline'
       size='icon'
-      style={{ width: '2rem', height: '2rem' }}
       onClick={() => handleAddTab(userId, agent.id)}
     >
       <Icons.Add />

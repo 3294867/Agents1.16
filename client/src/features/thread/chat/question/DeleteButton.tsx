@@ -2,7 +2,7 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 import Icons from 'src/assets/Icons';
 
 interface Props {
@@ -45,7 +45,7 @@ const DeleteButton = ({
   };
   
   return (
-    <Button onClick={handleClick} variant='ghost' size='icon' style={{ width: '2rem', height: '2rem' }}>
+    <Button onClick={handleClick} variant='ghost' size='icon'>
       <Icons.Delete />
     </Button>
   );

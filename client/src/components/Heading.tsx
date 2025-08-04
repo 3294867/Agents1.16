@@ -1,8 +1,8 @@
-import { forwardRef } from 'react';
+import { forwardRef, HTMLAttributes } from 'react';
 import cn from 'src/utils/cn';
 import styles from './Heading.module.css';
 
-interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
+interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   variant?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   role?: string;
 }

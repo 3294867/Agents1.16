@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 
 interface Props {
   userId: string;

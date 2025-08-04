@@ -46,7 +46,7 @@ const AnimatedParagraph = ({ threadId, requestId, responseId, responseBody }: Pr
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
     >
-      <Paragraph variant='thin' className='leading-loose'>
+      <Paragraph variant='thin' style={{ lineHeight: '2' }}>
         {copy}
       </Paragraph>
     </motion.div>

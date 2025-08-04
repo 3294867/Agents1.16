@@ -1,30 +1,34 @@
-import { Button } from './Button';
-import { Dialog, DialogContent, DialogTitle } from './Dialog';
+import { Link } from 'react-router-dom';
+import Button from './Button';
+import Dialog from './Dialog';
 import Paragraph from './Paragraph';
-
+import styles from './Error.module.css';
+import Heading from './Heading';
 
 interface Props {
   error: string
-};
+}
 
 const Error = ({ error }: Props) => {
   return (
-    <Dialog open={true}>
-      <DialogContent>
-        <DialogTitle>Error</DialogTitle>
-        <Paragraph variant='thin' isMuted={true} className='mt-4'>
-          {error}
-        </Paragraph>
-        <div className='w-full flex justify-end'>
-          <a href='/'>
-            <Button>
-              Reload
-            </Button>
-          </a>
+    <Dialog.Root>
+      <Dialog.Content open={true}>
+        <div className={styles.container}>
+          <Heading variant='h4'>Error</Heading>
+          <Paragraph variant='thin' isMuted={true} className={styles.paragraph}>
+            {error}
+          </Paragraph>
+          <div className={styles.actions}>
+            <Link prefetch='intent' to='/'>
+              <Button>
+                Reload
+              </Button>
+            </Link>
+          </div>
         </div>
-      </DialogContent>
-    </Dialog>
-  )
+      </Dialog.Content>
+    </Dialog.Root>
+  );
 };
 
 export default Error;

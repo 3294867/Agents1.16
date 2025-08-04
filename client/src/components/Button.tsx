@@ -10,7 +10,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
   children?: ReactNode;
 }
 
-export const Button = forwardRef<HTMLButtonElement, Props>(
+const Button = forwardRef<HTMLButtonElement, Props>(
   ({ variant = 'default', size = 'default', isPressed = false, className, asChild, children, ...props }, ref) => {
     
     const variantClass =
@@ -54,3 +54,5 @@ export const Button = forwardRef<HTMLButtonElement, Props>(
   }
 );
 Button.displayName = 'Button';
+
+export default Button;

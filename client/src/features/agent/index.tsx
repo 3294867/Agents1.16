@@ -3,7 +3,7 @@ import Tabs from './tabs';
 import Actions from './Actions';
 import Thread from 'src/features/thread';
 import Error from 'src/components/Error';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 import hooks from 'src/hooks';
 import Icons from 'src/assets/Icons';
 import styles from './Agent.module.css';

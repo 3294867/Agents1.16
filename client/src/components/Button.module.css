@@ -89,7 +89,6 @@
 }
 
 /* Sizes */
-
 .defaultSize {
   height: 2.25rem; /* 36px */
   padding-left: 1rem; /* 16px */
@@ -117,8 +116,8 @@
 }
 
 .iconSize {
-  height: 2.25rem; /* 36px */
-  width: 2.25rem; /* 36px */
+  height: 2rem; /* 32px */
+  width: 2rem; /* 32px */
   border-radius: 9999px;
 }
 

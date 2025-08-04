@@ -1,6 +1,6 @@
 import Icons from 'src/assets/Icons';
-import { Button } from 'src/components/Button';
-import { Dropdown, DropdownContent, DropdownTrigger } from 'src/components/Dropdown';
+import Button from 'src/components/Button';
+import Dropdown from 'src/components/Dropdown';
 import constants from 'src/constants';
 import { AgentModel } from 'src/types';
 
@@ -11,14 +11,14 @@ interface Props {
 
 const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
   return (
-    <Dropdown>
-      <DropdownTrigger asChild>
+    <Dropdown.Root>
+      <Dropdown.Trigger asChild>
         <Button variant='outline' size='sm'>
           {agentModel}
           <Icons.ChevronDown style={{ marginLeft: '0.5rem', marginRight: '-0.25rem' }}/>
         </Button>
-      </DropdownTrigger>
-      <DropdownContent align='end' sideOffset={4} >
+      </Dropdown.Trigger>
+      <Dropdown.Content align='end' sideOffset={4} >
         {constants.agentModels
           .filter(m => m !== agentModel)
           .map(m => (
@@ -33,8 +33,8 @@ const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
             </Button>
           ))
         }
-      </DropdownContent>
-    </Dropdown>
+      </Dropdown.Content>
+    </Dropdown.Root>
   );
 };
 

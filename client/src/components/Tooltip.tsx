@@ -1,33 +1,38 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useRef, cloneElement, isValidElement } from 'react';
+import { useState, useRef, cloneElement, isValidElement, ReactNode, createContext, useContext, forwardRef, FC, RefObject, ReactElement, HTMLAttributes } from 'react';
+import cn from 'src/utils/cn';
 import styles from './Tooltip.module.css';
 
-const TooltipContext = React.createContext<{
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  triggerRef: React.RefObject<HTMLElement | null>;
+const Context = createContext<{
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  triggerRef: RefObject<HTMLElement | null>;
 } | null>(null);
 
-export const Tooltip: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [open, setOpen] = useState(false);
+interface RootProps {
+  children: ReactNode;
+}
+
+const Root: FC<RootProps> = ({ children }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
 
   return (
-    <TooltipContext.Provider value={{ open, setOpen, triggerRef }}>
+    <Context.Provider value={{ isOpen, setIsOpen, triggerRef }}>
       <span className={styles.tooltipContainer}>{children}</span>
-    </TooltipContext.Provider>
+    </Context.Provider>
   );
 };
 
-interface TooltipTriggerProps {
+interface TriggerProps {
   asChild?: boolean;
-  children: React.ReactElement;
+  children: ReactElement;
 }
 
-export const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ asChild, children }) => {
-  const ctx = React.useContext(TooltipContext);
-  if (!ctx) throw new Error('TooltipTrigger must be used within a Tooltip');
-  const { setOpen, triggerRef } = ctx;
+const Trigger: FC<TriggerProps> = ({ asChild, children }) => {
+  const ctx = useContext(Context);
+  if (!ctx) throw new Error('Tooltip.Trigger must be used within a Tooltip');
+  const { setIsOpen, triggerRef } = ctx;
 
   const childProps = {
     ref: (node: HTMLElement) => {
@@ -36,10 +41,10 @@ export const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ asChild, childre
       if (typeof childRef === 'function') childRef(node);
       else if (childRef && typeof childRef === 'object') childRef.current = node;
     },
-    onMouseEnter: () => setOpen(true),
-    onMouseLeave: () => setOpen(false),
-    onFocus: () => setOpen(true),
-    onBlur: () => setOpen(false),
+    onMouseEnter: () => setIsOpen(true),
+    onMouseLeave: () => setIsOpen(false),
+    onFocus: () => setIsOpen(true),
+    onBlur: () => setIsOpen(false),
     'aria-describedby': undefined as string | undefined,
     tabIndex: 0,
   };
@@ -50,24 +55,24 @@ export const TooltipTrigger: React.FC<TooltipTriggerProps> = ({ asChild, childre
   return <span {...childProps}>{children}</span>;
 };
 
-interface TooltipContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ContentProps extends HTMLAttributes<HTMLDivElement> {
   side?: 'top' | 'bottom' | 'left' | 'right';
   sideOffset?: number;
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
-export const TooltipContent = React.forwardRef<HTMLDivElement, TooltipContentProps>(
+const Content = forwardRef<HTMLDivElement, ContentProps>(
   ({ side = 'bottom', sideOffset = 4, style, children, ...props }, ref) => {
-    const ctx = React.useContext(TooltipContext);
+    const ctx = useContext(Context);
     const contentRef = useRef<HTMLDivElement>(null);
 
     const setRefs = (node: HTMLDivElement) => {
       if (typeof ref === 'function') ref(node);
-      else if (ref && typeof ref === 'object') (ref as React.RefObject<any>).current = node;
+      else if (ref && typeof ref === 'object') (ref as RefObject<any>).current = node;
       contentRef.current = node;
     };
-    if (!ctx) throw new Error('TooltipContent must be used within a Tooltip');
-    const { open } = ctx;
+    if (!ctx) throw new Error('Tooltip.Content must be used within a Tooltip');
+    const { isOpen } = ctx;
 
     const sideClass =
       side === 'top' ? styles.tooltipContentTop :
@@ -75,17 +80,15 @@ export const TooltipContent = React.forwardRef<HTMLDivElement, TooltipContentPro
       side === 'right' ? styles.tooltipContentRight :
       styles.tooltipContentBottom;
 
-    const className = [
-      styles.tooltipContent,
-      sideClass,
-      open ? styles.tooltipContentVisible : '',
-    ].filter(Boolean).join(' ');
-
     return (
       <div
         ref={setRefs}
         role='tooltip'
-        className={className}
+        className={cn(
+          styles.tooltipContent,
+          sideClass,
+          isOpen && styles.tooltipContentVisible,
+        )}
         style={{ ...style, ['--side-offset' as any]: `${sideOffset}px` }}
         {...props}
       >
@@ -94,4 +97,12 @@ export const TooltipContent = React.forwardRef<HTMLDivElement, TooltipContentPro
     );
   }
 );
-TooltipContent.displayName = 'TooltipContent';
+Content.displayName = 'Tooltip.Content';
+
+const Tooltip = {
+  Root,
+  Trigger,
+  Content
+};
+
+export default Tooltip;

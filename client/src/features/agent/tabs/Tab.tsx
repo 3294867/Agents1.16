@@ -73,7 +73,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
       onClick={() => handleSelectTab(tab.id, tab.agentId)}
     >
       <span className={styles.title}>
-        {tab.title === null ? 'New chat' : tab.title}
+        {tab.title ?? 'New chat'}
       </span>
       {tabs.length > 1 && (
         <button

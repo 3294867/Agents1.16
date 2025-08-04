@@ -1,38 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { cloneElement, createContext, FC, forwardRef, HTMLAttributes, isValidElement, ReactElement, ReactNode, useContext, useState } from 'react';
+import cn from 'src/utils/cn';
 import styles from './Dropdown.module.css';
+import dialogStyles from 'src/components/Dialog.module.css';
 
-const DropdownContext = createContext<{
+const Context = createContext<{
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
 } | null>(null);
 
-const Dropdown: FC<{ children: ReactNode }> = ({ children }) => {
+const Root: FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleBlur = () => {
+  const handleBlur = (event: React.FocusEvent<HTMLSpanElement>) => {
+    const relatedTarget = event.relatedTarget as HTMLElement;
+    if (relatedTarget && (
+      relatedTarget.closest(`.${dialogStyles.dialogContent}`) ||
+      relatedTarget.closest(`.${styles.dropdownNestedDialog}`)
+    )) {
+      return;
+    }
+    
     setTimeout(() => {
       setIsOpen(false);
-    }, 100);
+    }, 200);
   };
 
   return (
-    <DropdownContext.Provider value={{ isOpen, setIsOpen }}>
+    <Context.Provider value={{ isOpen, setIsOpen }}>
       <span onBlur={handleBlur} className={styles.dropdownContainer}>
         {children}
       </span>
-    </DropdownContext.Provider>
+    </Context.Provider>
   );
 };
 
-interface DropdownTriggerProps {
+interface TriggerProps {
   asChild?: boolean;
   children: ReactElement;
 }
 
-const DropdownTrigger: FC<DropdownTriggerProps> = ({ asChild, children }) => {
-  const ctx = useContext(DropdownContext);
-  if (!ctx) throw new Error('DropdownTrigger must be used within a Dropdown');
+const Trigger: FC<TriggerProps> = ({ asChild, children }) => {
+  const ctx = useContext(Context);
+  if (!ctx) throw new Error('Dropdown.Trigger must be used within a Dropdown');
   const { setIsOpen } = ctx;
 
   const childProps = {
@@ -48,18 +58,20 @@ const DropdownTrigger: FC<DropdownTriggerProps> = ({ asChild, children }) => {
   return <span>{children}</span>
 };
 
-interface DropdownContentProps extends HTMLAttributes<HTMLDivElement> {
+interface ContentProps extends HTMLAttributes<HTMLDivElement> {
   side?: 'top' | 'bottom' | 'left' | 'right';
   sideOffset?: number;
   align?: 'start' | 'center' | 'end';
   children: ReactNode;
 }
 
-const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
+const Content = forwardRef<HTMLDivElement, ContentProps>(
   ({ side = 'bottom', sideOffset = 4, align = 'start', style, children, ...props }, ref) => {
-    const ctx = useContext(DropdownContext);
-    if (!ctx) throw new Error('DropdownContent must be used within a Dropdown');
+    const ctx = useContext(Context);
+    if (!ctx) throw new Error('Dropdown.Content must be used within a Dropdown');
     const { isOpen } = ctx;
+
+    if (!isOpen) return null;
 
     const sideClass =
       side === 'top' ? styles.dropdownContentTop :
@@ -72,17 +84,15 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
       align === 'center' ? styles.dropdownContentCenter :
       styles.dropdownContentEnd;
     
-    const className = [
-      styles.dropdownContent,
-      sideClass,
-      alignClass,
-      isOpen ? styles.dropdownContentVisible : styles.dropdownContentNotVisible,
-    ].filter(Boolean).join(' ');
-
     return (
       <div
         ref={ref}
-        className={className}
+        className={cn(
+          styles.dropdownContent,
+          sideClass,
+          alignClass,
+          styles.dropdownContentVisible
+        )}
         style={{ ...style, ['--side-offset' as any]: `${sideOffset}px` }}
         {...props}
       >
@@ -91,10 +101,12 @@ const DropdownContent = forwardRef<HTMLDivElement, DropdownContentProps>(
     );
   }
 );
-DropdownContent.displayName = 'DropdownContent';
+Content.displayName = 'Dropdown.Content';
 
-export {
-  Dropdown,
-  DropdownTrigger,
-  DropdownContent
+const Dropdown = {
+  Root,
+  Trigger,
+  Content,
 };
+
+export default Dropdown;

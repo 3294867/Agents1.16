@@ -3,7 +3,7 @@ import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Heading from 'src/components/Heading';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 import Icons from 'src/assets/Icons';
 
 interface TitleProps {
@@ -50,7 +50,7 @@ const BookmarkButton = ({ threadId, currentIsBookmarked }: BookmarkButtonProps) 
   };
   
   return (
-    <Button onClick={handleClick} variant='ghost' size='icon' style={{ width: '2rem', height: '2rem' }}>
+    <Button onClick={handleClick} variant='ghost' size='icon'>
       {currentIsBookmarked ? <Icons.BookmarkFilled /> : <Icons.BookmarkOutlined />}
     </Button>
   );

@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
-import { Button } from 'src/components/Button';
-import { Tooltip, TooltipContent, TooltipTrigger } from 'src/components/Tooltip';
+import Button from 'src/components/Button';
+import Tooltip from 'src/components/Tooltip';
 import styles from './Agents.module.css';
 import { Agent } from 'src/types';
 import Icons from 'src/assets/Icons';
@@ -14,10 +14,10 @@ const Agents = ({ userId, agents }: Props) => {
   const { agentName } = useParams();
 
   return (
-    <div className='flex flex-col gap-2 mt-28'>
+    <div className={styles.agentsContainer}>
       {agents.map(a => (
-        <Tooltip key={a.name}>
-          <TooltipTrigger asChild>
+        <Tooltip.Root key={a.name}>
+          <Tooltip.Trigger asChild>
             <Link prefetch='intent' to={`/${a.name}`}> 
               <Button
                 variant='outline'
@@ -27,11 +27,11 @@ const Agents = ({ userId, agents }: Props) => {
                 {a.name[0].toUpperCase()}
               </Button>
             </Link>
-          </TooltipTrigger>
-          <TooltipContent side='right' sideOffset={12}>
+          </Tooltip.Trigger>
+          <Tooltip.Content side='right' sideOffset={12}>
             {a.name}
-          </TooltipContent>
-        </Tooltip>
+          </Tooltip.Content>
+        </Tooltip.Root>
       ))}
       <Button variant='outline' size='icon'>
         <Icons.Add />

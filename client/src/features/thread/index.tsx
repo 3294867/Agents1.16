@@ -14,7 +14,7 @@ interface Props {
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
-};
+}
 
 const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
   const { threadId } = useParams();

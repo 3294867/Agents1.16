@@ -1,27 +1,26 @@
 import { Outlet } from 'react-router-dom';
-import Sidebar from 'src/features/layout/sidebar';
-import useHandleBreakpoint from 'src/hooks/useHandleBreakpoint';
 import hooks from 'src/hooks';
 import Error from 'src/components/Error';
-import styles from './Layout.module.css';
-import { Button } from 'src/components/Button';
+import Sidebar from 'src/features/layout/sidebar';
+import Button from 'src/components/Button';
 import Icons from 'src/assets/Icons';
+import styles from './Layout.module.css';
 
 interface Props {
   userId: string;
 }
 
 const Layout = ({ userId }: Props) => {
-  const isMobile = useHandleBreakpoint({ windowInnerWidth: 480 });
+  const isMobile = hooks.useHandleBreakpoint({ windowInnerWidth: 480 });
   const { agents, error, isLoading } = hooks.useGetAgents({ userId });
-  
+
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />
   if (!agents) return <Error error='Something went wrong. Try again later.' />;
 
   return (
-    <div style={{ backgroundColor: 'bg-background' }}>
-      <div className='min-h-screen w-full mx-auto xl:max-w-screen-xl 2xl:max-w-screen-2xl xs:border-x-[1px] border-border bg-background'>
+    <div className={styles.layoutWrapper}>
+      <div className={styles.layoutContainer}>
         <Sidebar userId={userId} agents={agents} isMobile={isMobile} />
         <Outlet />
       </div>
@@ -33,10 +32,10 @@ export default Layout;
 
 const Loading = () => {
   return (
-    <div style={{ backgroundColor: 'bg-background' }}>
-      <div className='min-h-screen w-full mx-auto xl:max-w-screen-xl 2xl:max-w-screen-2xl xs:border-x-[1px] border-border bg-background'>
+    <div className={styles.layoutWrapper}>
+      <div className={styles.layoutContainer}>
         <aside className={styles.sidebar}>
-          <div className='flex mt-28'>
+          <div className={styles.topSection}>
             <Button variant='outline' size='icon' />
           </div>
           <div className={styles.bottomSection}>

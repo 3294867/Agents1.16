@@ -1,5 +1,5 @@
 import Icons from 'src/assets/Icons';
-import { Button } from 'src/components/Button';
+import Button from 'src/components/Button';
 import dispatchEvent from 'src/events/dispatchEvent';
 
 interface Props {
@@ -20,7 +20,7 @@ const EditButton = ({ requestId, setIsEditing }: Props) => {
   };
   
   return (
-    <Button onClick={handleClick} variant='ghost' size='icon' style={{ width: '2rem', height: '2rem' }}>
+    <Button onClick={handleClick} variant='ghost' size='icon'>
       <Icons.Edit />
     </Button>
   );
