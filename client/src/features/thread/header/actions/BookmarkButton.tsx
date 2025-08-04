@@ -22,7 +22,11 @@ const BookmarkButton = ({ threadId, currentIsBookmarked }: Props) => {
   };
   
   return (
-    <Button variant='dropdown' onClick={handleClick}>
+    <Button
+      variant='dropdown'
+      onClick={handleClick}
+      style={{ width: '100%' }}
+    >
       <Icons.BookmarkOutlined style={{ marginRight: '0.5rem' }}/>
       Bookmark
     </Button>

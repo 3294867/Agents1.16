@@ -32,7 +32,7 @@ const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
         </Dropdown.Trigger>
         <Dropdown.Content align='end'>
           {!currentIsBookmarked && <BookmarkButton threadId={threadId} currentIsBookmarked={currentIsBookmarked} />}
-          <DeleteDialog threadId={threadId} agentName={agentName} isNestedInDropdown={true} />
+          <DeleteDialog threadId={threadId} agentName={agentName} />
         </Dropdown.Content>
       </Dropdown.Root>
     </div>

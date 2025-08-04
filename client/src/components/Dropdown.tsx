@@ -2,7 +2,6 @@
 import { cloneElement, createContext, FC, forwardRef, HTMLAttributes, isValidElement, ReactElement, ReactNode, useContext, useState } from 'react';
 import cn from 'src/utils/cn';
 import styles from './Dropdown.module.css';
-import dialogStyles from 'src/components/Dialog.module.css';
 
 const Context = createContext<{
   isOpen: boolean;
@@ -14,21 +13,21 @@ const Root: FC<{ children: ReactNode }> = ({ children }) => {
 
   const handleBlur = (event: React.FocusEvent<HTMLSpanElement>) => {
     const relatedTarget = event.relatedTarget as HTMLElement;
-    if (relatedTarget && (
-      relatedTarget.closest(`.${dialogStyles.dialogContent}`) ||
-      relatedTarget.closest(`.${styles.dropdownNestedDialog}`)
-    )) {
-      return;
-    }
-    
+    const deleteDialogTriggerElement = document.getElementById('delete-dialog-trigger');
+    if (
+      relatedTarget &&
+      deleteDialogTriggerElement &&
+      relatedTarget === deleteDialogTriggerElement
+    ) return;
+
     setTimeout(() => {
       setIsOpen(false);
-    }, 200);
+    }, 100);
   };
 
   return (
     <Context.Provider value={{ isOpen, setIsOpen }}>
-      <span onBlur={handleBlur} className={styles.dropdownContainer}>
+      <span onBlur={(e: React.FocusEvent<HTMLSpanElement>) => handleBlur(e)} className={styles.dropdownContainer}>
         {children}
       </span>
     </Context.Provider>

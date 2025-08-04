@@ -12,10 +12,9 @@ import styles from './DeleteDialog.module.css';
 interface Props {
   threadId: string;
   agentName: string;
-  isNestedInDropdown?: boolean;
 }
 
-const DeleteDialog = ({ threadId, agentName, isNestedInDropdown = false }: Props) => {
+const DeleteDialog = ({ threadId, agentName }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
@@ -26,17 +25,17 @@ const DeleteDialog = ({ threadId, agentName, isNestedInDropdown = false }: Props
   };
 
   return (
-    <Dialog.Root isNestedInDropdown={isNestedInDropdown}>
+    <Dialog.Root>
       <Dialog.Trigger asChild>
-        <Button variant="dropdown">
-          <Icons.Delete style={{ marginRight: '0.5rem' }} />
+        <Button id='delete-dialog-trigger' variant='dropdown' style={{ width: '100%' }}>
+          <Icons.Delete style={{ marginRight: '0.5rem' }}/>
           Delete
         </Button>
       </Dialog.Trigger>
-      <Dialog.Content isNestedInDropdown={isNestedInDropdown} className={isNestedInDropdown ? styles.dropdownNestedDialog : undefined}>
-        <div className={styles.container} style={isNestedInDropdown ? { padding: 0, gap: '0.5rem' } : {}}>
-          <Heading variant="h4">Delete conversation</Heading>
-          <Paragraph variant="thin" isMuted={true} className={styles.paragraph}>
+      <Dialog.Content isNestedInDropdown={true}>
+        <div className={styles.container}>
+          <Heading variant='h4'>Delete conversation</Heading>
+          <Paragraph variant='thin' isMuted={true} className={styles.paragraph}>
             Are you sure you want to delete this conversation? This action cannot be undone.
           </Paragraph>
           <div className={styles.actions}>

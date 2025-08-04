@@ -1,4 +1,5 @@
 import { cloneElement, createContext, FC, isValidElement, ReactElement, ReactNode, useContext, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Button from './Button';
 import Icons from 'src/assets/Icons';
 import styles from './Dialog.module.css';
@@ -11,15 +12,18 @@ const Context = createContext<{
 
 interface RootProps {
   children: ReactNode;
-  isNestedInDropdown?: boolean;
+  id?: string | undefined;
 }
 
-const Root: FC<RootProps> = ({ children, isNestedInDropdown = false }) => {
+const Root: FC<RootProps> = ({ children, id = undefined }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Context.Provider value={{ isOpen, setIsOpen }}>
-      <span className={cn(styles.dialogContainer, isNestedInDropdown && styles.nestedDialogContainer)}>
+      <span
+        className={cn(styles.dialogContainer)}
+        id={id}
+      >
         {children}
       </span>
     </Context.Provider>
@@ -35,12 +39,16 @@ const Overlay: FC<OverlayProps> = ({ isNestedInDropdown = false }) => {
   if (!ctx) throw new Error('Dialog.Overlay must be within a Dialog');
   const { setIsOpen } = ctx;
 
-  return (
+  const overlay = (
     <div
-      className={cn(styles.dialogOverlay, isNestedInDropdown && styles.nestedDialogOverlay)}
+      className={cn(styles.dialogOverlay)}
       onClick={isNestedInDropdown ? undefined : () => setIsOpen(false)}
     />
   );
+  
+  return isNestedInDropdown
+    ? createPortal(overlay, document.body)
+    : overlay;
 };
 
 interface TriggerProps {
@@ -80,9 +88,9 @@ const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdo
 
   useEffect(() => {
     if (open !== undefined) setIsOpen(open);
-  }, [open, setIsOpen]);
+  },[open]);
 
-  return isOpen ? (
+  const content = isOpen ? (
     <>
       <Overlay isNestedInDropdown={isNestedInDropdown} />
       <div className={cn(styles.dialogContent, className)}>
@@ -93,6 +101,10 @@ const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdo
       </div>
     </>
   ) : null;
+  
+  return isNestedInDropdown
+    ? createPortal(content, document.body)
+    : content;
 };
 
 const Close: FC = () => {

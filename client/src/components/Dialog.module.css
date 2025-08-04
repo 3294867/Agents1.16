@@ -1,19 +1,13 @@
 .dialogContainer {
   position: relative;
-  display: block;
-  height: 100vh;
-  width: 100vh;
-}
-
-.nestedDialogContainer {
   display: inline-block;
 }
 
 .dialogOverlay {
   position: fixed;
-  z-index: 50;
+  z-index: 100;
   inset: 0;
-  background: rgb(21, 21, 21);
+  background-color: rgb(21, 21, 21);
   opacity: 0.8;
   animation: fadeIn 0.15s;
 }
@@ -21,11 +15,6 @@
 @keyframes fadeIn {
   from { opacity: 0 }
   to { opacity: 1 }
-}
-
-.nestedDialogOverlay {
-  z-index: 999 !important;
-  background: transparent !important;
 }
 
 .dialogContent {
@@ -42,7 +31,7 @@
   border: 1px solid var(--border);
   border-radius: 1rem;
   box-shadow: 0 24px 24px rgba(0,0,0,0.15);
-  background: var(--background);
+  background-color: var(--background);
   padding: 1.5rem;
 }
 
