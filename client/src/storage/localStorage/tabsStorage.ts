@@ -84,7 +84,6 @@ const tabsStorage = {
           );
 
         const updatedTabs = [...remainingTabs] as Tab[];
-
         localStorage.setItem(`${agentName}_tabs`, JSON.stringify(updatedTabs));
 
         /** Dispatch tabsUpdated event (Events) */

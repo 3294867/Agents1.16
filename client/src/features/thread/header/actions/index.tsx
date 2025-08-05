@@ -4,6 +4,7 @@ import Tooltip from 'src/components/Tooltip';
 import DeleteDialog from './DeleteDialog';
 import Button from 'src/components/Button';
 import Icons from 'src/assets/Icons';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {
   threadId: string;
@@ -12,6 +13,9 @@ interface Props {
 }
 
 const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
+  const savedTabs = tabsStorage.load(agentName);
+  if (!savedTabs) return;
+
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '1.5', justifyContent: 'end', alignItems: 'start'}}>
       <Tooltip.Root>

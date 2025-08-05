@@ -21,13 +21,14 @@ const DeleteDialog = ({ threadId, agentName }: Props) => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
     tabsStorage.deleteTab(agentName, threadId);
+    
     navigate(`/${agentName}`);
   };
 
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <Button id='delete-dialog-trigger' variant='dropdown' style={{ width: '100%' }}>
+        <Button data-prevent-dropdown-close variant='dropdown' style={{ width: '100%' }}>
           <Icons.Delete style={{ marginRight: '0.5rem' }}/>
           Delete
         </Button>

@@ -39,7 +39,7 @@ const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error
       throw new Error(`Failed to fetch agent: ${error}`);
     }
   }, [agentName, userId]);
-  
+
   return { agent, error, isLoading };
 };
 

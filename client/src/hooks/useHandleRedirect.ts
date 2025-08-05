@@ -19,25 +19,17 @@ const useHandleRedirect = ({ userId }: Props): void => {
 
     try {
       const redirect = async () => {
-        let agent = await indexedDB.getAgent({
-          userId,
-          agentName
-        });
-        if (!agent) {
-          agent = await postgresDB.getAgent({
-            userId,
-            agentName
-          })
-        }
+        let agent = await indexedDB.getAgent({ userId, agentName });
+        if (!agent) agent = await postgresDB.getAgent({ userId, agentName });
   
         const savedTabs = tabsStorage.load(agentName);
-        if (!savedTabs) {
+        if (!savedTabs || savedTabs.length === 0) {
           const id = uuidV4();
           const createdThread = await postgresDB.createThread({
             id,
             userId,
             agentId: agent.id,
-          })
+          });
           if (!createdThread) return;
           await indexedDB.addThread({ thread: createdThread }).then(() => {
             const tab = {
@@ -57,7 +49,6 @@ const useHandleRedirect = ({ userId }: Props): void => {
     } catch (error) {
       throw new Error(`Failed to redirect: ${error}`);
     }
-    
   },[agentName, userId]);
 };
 

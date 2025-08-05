@@ -12,13 +12,12 @@ const Root: FC<{ children: ReactNode }> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleBlur = (event: React.FocusEvent<HTMLSpanElement>) => {
-    const relatedTarget = event.relatedTarget as HTMLElement;
-    const deleteDialogTriggerElement = document.getElementById('delete-dialog-trigger');
-    if (
-      relatedTarget &&
-      deleteDialogTriggerElement &&
-      relatedTarget === deleteDialogTriggerElement
-    ) return;
+    const relatedTarget = event.relatedTarget as HTMLElement | null;
+    if (relatedTarget) {
+      const isPreventClose = relatedTarget.hasAttribute('data-prevent-dropdown-close') ||
+        !!relatedTarget.closest('[data-prevent-dropdown-close]');
+      if (isPreventClose) return;
+    }
 
     setTimeout(() => {
       setIsOpen(false);

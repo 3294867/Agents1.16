@@ -12,18 +12,14 @@ const Context = createContext<{
 
 interface RootProps {
   children: ReactNode;
-  id?: string | undefined;
 }
 
-const Root: FC<RootProps> = ({ children, id = undefined }) => {
+const Root: FC<RootProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Context.Provider value={{ isOpen, setIsOpen }}>
-      <span
-        className={cn(styles.dialogContainer)}
-        id={id}
-      >
+      <span className={cn(styles.dialogContainer)} >
         {children}
       </span>
     </Context.Provider>
@@ -46,9 +42,7 @@ const Overlay: FC<OverlayProps> = ({ isNestedInDropdown = false }) => {
     />
   );
   
-  return isNestedInDropdown
-    ? createPortal(overlay, document.body)
-    : overlay;
+  return createPortal(overlay, document.body);
 };
 
 interface TriggerProps {
@@ -102,9 +96,7 @@ const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdo
     </>
   ) : null;
   
-  return isNestedInDropdown
-    ? createPortal(content, document.body)
-    : content;
+  return createPortal(content, document.body);
 };
 
 const Close: FC = () => {

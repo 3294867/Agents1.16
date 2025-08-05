@@ -38,16 +38,12 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
     setInput('');
 
     if (threadBodyLength === 0) {
-      /** Create thread title (OpenAI) */
+      /** Update thread title (OpenAI, PostgresDB, IndexedDB) */
       const threadTitle = await openai.createThreadTitle({
         question: input,
         answer: responseBody
       });
-
-      /** Update thread title (PostgresDB) */
       await postgresDB.updateThreadTitle({ threadId, threadTitle });
-
-      /** Update thread title (IndexedDB) */
       await indexedDB.updateThreadTitle({ threadId, threadTitle });
 
       /** Update tabs (localStorage) */

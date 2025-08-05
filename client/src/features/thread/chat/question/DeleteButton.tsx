@@ -23,20 +23,14 @@ const DeleteButton = ({
   agentId
 }: Props) => {
   const handleClick = async () => {
-    /** Update thread body (IndexedDB) */
+    /** Update thread body (PostgresDB, IndexedDB) */
     await indexedDB.deleteQuery({ threadId, requestId });
-
-    /** Update thread body (PostgresDB) */
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
 
     if (threadBodyLength == 1) {
-      /** Remove thread title (IndexedDB) */
+      /** Remove thread title (IndexedDB, PostgresDB, localStorage) */
       await indexedDB.removeThreadTitle({ threadId });
-
-      /** Remove thread title (PostgresDB) */
       await postgresDB.removeThreadTitle({ threadId });
-      
-      /** Remove title from the thread (localStorage) */
       tabsStorage.update(agentName, agentId, threadId, null);
 
       /** Dispatch threadTitleUpdated event (Events) */
