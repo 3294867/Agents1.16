@@ -8,11 +8,10 @@ interface Props {
   agentId: string;
 }
 
-const createThread = async (req: Request, res: Response) => {
+const addThread = async (req: Request, res: Response) => {
   const { id, userId, agentId }: Props = req.body;
 
   try {
-    /** Insert thread into the database (PostgresDB) */
     const queryText = `
       INSERT INTO "Thread" (
         "id",
@@ -32,18 +31,17 @@ const createThread = async (req: Request, res: Response) => {
       userId,
       agentId
     ])
-    if (!result) return sendResponse(res, 503, "Failed to create thread");
+    if (!result) return sendResponse(res, 503, "Failed to add thread");
 
-    /** On success send data (Client) */
     res.status(200).json({
-      message: "Thread fetched",
+      message: "Thread added",
       data: result.rows[0]
     });
 
   } catch (error) {
-    console.error("Failed to create thread: ", error);
+    console.error("Failed to add thread: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
 
-export default createThread;
+export default addThread;

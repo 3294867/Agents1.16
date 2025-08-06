@@ -3,7 +3,6 @@ interface Props {
   isBookmarked: boolean;
 }
 
-/** Updates 'isBookmarked' property of the thread (PostgresDB) */
 const updatedThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-thread-is-bookmarked`, {

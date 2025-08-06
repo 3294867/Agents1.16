@@ -26,7 +26,10 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
     e.preventDefault();
     
     /** Create response (OpenAI) */
-    const responseBody = await openai.createResponse({ threadId, agentModel, input });
+    const responseBody = await openai.createResponse({ agentId, agentModel, input });
+
+    /** Infer type of an agent (OpenAI) */
+    const inferredAgentType = await openai.inferAgentType({ agentId, input });
     
     /** Update thread body (PostgresDB) */
     const { requestId, responseId } = await postgresDB.addQuery({
@@ -58,7 +61,8 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
         requestBody: input,
         responseId: responseId,
         responseBody,
-        isNew: true
+        isNew: true,
+        inferredAgentType
       }
     });
   };

@@ -1,13 +1,15 @@
 import { db } from 'src/storage/indexedDB';
+import { AgentType } from 'src/types';
 
 interface Props {
   threadId: string;
   requestId: string;
   responseBody: string;
+  inferredAgentType: AgentType;
 }
 
 /** Updates query on pause (IndexedDB) */
-const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Promise<void> => {
+const pauseResponse = async ({ threadId, requestId, responseBody, inferredAgentType }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
     const threadBodyArray = Array.isArray(savedThread?.body) ? savedThread.body : [];
@@ -21,7 +23,8 @@ const pauseResponse = async ({ threadId, requestId, responseBody }: Props): Prom
       requestBody: savedQuery.requestBody,
       responseId: savedQuery.responseId,
       responseBody,
-      isNew: false
+      isNew: false,
+      inferredAgentType
     };
 
     const filteredThreadBodyArray = threadBodyArray.filter(q => q.requestId !== requestId);

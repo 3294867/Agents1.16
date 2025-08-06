@@ -2,7 +2,6 @@ interface Props {
   threadId: string;
 }
 
-/** Deletes thread (PostgresDB) */
 const deleteThread = async ({ threadId }: Props): Promise<void> => {
   const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/delete-thread`, {
     method: 'POST',

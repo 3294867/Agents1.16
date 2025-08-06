@@ -3,20 +3,35 @@ import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/Icons';
-import { AgentModel } from 'src/types';
+import { AgentModel, AgentType } from 'src/types';
+import styles from './PauseRunButton.module.css';
+import Button from 'src/components/Button';
 
 interface Props {
   threadId: string;
+  agentId: string;
+  agentModel: AgentModel;
   requestId: string;
   responseId: string;
   input: string;
   isNew: boolean;
+  inferredAgentType: AgentType;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
-  agentModel: AgentModel;
 }
 
-const PauseRunButton = ({ threadId, requestId, responseId, input, isNew, isEditing, setIsEditing, agentModel }: Props) => {
+const PauseRunButton = ({
+  threadId,
+  agentId,
+  agentModel,
+  requestId,
+  responseId,
+  input,
+  isNew,
+  inferredAgentType,
+  isEditing,
+  setIsEditing
+}: Props) => {
   const handlePause = () => {
     setIsEditing(true);
     dispatchEvent.responsePaused(requestId);
@@ -25,40 +40,37 @@ const PauseRunButton = ({ threadId, requestId, responseId, input, isNew, isEditi
   const handleRun = async () => {
     setIsEditing(false);
     
-    /** Create response (openai) */
-    const response = await openai.createResponse({ threadId, agentModel, input });
-
-    /** Update request body (PostgresDB) */
+    const response = await openai.createResponse({ agentId, agentModel, input });
     await postgresDB.updateRequestBody({ requestId, requestBody: input });
-    
-    /** Update response body (PostgresDB) */
     await postgresDB.updateResponseBody({ responseId, responseBody: response });
-    
-    /** Update query (IndexedDB) */
     const query = {
       requestId,
       requestBody: input,
       responseId,
       responseBody: response,
-      isNew: true
+      isNew: true,
+      inferredAgentType
     };
     await indexedDB.updateQuery({ threadId, query });
   };
-
-  return isEditing
-    ? (
-      <button onClick={handleRun} style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }}>
-        <Icons.Run />
-      </button>
-    ) : (
-      isNew ? (
-        <button onClick={handlePause} style={{ width: '1.25rem', height: '1.25rem', cursor: 'pointer' }}>
-          <Icons.Pause />
-        </button>
+  
+  return (
+    <div className={styles.container}>
+      {isEditing ? (
+        <Button onClick={handleRun} size='icon' variant='outline' style={{ width: '2rem', height: '2rem' }}>
+          <Icons.Run />
+        </Button>
       ) : (
-        null
-      )
-    );
+        isNew ? (
+          <Button onClick={handlePause} size='icon' variant='outline' style={{ width: '2rem', height: '2rem' }}>
+            <Icons.Pause />
+          </Button>
+        ) : (
+          null
+        )
+      )}
+    </div>
+  );
 };
 
 export default PauseRunButton;

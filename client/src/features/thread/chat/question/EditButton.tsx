@@ -1,6 +1,6 @@
-import Icons from 'src/assets/Icons';
 import Button from 'src/components/Button';
 import dispatchEvent from 'src/events/dispatchEvent';
+import Icons from 'src/assets/Icons';
 
 interface Props {
   requestId: string;

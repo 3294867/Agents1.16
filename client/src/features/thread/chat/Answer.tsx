@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import Paragraph from 'src/components/Paragraph';
 import hooks from 'src/hooks';
+import { AgentType } from 'src/types';
 
 interface AnswerProps {
   threadId: string;
@@ -8,9 +9,10 @@ interface AnswerProps {
   responseId: string;
   responseBody: string;
   isNew: boolean;
+  inferredAgentType: AgentType;
 }
 
-const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: AnswerProps) => {
+const Answer = ({ threadId, requestId, responseId, responseBody, isNew, inferredAgentType }: AnswerProps) => {
   return isNew
     ? (
       <AnimatedParagraph
@@ -18,6 +20,7 @@ const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: Answer
         requestId={requestId}
         responseId={responseId}
         responseBody={responseBody}
+        inferredAgentType={inferredAgentType}
       />
     )
     : <Paragraph style={{ lineHeight: '2' }}>{responseBody}</Paragraph>;
@@ -25,19 +28,21 @@ const Answer = ({ threadId, requestId, responseId, responseBody, isNew }: Answer
 
 export default Answer;
 
-interface ProgressiveParagraphProps {
+interface AnimatedParagraphProps {
   threadId: string;
   requestId: string;
   responseId: string;
   responseBody: string;
+  inferredAgentType: AgentType;
 }
 
-const AnimatedParagraph = ({ threadId, requestId, responseId, responseBody }: ProgressiveParagraphProps) => {
+const AnimatedParagraph = ({ threadId, requestId, responseId, responseBody, inferredAgentType }: AnimatedParagraphProps) => {
   const copy = hooks.useHandleAnimatedParagraph({
-    threadId: threadId,
-    requestId: requestId,
-    responseId: responseId,
-    responseBody: responseBody
+    threadId,
+    requestId,
+    responseId,
+    responseBody,
+    inferredAgentType
   });
 
   return (

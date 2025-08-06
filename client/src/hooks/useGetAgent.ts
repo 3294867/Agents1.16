@@ -7,7 +7,6 @@ interface Props {
   agentName: string | undefined; 
 }
 
-/** Handles fetching agent */
 const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error: string | null, isLoading: boolean } => {
   const [agent, setAgent] = useState<Agent | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -23,7 +22,7 @@ const useGetAgent = ({ userId, agentName }: Props): { agent: Agent | null, error
         setIsLoading(true);
         setError(null);
         
-        const agentData = await indexedDB.getAgent({ userId, agentName });
+        const agentData = await indexedDB.getAgentByName({ userId, agentName });
         
         if (!agentData) {
           setError('Incorrect agent name');

@@ -5,35 +5,45 @@ import indexedDB from 'src/storage/indexedDB';
 import openai from 'src/opanai';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import Icons from 'src/assets/Icons';
 import Button from 'src/components/Button';
+import Icons from 'src/assets/Icons';
+import { AgentType } from 'src/types';
 
 interface Props {
   userId: string;
   agentId: string;
   agentName: string;
   threadId: string;
+  threadBodyLength: number;
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
+  inferredAgentType: AgentType;
 }
 
-const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBody, responseId, responseBody }: Props) => {
+const MoveButton = ({
+  userId,
+  agentId,
+  agentName,
+  threadId,
+  threadBodyLength,
+  requestId,
+  requestBody,
+  responseId,
+  responseBody,
+  inferredAgentType
+}: Props) => {
   const navigate = useNavigate();
-  const currentThreadPositionY = hooks.useHandleMoveButton();
+  const currentThreadPositionY = hooks.useHandleThreadPostionY();
   
   const handleClick = async () => {
-    /** Update 'body' property of the current thread (IndexedDB) */
+    /** Remove query from the 'body' property of the current thread (IndexedDB, PostgresDB) */
     await indexedDB.deleteQuery({ threadId, requestId });
-
-    /** Update 'body' property of the current thread  (PostgresDB) */
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
     
-    /** Get first query of the thread */
-    const firstQuery = await indexedDB.getFirstQuery({ threadId });
-
     /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB) */
+    const firstQuery = await indexedDB.getFirstQuery({ threadId });
     if (firstQuery) {
       const threadTitle = await openai.createThreadTitle({
         question: firstQuery.requestBody,
@@ -65,7 +75,7 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
 
     /** Create new thread (PostgresDB) */
     const newThreadId = uuidV4();
-    const newThread = await postgresDB.createThread({
+    const newThread = await postgresDB.addThread({
       id: newThreadId, userId, agentId
     });
     if (!newThread) return;
@@ -74,28 +84,29 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
     const updatedNewThread = { ...newThread, positionY: 0 };
     await indexedDB.addThread({ thread: updatedNewThread });
 
-    /** Add query to the 'body' property of the current thread (PostgresDB) */
+    /** Add query to the 'body' property of the new thread (IndexedDB, PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addQuery({
       threadId: newThreadId, requestBody, responseBody
     });
-
-    /** Add query to the 'body' property of the current thread (IndexedDB) */
-    const query ={ requestId: newRequestId, requestBody, responseId: newResponseId, responseBody, isNew: true }
+    const query ={
+      requestId: newRequestId,
+      requestBody,
+      responseId: newResponseId,
+      responseBody,
+      isNew: true,
+      inferredAgentType
+    }
     await indexedDB.addQuery({ threadId: newThreadId, query });
 
-    /** Create thread title (OpenAI) */
+    /** Create and update 'title' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
     const newThreadTitle = await openai.createThreadTitle({
       question: requestBody,
       answer: responseBody
     });
-
-    /** Update 'title' property of the new thread (PostgresDB) */
     await postgresDB.updateThreadTitle({
       threadId: newThreadId,
       threadTitle: newThreadTitle
     });
-
-    /** Update 'title' property of the new thread (IndexedDB) */
     await indexedDB.updateThreadTitle({
       threadId: newThreadId,
       threadTitle: newThreadTitle
@@ -109,7 +120,7 @@ const MoveButton = ({ userId, agentId, agentName, threadId, requestId, requestBo
     navigate(`/${agentName}/${newThreadId}`);
   };
   
-  return (
+  return threadBodyLength > 1 && (
     <Button onClick={handleClick} variant='ghost' size='icon'>
       <Icons.Move />
     </Button>

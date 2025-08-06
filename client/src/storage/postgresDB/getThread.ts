@@ -4,7 +4,6 @@ interface Props {
   threadId: string;
 }
 
-/** Fetches thread (PostgresDB) */
 const getThread = async ({ threadId }: Props): Promise<Thread> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread`, {

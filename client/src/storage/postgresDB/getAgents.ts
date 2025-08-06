@@ -4,7 +4,6 @@ interface Props {
   userId: string;
 }
 
-/** Fetches agents (PostgresDB) */
 const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agents`, {

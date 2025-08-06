@@ -5,10 +5,9 @@ interface Props {
   agentName: string;
 }
 
-/** Fetches agent (PostgresDB) */
-const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
+const getAgentByName = async ({ userId, agentName }: Props): Promise<Agent> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agent`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agent-by-name`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, agentName })
@@ -28,4 +27,4 @@ const getAgent = async ({ userId, agentName }: Props): Promise<Agent> => {
   }
 };
 
-export default getAgent;
+export default getAgentByName;

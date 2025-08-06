@@ -12,7 +12,7 @@ interface Props {
 
 const Layout = ({ userId }: Props) => {
   const isMobile = hooks.useHandleBreakpoint({ windowInnerWidth: 480 });
-  const { agents, error, isLoading } = hooks.useGetAgents({ userId });
+  const { agents, error, isLoading } = hooks.useHandleAgents({ userId });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />

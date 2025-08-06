@@ -3,7 +3,6 @@ interface Props {
   threadTitle: string | null;
 }
 
-/** Updates 'title' property of the thread (PostgresDB) */
 const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-thread-title`, {

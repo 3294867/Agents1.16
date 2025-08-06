@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-const useHandleMoveButton = () => {
+const useHandleThreadPostionY = () => {
   const [currentThreadPositionY, setCurrentThreadPositionY] = useState<number>(0);
 
   /** Set 'positionY' property of the current thread (UI) */
@@ -13,4 +13,4 @@ const useHandleMoveButton = () => {
   return currentThreadPositionY;
 };
 
-export default useHandleMoveButton;
+export default useHandleThreadPostionY;

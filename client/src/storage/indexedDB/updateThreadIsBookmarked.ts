@@ -5,7 +5,6 @@ interface Props {
   isBookmarked: boolean;
 }
 
-/** Updates 'isBookmarked' property of the thread (IndexedDB) */
 const updateThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(threadId, { isBookmarked });

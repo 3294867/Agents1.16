@@ -6,7 +6,6 @@ interface Props {
   thread: Thread;
 }
 
-/** Updates thread (IndexedDB) */
 const updateThread = async ({ thread }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(thread.id, { ...thread });

@@ -6,9 +6,8 @@ interface Props {
   agentId: string;
 }
 
-/** Creates thread (PostgresDB) */
-const createThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-thread`, {
+const addThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
+  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/add-thread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -22,9 +21,9 @@ const createThread = async ({ id, userId, agentId }: Props): Promise<Thread> => 
   }
 
   const data: { message: string, data: Thread | null } = await response.json();
-  if (!data.data) throw new Error('Failed to create thread');
+  if (!data.data) throw new Error('Failed to add thread');
 
   return data.data;
 };
 
-export default createThread;
+export default addThread;

@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
 import indexedDB from 'src/storage/indexedDB';
 import progressBarLength from 'src/storage/localStorage/progressBarLength';
+import { AgentType } from 'src/types';
 
 interface Props {
   threadId: string;
   requestId: string;
   responseId: string;
   responseBody: string;
+  inferredAgentType: AgentType;
 }
 
 /** Handles animated paragraph (UI) */
-const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseBody }: Props): string => {
+const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseBody, inferredAgentType }: Props): string => {
   const [copy, setCopy] = useState('');
   const [isPaused, setIsPaused] = useState(false);
 
@@ -53,7 +55,10 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
           setIsPaused(true);
           progressBarLength.update('0');
           await indexedDB.pauseResponse({
-            threadId, requestId, responseBody: copy 
+            threadId,
+            requestId,
+            responseBody: copy,
+            inferredAgentType
           });
         };
         update();
@@ -61,7 +66,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
     };
     window.addEventListener('responsePaused', handleQueryPaused as EventListener);
     return () => window.removeEventListener('responsePaused', handleQueryPaused as EventListener);
-  }, [threadId, requestId, copy]);
+  }, [threadId, requestId, copy, inferredAgentType]);
 
   /** Update copy on updated question (UI) */
   useEffect(() => {

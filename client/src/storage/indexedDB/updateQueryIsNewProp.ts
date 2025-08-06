@@ -8,7 +8,6 @@ interface Props {
   isNew: boolean;
 }
 
-/** Updates the 'isNew' property of a specific query in a thread's body (IndexedDB) */
 const updateQueryIsNewProp = async ({ threadId, responseId, isNew }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);

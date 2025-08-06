@@ -7,7 +7,7 @@ interface Props {
   agentName: string;
 }
 
-const getAgent = async (req: Request, res: Response) => {
+const getAgentByName = async (req: Request, res: Response) => {
   const { userId, agentName }: Props = req.body;
 
   try {
@@ -35,4 +35,4 @@ const getAgent = async (req: Request, res: Response) => {
   }
 }
 
-export default getAgent;
+export default getAgentByName;

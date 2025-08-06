@@ -7,7 +7,7 @@ interface Props {
   query: Query;
 }
 
-/** Adds new query to the thread's body (IndexedDB). */
+/** Adds new query to the body of the thread (IndexedDB) */
 const addQuery = async ({ threadId, query }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
@@ -16,13 +16,13 @@ const addQuery = async ({ threadId, query }: Props): Promise<void> => {
     const updatedThread = await db.threads.update(threadId, {
       body: [...threadBodyArray, query]
     });
-    if (updatedThread === 0) throw new Error('Failed to update thread');
+    if (updatedThread === 0) throw new Error('Failed to add query to the body of the thread (IndexedDB)');
 
     /** Dispatch queryAdded event (Events) */
     dispatchEvent.queryAdded(threadId, query);
 
   } catch (error) {
-    console.error('Failed to add query (IndexedDB): ', error);
+    console.error('Failed to add query to the body of the thread (IndexedDB): ', error);
   }
 };
 

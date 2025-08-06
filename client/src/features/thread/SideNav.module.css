@@ -12,7 +12,7 @@
   background-color: var(--background);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: var(--background-card-hover) var(--card-background);
+  scrollbar-color: var(--background-card-hover);
 }
 
 .sideNav::-webkit-scrollbar {

@@ -1,5 +1,5 @@
 import useHandleRedirect from 'src/hooks/useHandleRedirect';
-import useGetAgents from 'src/hooks/useGetAgents';
+import useHandleAgents from 'src/hooks/useHandleAgents';
 import useGetAgent from 'src/hooks/useGetAgent';
 import useHandleThread from 'src/hooks/useHandleThread';
 import useHandleTabs from 'src/hooks/useHandleTabs';
@@ -9,11 +9,11 @@ import useHandleTheme from 'src/hooks/useHandleTheme';
 import useHandleSideNav from 'src/hooks/useHandleSideNav';
 import useHandleAnimatedParagraph from 'src/hooks/useHandleAnimatedParagraph';
 import useHandleQuestion from 'src/hooks/useHandleQuestion';
-import useHandleMoveButton from 'src/hooks/useHandleMoveButton';
+import useHandleThreadPostionY from 'src/hooks/useHandleThreadPostionY';
 
 const hooks = {
   useHandleRedirect,
-  useGetAgents,
+  useHandleAgents,
   useGetAgent,
   useHandleThread,
   useHandleTabs,
@@ -23,7 +23,7 @@ const hooks = {
   useHandleSideNav,
   useHandleAnimatedParagraph,
   useHandleQuestion,
-  useHandleMoveButton,
+  useHandleThreadPostionY,
 };
 
 export default hooks;

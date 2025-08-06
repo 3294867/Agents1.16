@@ -1,18 +1,27 @@
 import Answer from './Answer';
-import { AgentModel, Query } from 'src/types';
 import Question from './question';
+import { AgentModel, AgentType, Query } from 'src/types';
 import styles from './Chat.module.css';
 
 interface Props {
   userId: string;
   agentId: string;
   agentName: string;
+  agentType: AgentType;
+  agentModel: AgentModel;
   threadId: string;
   threadBody: Query[] | [];
-  agentModel: AgentModel;
 }
 
-const Chat = ({ userId, agentId, agentName, threadId, threadBody, agentModel }: Props) => {
+const Chat = ({
+  userId,
+  agentId,
+  agentName,
+  agentType,
+  agentModel,
+  threadId,
+  threadBody
+}: Props) => {
   return (
     <div id='chat' className={styles.chat}>
       {threadBody.length > 0 && threadBody.map((i, idx) => (
@@ -21,14 +30,11 @@ const Chat = ({ userId, agentId, agentName, threadId, threadBody, agentModel }: 
             userId={userId}
             agentId={agentId}
             agentName={agentName}
+            agentType={agentType}
             threadId={threadId}
-            requestId={i.requestId}
-            requestBody={i.requestBody}
-            responseId={i.responseId}
-            responseBody={i.responseBody}
-            isNew={i.isNew}
             agentModel={agentModel}
             threadBodyLength={threadBody.length}
+            query={i}
           />
           <Answer
             threadId={threadId}
@@ -36,6 +42,7 @@ const Chat = ({ userId, agentId, agentName, threadId, threadBody, agentModel }: 
             responseId={i.responseId}
             responseBody={i.responseBody}
             isNew={i.isNew}
+            inferredAgentType={i.inferredAgentType}
           />
         </div>
       ))}

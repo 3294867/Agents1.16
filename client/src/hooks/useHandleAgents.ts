@@ -7,12 +7,13 @@
     userId: string;
   }
 
-  /** Handles fetching agents (IndexedDB, PostgresDB)*/
-  const useGetAgents = ({ userId }: Props): { agents: Agent[] | null, error: string | null, isLoading: boolean} => {
+  /** Handles agents */
+  const useHandleAgents = ({ userId }: Props): { agents: Agent[] | null, error: string | null, isLoading: boolean} => {
     const [agents, setAgents] = useState<Agent[] | null>(null);
     const [ error, setError ] = useState<string | null>(null);
     const [ isLoading, setIsLoading ] = useState<boolean>(false);
 
+    /** Get agents (IndexedDB, PostgresDB) */
     useEffect(() => {
       const getAgents = async () => {
         try {
@@ -52,7 +53,23 @@
       getAgents();
     },[userId]);
 
+    /** Update agents on agentAdded event (UI) */
+    useEffect(() => {
+      if (!userId) return;
+      const handleAgentAdded = (event: CustomEvent) => {
+        setAgents(prevAgents => {
+          if (!prevAgents) return null;
+          return {
+            ...prevAgents,
+            agent: event.detail.agent
+          };
+        });
+      };
+      window.addEventListener('agentAdded', handleAgentAdded as EventListener);
+      return () => window.removeEventListener('agentAdded', handleAgentAdded as EventListener);
+    },[userId]);
+
     return { agents, error, isLoading };
   };
 
-  export default useGetAgents;
+  export default useHandleAgents;

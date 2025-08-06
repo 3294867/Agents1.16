@@ -4,12 +4,12 @@ import { db } from 'src/storage/indexedDB';
 const initialize = () => {
   try {
     db.version(4).stores({
-      agents: 'id, userId, name, [userId+name]',
+      agents: 'id, userId, name, [userId+name], [userId+type]',
       threads: 'id, userId, agentId, title, positionY'
     });
     
   } catch (error) {
-    console.error('Failed to initialize indexedDB', error);
+    console.error('Failed to initialize indexedDB: ', error);
   }
 };
 

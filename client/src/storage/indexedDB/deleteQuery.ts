@@ -7,7 +7,7 @@ interface Props {
   requestId: string;
 }
 
-/** Adds new query to the thread's body (IndexedDB). */
+/** Removes query from the body of the thread (IndexedDB) */
 const deleteQuery = async ({ threadId, requestId }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
@@ -17,13 +17,13 @@ const deleteQuery = async ({ threadId, requestId }: Props): Promise<void> => {
     const updatedThread = await db.threads.update(threadId, {
       body: [...updatedThreadBody]
     });
-    if (updatedThread === 0) throw new Error('Failed to update thread');
+    if (updatedThread === 0) throw new Error('Failed to remove query from the body of the thread (IndexedDB)');
 
     /** Dispatch queryDeleted event (Events) */
     dispatchEvent.queryDeleted(threadId, requestId);
 
   } catch (error) {
-    console.error('Failed to add query (IndexedDB): ', error);
+    console.error('Failed to remove query from the body of the thread (IndexedDB): ', error);
   }
 };
 

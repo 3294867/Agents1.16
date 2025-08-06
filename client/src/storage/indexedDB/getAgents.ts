@@ -5,7 +5,6 @@ interface Props {
   userId: string;
 }
 
-/** Fetches agents (IndexedDB) */
 const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
   try {
     const gettingAgents = await db.agents.where('id').equals(userId).toArray();

@@ -5,18 +5,19 @@ import Header from './header';
 import Chat from './chat';
 import Form from './form';
 import SideNavigation from './SideNav';
-import styles from './Thread.module.css'
-import { AgentModel } from 'src/types';
 import Icons from 'src/assets/Icons';
+import { AgentModel, AgentType } from 'src/types';
+import styles from './Thread.module.css'
 
 interface Props {
   userId: string;
   agentId: string;
   agentName: string;
+  agentType: AgentType;
   agentModel: AgentModel;
 }
 
-const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
+const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) => {
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.useHandleThread({ threadId });
 
@@ -40,9 +41,10 @@ const Thread = ({ userId, agentId, agentName, agentModel }: Props) => {
         userId={userId}
         agentId={agentId}
         agentName={agentName}
+        agentModel={agentModel}
+        agentType={agentType}
         threadId={threadId}
         threadBody={threadBody}
-        agentModel={agentModel}
       />
       <Form
         agentId={agentId}

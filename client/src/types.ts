@@ -1,4 +1,4 @@
-type AgentType = 'research' | 'code';
+type AgentType = 'research' | 'code' | 'math' | 'history' | 'geography' | 'art' | 'literature';
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
 
 interface Agent {
@@ -26,6 +26,7 @@ type Query = {
   responseId: string;
   responseBody: string;
   isNew: boolean;
+  inferredAgentType: AgentType;
 };
 
 interface Thread {

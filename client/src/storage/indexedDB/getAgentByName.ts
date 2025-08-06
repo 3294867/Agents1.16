@@ -6,8 +6,7 @@ interface Props {
   agentName: string | undefined;
 }
 
-/** Fetches agent (IndexedDB) */
-const getAgent = async ({ userId, agentName }: Props): Promise<Agent | undefined> => {
+const getAgentByName = async ({ userId, agentName }: Props): Promise<Agent | undefined> => {
   if (!agentName) throw new Error('Agent name is required');
 
   try {
@@ -18,4 +17,4 @@ const getAgent = async ({ userId, agentName }: Props): Promise<Agent | undefined
   }
 };
 
-export default getAgent;
+export default getAgentByName;

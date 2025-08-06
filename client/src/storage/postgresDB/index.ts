@@ -1,7 +1,8 @@
 import getAgents from 'src/storage/postgresDB/getAgents';
-import getAgent from 'src/storage/postgresDB/getAgent';
+import getAgentByName from 'src/storage/postgresDB/getAgentByName';
+import addAgent from 'src/storage/postgresDB/addAgent';
 import getThread from 'src/storage/postgresDB/getThread';
-import createThread from 'src/storage/postgresDB/createThread';
+import addThread from 'src/storage/postgresDB/addThread';
 import deleteThread from 'src/storage/postgresDB/deleteThread';
 import addQuery from 'src/storage/postgresDB/addQuery';
 import deleteQuery from 'src/storage/postgresDB/deleteQuery';
@@ -11,13 +12,14 @@ import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
-import getAgentsUpdatedAt from 'src/storage/postgresDB//getAgentsUpdatedAt';
+import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentsUpdatedAt';
 
 const postgresDB = {
   getAgents,
-  getAgent,
+  getAgentByName,
+  addAgent,
   getThread,
-  createThread,
+  addThread,
   deleteThread,
   addQuery,
   deleteQuery,

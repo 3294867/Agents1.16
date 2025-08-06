@@ -4,28 +4,23 @@ import { sendResponse } from "../utils/sendResponse";
 import { AgentModel } from '../types';
 
 interface Props {
-  threadId: string;
+  agentId: string;
   agentModel: AgentModel;
   input: string;
 }
 
 const createResponse = async (req: Request, res: Response) => {
-  const { threadId, agentModel, input }: Props = req.body;
+  const { agentId, agentModel, input }: Props = req.body;
 
   try {
     /** Get instructions from the database (PostgresDB) */
     const instructionsQueryText = `
-      WITH thread_info AS (
-        SELECT "agentId"
-        FROM "Thread"
-        WHERE "id" = $1::uuid
-      )
       SELECT "systemInstructions"
-      FROM "Agent", thread_info
-      WHERE "Agent"."id" = thread_info."agentId";
+      FROM "Agent"
+      WHERE "id" = $1::uuid;
     `;
     
-    const instructions = await pool.query(instructionsQueryText, [threadId]);
+    const instructions = await pool.query(instructionsQueryText, [agentId]);
     if (!instructions) return sendResponse(res, 404, "Failed to get instructions");
 
     /** Create response (OpenAI) */

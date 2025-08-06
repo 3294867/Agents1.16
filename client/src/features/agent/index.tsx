@@ -30,6 +30,7 @@ const Agent = ({ userId }: Props) => {
         userId={userId}
         agentId={agent.id}
         agentName={agentName}
+        agentType={agent.type}
         agentModel={agent.model}
       />
     </div>
