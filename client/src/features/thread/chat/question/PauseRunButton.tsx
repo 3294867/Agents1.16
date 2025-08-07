@@ -2,7 +2,7 @@ import openai from 'src/opanai';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './PauseRunButton.module.css';
 import Button from 'src/components/Button';

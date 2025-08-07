@@ -19,7 +19,7 @@ const getThread = async ({ threadId }: Props): Promise<Thread> => {
     
     const data: { message: string, data: Thread | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data;
+    return data.data as Thread;
 
   } catch (error) {
     throw new Error(`Failed to fetch thread (PostgresDB): ${error}`);

@@ -23,8 +23,8 @@ const inferAgentType = async (req: Request, res: Response) => {
 
     const query = `
       Choose the most appropriate agent type for the following question: ${input}.
-      Available agent types: "research", "code", "math", "history", "geography", "art", "literature".
-      Return only agent type written in lower case.
+      Available agent types: "general", "math", "geography", "literature".
+      Return in lower case agent type only.
     `;
 
     /** Create response (OpenAI) */

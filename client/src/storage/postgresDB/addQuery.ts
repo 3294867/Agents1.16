@@ -20,7 +20,7 @@ const addQuery = async ({ threadId, requestBody, responseBody }: Props): Promise
     
     const data: { message: string, data: { requestId: string, responseId: string } | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data;
+    return data.data as { requestId: string, responseId: string };
 
   } catch (error) {
     throw new Error(`Failed to update thread body (PostgresDB): ${error}`);

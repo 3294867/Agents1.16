@@ -5,7 +5,6 @@ interface Props {
   isEditing: boolean;
 }
 
-/** Handles question */
 const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.RefObject<HTMLTextAreaElement | null>, progressBarLength: string } => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [progressBarLength, setProgressBarLength] = useState('0%');

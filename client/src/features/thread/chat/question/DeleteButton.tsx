@@ -3,7 +3,7 @@ import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 
 interface Props {
   threadId: string;

@@ -19,7 +19,7 @@ const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
     
     const data: { message: string, data: Agent[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data;
+    return data.data as Agent[];
     
   } catch (error) {
     throw new Error(`Failed to fetch agents (PostgresDB): ${error}`);

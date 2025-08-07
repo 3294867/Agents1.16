@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom';
 import Button from 'src/components/Button';
 import Tooltip from 'src/components/Tooltip';
-import AddAgentDialog from './agents/addAgentDialog';
+import AddAgentDialog from './addAgentDialog';
 import { Agent } from 'src/types';
 import styles from './Agents.module.css';
 
@@ -12,7 +12,7 @@ interface Props {
 
 const Agents = ({ userId, agents }: Props) => {
   const { agentName } = useParams();
-  
+
   return (
     <div className={styles.agentsContainer}>
       {agents.map(a => (
@@ -23,7 +23,7 @@ const Agents = ({ userId, agents }: Props) => {
                 variant='outline'
                 size='icon'
                 className={`${agentName === a.name ?  styles.agentButton: ''}`}
-              >
+                >
                 {a.name[0].toUpperCase()}
               </Button>
             </Link>
@@ -33,7 +33,7 @@ const Agents = ({ userId, agents }: Props) => {
           </Tooltip.Content>
         </Tooltip.Root>
       ))}
-      <AddAgentDialog userId={userId} addedAgents={agents} />
+      <AddAgentDialog userId={userId} />
     </div>
   );
 };

@@ -81,6 +81,8 @@ const Question = ({
               requestBody={requestBody}
               responseId={responseId}
               responseBody={responseBody}
+              isEditing={isEditing}
+              isNew={isNew}
             />
             <PauseRunButton
               threadId={threadId}

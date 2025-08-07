@@ -1,5 +1,5 @@
-type AgentType = 'research' | 'code' | 'math' | 'history' | 'geography' | 'art' | 'literature';
-type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o';
+type AgentType = 'general' | 'math' | 'geography' | 'literature'
+type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
 interface Agent {
   id: string;
@@ -13,19 +13,30 @@ interface Agent {
   webSearch: boolean;
   createdAt: Date;
   updatedAt: Date;
-};
+}
+
+interface AgentTemplate {
+  id: string;
+  type: AgentType;
+  model: AgentModel;
+  name: string;
+  systemInstructions: string;
+  stack: string[] | null;
+  temperature: number;
+  webSearch: boolean;
+}
 
 interface NormalizedAgents {
   byId: Record<string, Agent>;
   allIds: string[];
-};
+}
 
 type Query = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
-};
+}
 
 interface Thread {
   id: string;
@@ -36,17 +47,18 @@ interface Thread {
   isBookmarked: boolean;
   createdAt: Date;
   updatedAt: Date;
-};
+}
 
 interface NormalizedThreads {
   byId: Record<string, Thread>;
   allIds: string[];
-};
+}
 
 export {
   AgentType,
   AgentModel,
   Agent,
+  AgentTemplate,
   NormalizedAgents,
   Query,
   Thread,

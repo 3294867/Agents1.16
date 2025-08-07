@@ -22,8 +22,7 @@ const addThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
 
   const data: { message: string, data: Thread | null } = await response.json();
   if (!data.data) throw new Error('Failed to add thread');
-
-  return data.data;
+  return data.data as Thread;
 };
 
 export default addThread;

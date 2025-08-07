@@ -2,6 +2,8 @@ import express from "express";
 import getAgents from "./controllers/getAgents";
 import getAgentByName from './controllers/getAgentByName';
 import addAgent from './controllers/addAgent';
+import getAgentTemplates from './controllers/getAgentTemplates';
+import getAgentTemplate from './controllers/getAgentTemplate';
 import getThread from "./controllers/getThread";
 import addThread from './controllers/addThread';
 import deleteThread from './controllers/deleteThread';
@@ -23,6 +25,8 @@ const router = express.Router();
 router.post("/get-agents", getAgents);
 router.post("/get-agent-by-name", getAgentByName);
 router.post("/add-agent", addAgent);
+router.get("/get-agent-templates", getAgentTemplates);
+router.post("/get-agent-template", getAgentTemplate)
 router.post("/get-thread", getThread);
 router.post("/add-thread", addThread);
 router.post("/delete-thread", deleteThread);

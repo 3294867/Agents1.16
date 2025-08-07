@@ -3,7 +3,7 @@ import hooks from 'src/hooks';
 import Error from 'src/components/Error';
 import Sidebar from 'src/features/layout/sidebar';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import styles from './Layout.module.css';
 
 interface Props {

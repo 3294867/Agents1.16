@@ -7,7 +7,6 @@
     userId: string;
   }
 
-  /** Handles agents */
   const useHandleAgents = ({ userId }: Props): { agents: Agent[] | null, error: string | null, isLoading: boolean} => {
     const [agents, setAgents] = useState<Agent[] | null>(null);
     const [ error, setError ] = useState<string | null>(null);
@@ -58,11 +57,8 @@
       if (!userId) return;
       const handleAgentAdded = (event: CustomEvent) => {
         setAgents(prevAgents => {
-          if (!prevAgents) return null;
-          return {
-            ...prevAgents,
-            agent: event.detail.agent
-          };
+        if (!prevAgents) return [event.detail.agent];
+        return [...prevAgents, event.detail.agent];
         });
       };
       window.addEventListener('agentAdded', handleAgentAdded as EventListener);

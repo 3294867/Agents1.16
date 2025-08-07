@@ -1,7 +1,7 @@
 import { cloneElement, createContext, FC, isValidElement, ReactElement, ReactNode, useContext, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import Button from './Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import styles from './Dialog.module.css';
 import cn from 'src/utils/cn';
 
@@ -19,7 +19,7 @@ const Root: FC<RootProps> = ({ children }) => {
 
   return (
     <Context.Provider value={{ isOpen, setIsOpen }}>
-      <span className={cn(styles.dialogContainer)} >
+      <span className={cn(styles.dialogContainer)}>
         {children}
       </span>
     </Context.Provider>
@@ -99,7 +99,7 @@ const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdo
   return createPortal(content, document.body);
 };
 
-const Close: FC = () => {
+const CloseButton: FC = () => {
   const ctx = useContext(Context);
   if (!ctx) throw new Error('Dialog.Close must be within a Dialog');
   const { setIsOpen } = ctx;
@@ -111,11 +111,28 @@ const Close: FC = () => {
   );
 };
 
+interface CloseWindowProps {
+  children: ReactNode;
+}
+
+const CloseWindow: FC<CloseWindowProps> = ({ children }) => {
+  const ctx = useContext(Context);
+  if (!ctx) throw new Error('Dialog.CloseWindow must be within a Dialog');
+  const { setIsOpen } = ctx;
+
+  return (
+    <div onClick={() => setIsOpen(false)}>
+      {children}
+    </div>
+  );
+}
+
 const Dialog = {
   Root,
   Trigger,
   Content,
-  Close,
+  CloseButton,
+  CloseWindow
 };
 
 export default Dialog;

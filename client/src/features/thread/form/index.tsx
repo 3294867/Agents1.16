@@ -7,7 +7,7 @@ import AgentModelDropdown from './AgentModelDropdown';
 import Button from 'src/components/Button';
 import Textarea from 'src/components/Textarea';
 import { AgentModel } from 'src/types';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import styles from './Form.module.css';
 
 interface Props {

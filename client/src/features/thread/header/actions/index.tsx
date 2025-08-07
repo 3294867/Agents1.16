@@ -3,7 +3,7 @@ import Dropdown from 'src/components/Dropdown';
 import Tooltip from 'src/components/Tooltip';
 import DeleteDialog from './DeleteDialog';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {

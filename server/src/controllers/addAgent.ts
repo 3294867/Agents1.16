@@ -1,40 +1,53 @@
 import { Request, Response } from "express";
 import { pool } from '..';
 import { sendResponse } from '../utils/sendResponse';
-import { AgentType } from '../types';
+import { Agent } from '../types';
 
 interface Props {
-  userId: string;
-  agentType: AgentType;
+  agent: Agent;
 }
 
 const addAgent = async (req: Request, res: Response) => {
-  const { userId, agentType }: Props = req.body;
-  const agentName = agentType;
-  const systemInstructions = `You are a ${agentName} AI Agent`;
+  const { agent }: Props = req.body;
 
   try {
     const queryText = `
       INSERT INTO "Agent" (
+        "id",
         "type",
         "model",
         "userId",
         "name",
-        "systemInstructions"
+        "systemInstructions",
+        "temperature",
+        "webSearch",
+        "createdAt",
+        "updatedAt"
       )
       SELECT
-        $1::text,
-        'gpt-3.5-turbo'::text,
-        $2::uuid,
+        $1::uuid,
+        $2::text,
         $3::text,
-        $4::text
+        $4::uuid,
+        $5::text,
+        $6::text,
+        $7::float,
+        $8::boolean,
+        $9::timestamp,
+        $10::timestamp
       RETURNING *;
     `;
     const result = await pool.query(queryText, [
-      agentType,
-      userId,
-      agentName,
-      systemInstructions
+      agent.id,
+      agent.type,
+      agent.model,
+      agent.userId,
+      agent.name,
+      agent.systemInstructions,
+      agent.temperature,
+      agent.webSearch,
+      agent.createdAt,
+      agent.updatedAt
     ])
     if (!result) return sendResponse(res, 503, "Failed to add agent");
 

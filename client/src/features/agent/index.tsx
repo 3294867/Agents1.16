@@ -5,7 +5,7 @@ import Thread from 'src/features/thread';
 import Error from 'src/components/Error';
 import Button from 'src/components/Button';
 import hooks from 'src/hooks';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import styles from './Agent.module.css';
 
 interface Props {

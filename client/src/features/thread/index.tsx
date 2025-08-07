@@ -5,7 +5,7 @@ import Header from './header';
 import Chat from './chat';
 import Form from './form';
 import SideNavigation from './SideNav';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './Thread.module.css'
 

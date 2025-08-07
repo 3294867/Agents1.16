@@ -1,4 +1,4 @@
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import Button from 'src/components/Button';
 import Dropdown from 'src/components/Dropdown';
 import styles from './Actions.module.css'

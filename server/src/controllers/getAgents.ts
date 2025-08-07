@@ -17,7 +17,7 @@ const getAgents = async (req: Request, res: Response) => {
     `;
     const result = await pool.query(queryText, [
       userId
-    ])
+    ]);
     if (!result) return sendResponse(res, 404, "Failed to fetch agents");
     
     /** On success send data (Client) */

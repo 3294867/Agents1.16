@@ -1,7 +1,7 @@
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import Button from 'src/components/Button';
 
 interface Props {

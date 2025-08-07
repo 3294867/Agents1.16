@@ -16,10 +16,10 @@ const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, upda
       throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: { id: string, updatedAt: Date }[] } = await response.json();
+    const data: { message: string, data: { id: string, updatedAt: Date }[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
+    return data.data as { id: string, updatedAt: Date }[];
 
-    return data.data
   } catch (error) {
     throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${error}`);
   }

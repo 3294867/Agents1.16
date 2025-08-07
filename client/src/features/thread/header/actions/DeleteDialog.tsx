@@ -4,7 +4,7 @@ import postgresDB from 'src/storage/postgresDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Dialog from 'src/components/Dialog';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import Heading from 'src/components/Heading';
 import Paragraph from 'src/components/Paragraph';
 import styles from './DeleteDialog.module.css';
@@ -40,7 +40,7 @@ const DeleteDialog = ({ threadId, agentName }: Props) => {
             Are you sure you want to delete this conversation? This action cannot be undone.
           </Paragraph>
           <div className={styles.actions}>
-            <Dialog.Close />
+            <Dialog.CloseButton />
             <Button onClick={handleClick}>Delete</Button>
           </div>
         </div>

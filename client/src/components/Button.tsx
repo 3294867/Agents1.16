@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes, cloneElement, forwardRef, isValidElement, ReactNode }from 'react';
+import { ButtonHTMLAttributes, cloneElement, forwardRef, isValidElement, memo, ReactNode }from 'react';
 import styles from './Button.module.css';
+import cn from 'src/utils/cn';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
   variant?: 'default' | 'secondary' | 'outline' | 'ghost' | 'alert' | 'link' | 'dropdown';
@@ -29,23 +30,19 @@ const Button = forwardRef<HTMLButtonElement, Props>(
       styles.iconSize;
     
     const isPressedClass = isPressed ? styles.isPressed : '';  
-
-    const joinedClassNames = [
-      styles.base,
-      variantClass,
-      sizeClass,
-      isPressedClass,
-      className
-    ].filter(Boolean).join(' ');
     
     if (asChild && isValidElement(children)) {
-      return cloneElement(children, Object.assign({}, children.props, joinedClassNames));
+      return cloneElement(children, Object.assign(
+        {},
+        children.props,
+        cn(styles.base, variantClass, sizeClass, isPressedClass, className)
+      ));
     }
     
     return (
       <button
         ref={ref}
-        className={joinedClassNames}
+        className={cn( styles.base, variantClass, sizeClass, isPressedClass, className)}
         {...props}
       >
         {children}
@@ -55,4 +52,4 @@ const Button = forwardRef<HTMLButtonElement, Props>(
 );
 Button.displayName = 'Button';
 
-export default Button;
+export default memo(Button);

@@ -39,7 +39,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         setThread(threadIDB);
         setIsLoading(false);
       } catch (error) {
-        console.error('Failed to get thread: ', error)
+        throw new Error(`Failed to get thread: ${error}`);
       }
     };
     getThread();

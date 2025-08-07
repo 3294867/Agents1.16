@@ -15,10 +15,10 @@ const getThreadUpdatedAt = async ({ threadId }: Props): Promise<Date> => {
       throw new Error(`Failed to get 'updatedAt' property of the thread (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: Date } = await response.json();
+    const data: { message: string, data: Date | null } = await response.json();
     if (!data.data) throw new Error(data.message);
+    return data.data as Date;
 
-    return data.data
   } catch (error) {
     throw new Error(`Failed to get 'updatedAt' property of the thread (PostgresDB): ${error}`);
   }

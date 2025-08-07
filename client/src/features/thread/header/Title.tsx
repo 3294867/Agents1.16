@@ -4,7 +4,7 @@ import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Heading from 'src/components/Heading';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 
 interface TitleProps {
   threadId: string;

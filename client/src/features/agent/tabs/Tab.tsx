@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
 import styles from './Tab.module.css';
 import cn from 'src/utils/cn';

@@ -6,7 +6,7 @@ import openai from 'src/opanai';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import { AgentType } from 'src/types';
 
 interface Props {

@@ -19,6 +19,8 @@ interface Props {
   requestBody: string;
   responseId: string;
   responseBody: string;
+  isNew: boolean;
+  isEditing: boolean;
 }
 
 const ChangeAgentButton = ({
@@ -30,6 +32,8 @@ const ChangeAgentButton = ({
   requestBody,
   responseId,
   responseBody,
+  isNew,
+  isEditing
 }: Props) => {
   const navigate = useNavigate();
   const currentThreadPositionY = hooks.useHandleThreadPostionY();
@@ -76,7 +80,21 @@ const ChangeAgentButton = ({
     if (savedAgent) {
       newAgent = savedAgent;
     } else {
-      const addAgentPostgres: Agent = await postgresDB.addAgent({ userId, agentType: inferredAgentType });
+      const agentTemplatePostgres = await postgresDB.getAgentTemplate({ agentType: inferredAgentType })
+      const agent = {
+        id: uuidV4(),
+        type: agentTemplatePostgres.type,
+        model: agentTemplatePostgres.model,
+        userId,
+        name: agentTemplatePostgres.name,
+        systemInstructions: agentTemplatePostgres.systemInstructions,
+        stack: agentTemplatePostgres.stack,
+        temperature: agentTemplatePostgres.temperature,
+        webSearch: agentTemplatePostgres.webSearch,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      const addAgentPostgres: Agent = await postgresDB.addAgent({ agent });
       await indexedDB.addAgent({ agent: addAgentPostgres })
       newAgent = addAgentPostgres
     }
@@ -131,8 +149,15 @@ const ChangeAgentButton = ({
     navigate(`/${newAgent.name}/${newThreadId}`);
   };
   
+  const buttonVariant = isEditing ? 'ghost' : isNew ? 'ghost' : 'outline';
+  
   return currentAgentType !== inferredAgentType && (
-    <Button onClick={handleClick} size='sm'variant='ghost' style={{ borderRadius: '999px' }}>
+    <Button
+      onClick={handleClick}
+      size='sm'
+      variant={buttonVariant}
+      style={{ borderRadius: '999px' }}
+    >
       Open in {capitalizeFirstLetter(String(inferredAgentType))} Agent
     </Button>
   )

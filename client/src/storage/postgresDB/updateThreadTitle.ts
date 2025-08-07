@@ -15,6 +15,8 @@ const updateThreadTitle = async ({ threadId, threadTitle }: Props): Promise<void
     const errorText = await response.text();
     throw new Error(`Failed to update thread title (PostresDB): ${response.status} ${response.statusText} - ${errorText}`);
   }
+  const data: { message: string } = await response.json();
+  if (data.message !== 'Thread title updated') throw new Error(data.message);
 
   } catch (error) {
     throw new Error(`Failed to update thread title (PostresDB): ${error}`);

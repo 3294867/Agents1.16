@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 import Button from 'src/components/Button';
-import Icons from 'src/assets/Icons';
+import Icons from 'src/assets/icons';
 import useHandleTheme from 'src/hooks/useHandleTheme';
 
 const ThemeToggle = memo(() => {

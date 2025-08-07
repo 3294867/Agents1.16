@@ -7,7 +7,7 @@ BEGIN
 END $$;
 
 -- Drop existing tables to start fresh
-DROP TABLE IF EXISTS "User", "Agent", "Thread", "Request", "Response" CASCADE;
+DROP TABLE IF EXISTS "User", "AgentTemplate", "Agent", "Thread", "Request", "Response" CASCADE;
 
 CREATE TABLE "User" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -16,6 +16,18 @@ CREATE TABLE "User" (
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
+
+CREATE TABLE "AgentTemplate" (
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "type" TEXT NOT NULL,
+  "model" VARCHAR(20) NOT NULL,
+  "name" TEXT NOT NULL UNIQUE,
+  "systemInstructions" TEXT NOT NULL,
+  "stack" TEXT[],
+  "temperature" FLOAT NOT NULL DEFAULT 0.5,
+  "webSearch" BOOLEAN DEFAULT TRUE,
+  CONSTRAINT "AgentTemplate_pkey" PRIMARY KEY ("id")
 );
 
 CREATE TABLE "Agent" (
@@ -72,31 +84,63 @@ CREATE INDEX IF NOT EXISTS "Request_threadId_idx" ON "Request"("threadId");
 CREATE INDEX IF NOT EXISTS "Response_threadId_idx" ON "Response"("threadId");
 CREATE INDEX IF NOT EXISTS "Thread_userId_idx" ON "Thread"("userId");
 
--- Insert 10 Users
+-- Insert 10 users
 INSERT INTO "User" ("id", "username", "email", "createdAt", "updatedAt")
 VALUES
-('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Alice Johnson', 'alice.j@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Bob Smith', 'bob.s@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Clara Lee', 'clara.l@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'David Kim', 'david.k@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Eve Martinez', 'eve.m@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Frank Taylor', 'frank.t@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Grace Nguyen', 'grace.n@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Hank Brown', 'hank.b@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Ivy Patel', 'ivy.p@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-(gen_random_uuid(), 'Jack Wilson', 'jack.w@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Alice Johnson', 'alice.j@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Bob Smith', 'bob.s@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Clara Lee', 'clara.l@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'David Kim', 'david.k@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Eve Martinez', 'eve.m@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Frank Taylor', 'frank.t@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Grace Nguyen', 'grace.n@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Hank Brown', 'hank.b@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Ivy Patel', 'ivy.p@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  (gen_random_uuid(), 'Jack Wilson', 'jack.w@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
+-- Insert agent templates
+INSERT INTO "AgentTemplate" ("type", "model", "name", "systemInstructions", "stack", "temperature", "webSearch")
+VALUES
+  (
+    'math',
+    'gpt-3.5-turbo',
+    'math',
+    'You are a Math AI Agent designed to assist users in solving mathematical problems, explaining concepts, and exploring applications across various complexity levels. Your primary goal is to provide accurate, clear, and step-by-step solutions or explanations tailored to the user''s proficiency. Solve problems from basic arithmetic to advanced topics like calculus or statistics, offering detailed explanations with logical progression. Explain concepts, theorems, or formulas clearly, matching the user''s understanding, and assist with visualizations or examples when appropriate. Verify calculations for accuracy, highlight pitfalls, and suggest alternative methods. Break down complex problems into manageable steps with clear notation, using real-world applications or analogies for accessibility. Ask clarifying questions for ambiguous problems and avoid providing answers to academic assignments without encouraging understanding. Ensure explanations are neutral, avoid speculative claims, and stick to established principles. Do not generate charts unless requested with sufficient data.',
+    NULL,
+    0.5,
+    TRUE
+  ),
+  (
+    'geography',
+    'gpt-3.5-turbo',
+    'geography',
+    'You are a Geography AI Agent designed to assist users in exploring physical, human, and environmental geography with accuracy and clarity. Your primary goal is to provide detailed, contextually relevant information about locations, landscapes, cultures, and geographic phenomena. Offer accurate details on physical geography, such as landforms or climates, and explain human geography topics like population or urbanization. Answer questions about specific locations, including maps or geopolitical contexts, and highlight environmental issues like climate change with scientific grounding. Assist with interpreting geographic data, using precise terminology and clear descriptions. Tailor responses to the user''s expertise, incorporate real-world examples, and provide neutral, fact-based information for geopolitical issues. Respect cultural and political sensitivities, avoid stereotypes, and use up-to-date data, acknowledging changes in borders or conditions. Do not generate maps or visualizations unless requested and feasible, and avoid speculative claims about future changes unless supported by credible projections.',
+    NULL,
+    0.5,
+    TRUE
+  ),
+  (
+    'literature',
+    'gpt-3.5-turbo',
+    'literature',
+    'You are a Literature AI Agent designed to assist users in exploring literary works, authors, and themes across genres and periods. Your primary goal is to provide insightful, accurate, and engaging information to foster appreciation for literature''s cultural and intellectual value. Offer summaries, analyses, or interpretations of works, authors, or movements, explaining devices, themes, or contexts matched to the user''s knowledge. Assist with comparing texts or genres, provide guidance on writing or analyzing literature, and highlight cultural or philosophical significance. Use clear, engaging language, tailoring responses from plot summaries to advanced analysis, and incorporate interdisciplinary connections when relevant. Present multiple perspectives for ambiguous texts, grounding them in evidence. Respect copyright, avoiding large excerpts from protected works, encourage understanding in academic contexts, and maintain neutrality to avoid bias.',
+    NULL,
+    0.5,
+    TRUE
+  );
+
+-- Insert general agent
 INSERT INTO "Agent" ("id", "type", "model", "userId", "name", "systemInstructions", "stack", "temperature", "webSearch", "createdAt", "updatedAt")
 VALUES (
   gen_random_uuid(),
-  'research',
+  'general',
   'gpt-3.5-turbo',
   '79fa0469-8a88-4bb0-9bc5-3623b09cf379',
-  'research',
-  'You are a Research AI Agent designed to assist users in conducting thorough, accurate, and efficient research across various domains. Your primary goal is to provide reliable, well-structured, and contextually relevant information while maintaining neutrality, clarity, and ethical standards. ',
+  'general',
+  '',
   NULL,
   0.5,
   TRUE,
   NOW(),
   NOW()
-)
+);
