@@ -32,7 +32,7 @@ const tabsStorage = {
         localStorage.setItem(`${agentName}_tabs`, JSON.stringify(updatedTabs));
 
         /** Dispatch tabsUpdated event (Events) */
-        dispatchEvent.tabsUpdated(agentName)
+        dispatchEvent.tabsUpdated(agentName);
       }
       return null;
     } catch (error) {

@@ -12,8 +12,10 @@ import { Agent, AgentType } from 'src/types';
 
 interface Props {
   userId: string;
-  currentAgentType: AgentType,
+  currentAgentId: string;
+  currentAgentType: AgentType;
   inferredAgentType: AgentType;
+  currentAgentName: string;
   threadId: string;
   requestId: string;
   requestBody: string;
@@ -25,8 +27,10 @@ interface Props {
 
 const ChangeAgentButton = ({
   userId,
+  currentAgentId,
   currentAgentType,
   inferredAgentType,
+  currentAgentName,
   threadId,
   requestId,
   requestBody,
@@ -43,13 +47,13 @@ const ChangeAgentButton = ({
     await indexedDB.deleteQuery({ threadId, requestId });
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
     
-    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB) */
+    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
     const firstQuery = await indexedDB.getFirstQuery({ threadId });
     if (firstQuery) {
       const threadTitle = await openai.createThreadTitle({
         question: firstQuery.requestBody,
         answer: firstQuery.responseBody
-      }) 
+      });
 
       await postgresDB.updateThreadTitle({
         threadId, threadTitle
@@ -58,6 +62,10 @@ const ChangeAgentButton = ({
       await indexedDB.updateThreadTitle({
         threadId, threadTitle
       });      
+
+      tabsStorage.update(
+        currentAgentName, currentAgentId, threadId, threadTitle
+      );
     } else {
       await postgresDB.updateThreadTitle({
         threadId, threadTitle: null
@@ -65,7 +73,11 @@ const ChangeAgentButton = ({
 
       await indexedDB.updateThreadTitle({
         threadId, threadTitle: null
-      });  
+      });
+
+      tabsStorage.update(
+        currentAgentName, currentAgentId, threadId, null
+      );
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
@@ -80,23 +92,23 @@ const ChangeAgentButton = ({
     if (savedAgent) {
       newAgent = savedAgent;
     } else {
-      const agentTemplatePostgres = await postgresDB.getAgentTemplate({ agentType: inferredAgentType })
+      const availableAgentPostgres = await postgresDB.getAvailableAgent({ agentType: inferredAgentType })
       const agent = {
         id: uuidV4(),
-        type: agentTemplatePostgres.type,
-        model: agentTemplatePostgres.model,
+        type: availableAgentPostgres.type,
+        model: availableAgentPostgres.model,
         userId,
-        name: agentTemplatePostgres.name,
-        systemInstructions: agentTemplatePostgres.systemInstructions,
-        stack: agentTemplatePostgres.stack,
-        temperature: agentTemplatePostgres.temperature,
-        webSearch: agentTemplatePostgres.webSearch,
+        name: availableAgentPostgres.name,
+        systemInstructions: availableAgentPostgres.systemInstructions,
+        stack: availableAgentPostgres.stack,
+        temperature: availableAgentPostgres.temperature,
+        webSearch: availableAgentPostgres.webSearch,
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      const addAgentPostgres: Agent = await postgresDB.addAgent({ agent });
-      await indexedDB.addAgent({ agent: addAgentPostgres })
-      newAgent = addAgentPostgres
+      const agentPostgres: Agent = await postgresDB.addAgent({ agent });
+      await indexedDB.addAgent({ agent: agentPostgres });
+      newAgent = agentPostgres;
     }
     
     /** Create new thread (PostgresDB) */

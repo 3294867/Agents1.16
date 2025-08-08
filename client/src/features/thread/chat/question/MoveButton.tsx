@@ -42,13 +42,13 @@ const MoveButton = ({
     await indexedDB.deleteQuery({ threadId, requestId });
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
     
-    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB) */
+    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
     const firstQuery = await indexedDB.getFirstQuery({ threadId });
     if (firstQuery) {
       const threadTitle = await openai.createThreadTitle({
         question: firstQuery.requestBody,
         answer: firstQuery.responseBody
-      }) 
+      });
 
       await postgresDB.updateThreadTitle({
         threadId, threadTitle
@@ -57,6 +57,10 @@ const MoveButton = ({
       await indexedDB.updateThreadTitle({
         threadId, threadTitle
       });      
+
+      tabsStorage.update(
+        agentName, agentId, threadId, threadTitle
+      );
     } else {
       await postgresDB.updateThreadTitle({
         threadId, threadTitle: null
@@ -65,6 +69,10 @@ const MoveButton = ({
       await indexedDB.updateThreadTitle({
         threadId, threadTitle: null
       });  
+
+      tabsStorage.update(
+        agentName, agentId, threadId, null
+      );
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */

@@ -15,17 +15,6 @@ interface Agent {
   updatedAt: Date;
 }
 
-interface AgentTemplate {
-  id: string;
-  type: AgentType;
-  model: AgentModel;
-  name: string;
-  systemInstructions: string;
-  stack: string[] | null;
-  temperature: number;
-  webSearch: boolean;
-}
-
 interface NormalizedAgents {
   byId: Record<string, Agent>;
   allIds: string[];
@@ -69,10 +58,9 @@ export type {
   AgentType,
   AgentModel,
   Agent,
-  AgentTemplate,
   NormalizedAgents,
   Query,
   Thread,
   NormalizedThreads,
   Tab
-}
+};

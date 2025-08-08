@@ -74,7 +74,9 @@ const Question = ({
           <div style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', display: 'flex' }}>
             <ChangeAgentButton
               userId={userId}
+              currentAgentId={agentId}
               currentAgentType={agentType}
+              currentAgentName={agentName}
               inferredAgentType={inferredAgentType}
               threadId={threadId}
               requestId={requestId}

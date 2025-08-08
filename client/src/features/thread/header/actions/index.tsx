@@ -17,7 +17,7 @@ const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
   if (!savedTabs) return;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'row', gap: '1.5', justifyContent: 'end', alignItems: 'start'}}>
+    <div style={{ display: 'flex', flexDirection: 'row', gap: '0.375rem', justifyContent: 'end', alignItems: 'start'}}>
       <Tooltip.Root>
         <Tooltip.Trigger asChild>
           <Button variant='outline' size='icon'>

@@ -7,7 +7,7 @@ import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
 
 const App = () => {
-  const userId = '79fa0469-8a88-4bb0-9bc5-3623b09cf379';
+  const userId = '206776bc-6920-4f04-8580-f36b45b51e93';
   indexedDB.initialize();
   hooks.useHandleTheme();
 

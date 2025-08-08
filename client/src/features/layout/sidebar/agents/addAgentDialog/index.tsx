@@ -5,7 +5,7 @@ import Heading from 'src/components/Heading';
 import hooks from 'src/hooks';
 import AgentCard from './AddAgentCard';
 import Error from 'src/components/Error';
-import { Agent, AgentTemplate } from 'src/types';
+import { Agent } from 'src/types';
 import styles from './AddAgentDialog.module.css';
 
 interface Props {
@@ -14,8 +14,8 @@ interface Props {
 }
 
 const AddAgentDialog = ({ userId, addedAgents }: Props) => {
-  const agentTemplates = hooks.useGetAgentTemplates({ addedAgents });
-  if (!agentTemplates) return <Error error='Failed to fetch agent templates' />
+  const availableAgents = hooks.useGetAvailableAgents({ addedAgents });
+  if (!availableAgents) return <Error error='Failed to fetch available agents' />
 
   return (
     <Dialog.Root>
@@ -28,8 +28,8 @@ const AddAgentDialog = ({ userId, addedAgents }: Props) => {
         <div className={styles.container}>
           <Heading variant='h4'>Add Agent</Heading>
           <div className={styles.agentsWrapper}>
-            {agentTemplates.map((a: AgentTemplate) => (
-              <AgentCard key={a.id} userId={userId} agentTemplate={a} />
+            {availableAgents.map((a: Agent) => (
+              <AgentCard key={a.id} userId={userId} availableAgent={a} />
             ))}
           </div>
         </div>

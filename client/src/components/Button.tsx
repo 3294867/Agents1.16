@@ -32,17 +32,15 @@ const Button = forwardRef<HTMLButtonElement, Props>(
     const isPressedClass = isPressed ? styles.isPressed : '';  
     
     if (asChild && isValidElement(children)) {
-      return cloneElement(children, Object.assign(
-        {},
-        children.props,
-        cn(styles.base, variantClass, sizeClass, isPressedClass, className)
-      ));
+      return cloneElement(children, Object.assign( {}, children.props, cn(
+        styles.base, variantClass, sizeClass, isPressedClass, className
+      )));
     }
     
     return (
       <button
         ref={ref}
-        className={cn( styles.base, variantClass, sizeClass, isPressedClass, className)}
+        className={cn(styles.base, variantClass, sizeClass, isPressedClass, className)}
         {...props}
       >
         {children}

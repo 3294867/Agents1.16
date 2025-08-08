@@ -1,8 +1,8 @@
 import getAgents from 'src/storage/postgresDB/getAgents';
 import getAgentByName from 'src/storage/postgresDB/getAgentByName';
 import addAgent from 'src/storage/postgresDB/addAgent';
-import getAgentTemplates from 'src/storage/postgresDB/getAgentTemplates';
-import getAgentTemplate from 'src/storage/postgresDB//getAgentTemplate';
+import getAvailableAgents from 'src/storage/postgresDB/getAvailableAgents';
+import getAvailableAgent from 'src/storage/postgresDB//getAvailableAgent';
 import getThread from 'src/storage/postgresDB/getThread';
 import addThread from 'src/storage/postgresDB/addThread';
 import deleteThread from 'src/storage/postgresDB/deleteThread';
@@ -20,8 +20,8 @@ const postgresDB = {
   getAgents,
   getAgentByName,
   addAgent,
-  getAgentTemplates,
-  getAgentTemplate,
+  getAvailableAgents,
+  getAvailableAgent,
   getThread,
   addThread,
   deleteThread,
