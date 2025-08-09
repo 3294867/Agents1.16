@@ -5,7 +5,8 @@ import { sendResponse } from "../utils/sendResponse";
 const getAvailableAgents = async (req: Request, res: Response) => {
   try {
     const resultQueryText = `
-      SELECT * FROM "Agent" WHERE "id" = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid;
+      SELECT * FROM "Agent"
+      WHERE "userId" = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid;
     `;
     const result = await pool.query(resultQueryText);
     if (!result) sendResponse(res, 404, "Failed to fetch available agents (PostgresDB)")

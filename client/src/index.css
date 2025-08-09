@@ -9,13 +9,13 @@
 
 :root {
   --background: oklch(0.985 0.001 106.423);
-  --background-hover: oklch(93.14% 0.001 106.423);
+  --background-hover: oklch(0.9314 0.001 106.423);
   
-  --border: oklch(82.75% 0.001 106.423);
+  --border: oklch(0.8275 0.001 106.423);
   --border-hover: oklch(0.7516 0.001 106.423);
   --border-focus: oklch(0.7567 0.001 106.423);
   
-  --shadow: oklch(93.14% 0.001 106.423);
+  --shadow: oklch(0.9314 0.001 106.423);
 
   --background-card: oklch(0.865 0.001 106.423);
   --background-card-hover: oklch(0.5326 0.001 106.423);
@@ -23,7 +23,7 @@
   --background-dropdown-button-hover: oklch(0.7516 0.001 106.423); 
   --background-is-pressed-button: oklch(0.7516 0.001 106.423);
   
-  --text-primary: oklch(6.49% 0.004 49.25);
+  --text-primary: oklch(0.0649 0.004 49.25);
   --text-secondary: oklch(0.216 0.006 56.043);
   --text-tertiary: oklch(0.444 0.011 73.639);
   --text-button: oklch(0.985 0.001 106.423);
@@ -41,13 +41,13 @@
 
 .dark {
   --background: oklch(0.147 0.004 49.25);
-  --background-hover: oklch(7.08% 0.004 49.25);
+  --background-hover: oklch(0.0708 0.004 49.25);
   
   --border: oklch(0.268 0.007 34.298);
   --border-hover: oklch(0.3095 0.007 34.298);
   --border-focus: oklch(0.3056 0.007 34.298);
   
-  --shadow: oklch(0% 0.004 49.25);
+  --shadow: oklch(0 0.004 49.25);
 
   --background-card: oklch(0.2181 0.007 34.298);
   --background-card-hover: oklch(0.3398 0.007 34.298);
@@ -55,7 +55,7 @@
   --background-dropdown-button-hover:oklch(0.3095 0.007 34.298);
   --background-is-pressed-button: oklch(0.3095 0.007 34.298);
 
-  --text-primary: oklch(99.7% 0.001 106.423);
+  --text-primary: oklch(0.997 0.001 106.423);
   --text-secondary: oklch(0.97 0.001 106.424);
   --text-tertiary: oklch(0.709 0.01 56.259);
   --text-button: oklch(0.985 0.001 106.423);

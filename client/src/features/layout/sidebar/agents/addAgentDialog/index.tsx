@@ -25,13 +25,11 @@ const AddAgentDialog = ({ userId, addedAgents }: Props) => {
         </Button>
       </Dialog.Trigger>
       <Dialog.Content>
-        <div className={styles.container}>
-          <Heading variant='h4'>Add Agent</Heading>
-          <div className={styles.agentsWrapper}>
-            {availableAgents.map((a: Agent) => (
-              <AgentCard key={a.id} userId={userId} availableAgent={a} />
-            ))}
-          </div>
+        <Heading variant='h4'>Add Agent</Heading>
+        <div className={styles.agentsWrapper}>
+          {availableAgents.map((a: Agent) => (
+            <AgentCard key={a.id} userId={userId} availableAgent={a} />
+          ))}
         </div>
       </Dialog.Content>
     </Dialog.Root>

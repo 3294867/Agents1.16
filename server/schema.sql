@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS "User", "Agent", "Thread", "Request", "Response" CASCADE;
 
 CREATE TABLE "User" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-  "username" TEXT NOT NULL UNIQUE,
-  "email" TEXT NOT NULL UNIQUE,
+  "name" TEXT NOT NULL UNIQUE,
+  "password" TEXT NOT NULL,
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "User_pkey" PRIMARY KEY ("id")
@@ -73,10 +73,10 @@ CREATE INDEX IF NOT EXISTS "Response_threadId_idx" ON "Response"("threadId");
 CREATE INDEX IF NOT EXISTS "Thread_userId_idx" ON "Thread"("userId");
 
 -- Insert users
-INSERT INTO "User" ("id", "username", "email", "createdAt", "updatedAt")
+INSERT INTO "User" ("id", "name", "password", "createdAt", "updatedAt")
 VALUES
-  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'root@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'test@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Insert agents
 INSERT INTO "Agent"

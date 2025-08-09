@@ -105,7 +105,7 @@ const CloseButton: FC = () => {
   const { setIsOpen } = ctx;
 
   return (
-    <Button variant="ghost" onClick={() => setIsOpen(false)}>
+    <Button variant='ghost' onClick={() => setIsOpen(false)}>
       Cancel
     </Button>
   );

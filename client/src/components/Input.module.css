@@ -1,0 +1,39 @@
+.input {
+  height: 2.25rem;
+  width: 100%;
+  display: flex;
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--background);
+  box-shadow: none;
+  transition:
+    border 0.3s ease,
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+  outline: none; 
+}
+
+.input:focus {
+  background-color: rgba(0,0,0);
+  border: 1px solid var(--border-focus);
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+  outline: none; 
+}
+
+.input:disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.input::placeholder {
+  color: var(--text-tertiary);
+}
+

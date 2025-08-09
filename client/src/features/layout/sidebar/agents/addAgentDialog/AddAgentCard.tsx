@@ -9,8 +9,6 @@ import Dialog from 'src/components/Dialog';
 import { Agent } from 'src/types';
 import styles from './AddAgentCard.module.css';
 
-const thumbnails = import.meta.glob('/src/assets/thumbnails/*.jpg', { eager: true, query: '?url', import: 'default' });
-
 interface Props {
   userId: string;
   availableAgent: Agent;
@@ -18,7 +16,7 @@ interface Props {
 
 const AgentCard = ({ userId, availableAgent }: Props) => {
   const navigate = useNavigate();
-
+  
   const handleClick = async () => {
     const agent= {
       id: uuidV4(),
@@ -39,6 +37,11 @@ const AgentCard = ({ userId, availableAgent }: Props) => {
     navigate(`/${agent.name}`);
   };
   
+  const thumbnails = import.meta.glob('/src/assets/thumbnails/*.jpg', {
+    eager: true,
+    query: '?url',
+    import: 'default'
+  });
   const imageSrc = thumbnails[`/src/assets/thumbnails/${availableAgent.name}.jpg`] as string | undefined;
 
   return (

@@ -33,7 +33,7 @@ const Agents = ({ userId, agents }: Props) => {
           </Tooltip.Content>
         </Tooltip.Root>
       ))}
-      <AddAgentDialog userId={userId} />
+      <AddAgentDialog userId={userId} addedAgents={agents} />
     </div>
   );
 };
