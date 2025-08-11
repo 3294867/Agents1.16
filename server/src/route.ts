@@ -1,4 +1,8 @@
 import express from "express";
+import signUp from './controllers/signUp';
+import login from './controllers/login';
+import logout from './controllers/logout';
+import me from './controllers/me';
 import getAgents from "./controllers/getAgents";
 import getAgentByName from './controllers/getAgentByName';
 import addAgent from './controllers/addAgent';
@@ -22,6 +26,10 @@ import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
 
 const router = express.Router();
 
+router.post("/signup", signUp);
+router.post("/login", login);
+router.post("/logout", logout);
+router.get("/me", me);
 router.post("/get-agents", getAgents);
 router.post("/get-agent-by-name", getAgentByName);
 router.post("/add-agent", addAgent);

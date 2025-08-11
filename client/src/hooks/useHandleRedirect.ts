@@ -9,7 +9,6 @@ interface Props {
   userId: string;
 }
 
-/** Handles redirecting user from '/:agentName' segment */
 const useHandleRedirect = ({ userId }: Props): void => {
   const navigate = useNavigate();
   const { agentName } = useParams();

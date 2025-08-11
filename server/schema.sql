@@ -1,13 +1,20 @@
--- Enable pgcrypto extension for gen_random_uuid() if not already enabled
 DO $$ 
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pgcrypto') THEN
-        CREATE EXTENSION "pgcrypto";
-    END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_extension WHERE extname = 'pgcrypto')
+    THEN CREATE EXTENSION "pgcrypto";
+  END IF;
 END $$;
 
--- Drop existing tables to start fresh
-DROP TABLE IF EXISTS "User", "Agent", "Thread", "Request", "Response" CASCADE;
+DROP TABLE IF EXISTS "Session", "User", "Agent", "Thread", "Request", "Response" CASCADE;
+
+CREATE TABLE "Session" (
+  "sid" TEXT NOT NULL,
+  "userId" UUID NOT NULL,
+  "data" JSONB NOT NULL,
+  "expires" TIMESTAMP(3) NOT NULL,
+  CONSTRAINT "Session_pkey" PRIMARY KEY ("sid"),
+  CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 CREATE TABLE "User" (
   "id" UUID NOT NULL DEFAULT gen_random_uuid(),
@@ -68,15 +75,16 @@ CREATE TABLE "Response" (
   CONSTRAINT "Response_threadId_fkey" FOREIGN KEY ("threadId") REFERENCES "Thread"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS "Session_userId_idx" ON "Session"("userId");
 CREATE INDEX IF NOT EXISTS "Request_threadId_idx" ON "Request"("threadId");
 CREATE INDEX IF NOT EXISTS "Response_threadId_idx" ON "Response"("threadId");
 CREATE INDEX IF NOT EXISTS "Thread_userId_idx" ON "Thread"("userId");
 
--- Insert users
+-- Insert users (passwords will be hashed programmatically)
 INSERT INTO "User" ("id", "name", "password", "createdAt", "updatedAt")
 VALUES
-  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'placeholder', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'placeholder', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Insert agents
 INSERT INTO "Agent"
@@ -94,7 +102,6 @@ INSERT INTO "Agent"
     "updatedAt"
   )
 VALUES 
--- Root user
   (
     gen_random_uuid(),
     'general',
@@ -147,8 +154,7 @@ VALUES
     NOW(),
     NOW()
   ),
-  -- Test user
-    (
+  (
     gen_random_uuid(),
     'general',
     'gpt-3.5-turbo',
