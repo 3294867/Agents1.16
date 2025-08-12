@@ -15,7 +15,7 @@ const Layout = ({ userId }: Props) => {
   const { agents, error, isLoading } = hooks.useHandleAgents({ userId });
 
   if (error) return <Error error={error} />;
-  if (isLoading) return <Loading />
+  if (isLoading) return <Loading />;
   if (!agents) return <Error error='Something went wrong. Try again later.' />;
 
   return (
@@ -25,7 +25,7 @@ const Layout = ({ userId }: Props) => {
         <Outlet />
       </div>
     </div>
-  )
+  );
 };
 
 export default Layout;
@@ -48,5 +48,5 @@ const Loading = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};

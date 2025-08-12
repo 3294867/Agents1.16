@@ -1,15 +1,36 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
 import Button from 'src/components/Button';
+import { useAuth } from 'src/auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import Dropdown from 'src/components/Dropdown';
+import Icons from 'src/assets/icons';
 
 interface Props {
   userId: string;
 }
 
 const Account = memo(({ userId }: Props) => {
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = useCallback(() => {
+    logout().then(() => navigate('/auth'));
+  }, [logout, navigate]);
+
   return (
-    <Button variant='outline' size='icon'>
-      <img src='/avatar.png' width={36} height={36} style={{ borderRadius: '9999px' }} />
-    </Button>
+    <Dropdown.Root>
+      <Dropdown.Trigger asChild>
+        <Button variant='outline' size='icon'>
+          <img src='/avatar.png' width={36} height={36} style={{ borderRadius: '9999px' }} />
+        </Button>
+      </Dropdown.Trigger>
+      <Dropdown.Content side='right' sideOffset={48} align='start'>
+        <Button data-prevent-dropdown-close onClick={handleLogout} variant='dropdown'>
+          <Icons.Logout style={{ marginRight: '0.5rem' }}/>
+          Logout
+        </Button>
+      </Dropdown.Content>
+    </Dropdown.Root>
   );
 });
 

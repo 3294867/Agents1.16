@@ -18,6 +18,7 @@ import Send from './Send';
 import Library from './Library';
 import Settings from './Settings';
 import ChevronDown from './ChevronDown';
+import Logout from './Logout';
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -44,7 +45,8 @@ const Icons: IconComponents = {
   Send,
   Library,
   Settings,
-  ChevronDown
+  ChevronDown,
+  Logout
 };
 
 export default Icons;

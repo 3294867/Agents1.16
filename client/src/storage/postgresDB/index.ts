@@ -15,6 +15,10 @@ import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
 import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentsUpdatedAt';
+import login from 'src/storage/postgresDB/auth/login';
+import signUp from 'src/storage/postgresDB/auth/signUp';
+import getCurrentUser from 'src/storage/postgresDB/auth/getCurrentUser';
+import logout from 'src/storage/postgresDB/auth/logout';
 
 const postgresDB = {
   getAgents,
@@ -34,6 +38,12 @@ const postgresDB = {
   updatedThreadIsBookmarked,
   getThreadUpdatedAt,
   getAgentsUpdatedAt,
+  auth: {
+    login,
+    signUp,
+    getCurrentUser,
+    logout
+  }
 };
 
 export default postgresDB;

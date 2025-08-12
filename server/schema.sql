@@ -5,7 +5,17 @@ BEGIN
   END IF;
 END $$;
 
-DROP TABLE IF EXISTS "Session", "User", "Agent", "Thread", "Request", "Response" CASCADE;
+DROP TABLE IF EXISTS "User", "Session", "Agent", "Thread", "Request", "Response" CASCADE;
+
+CREATE TABLE "User" (
+  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
+  "name" TEXT NOT NULL UNIQUE,
+  "password" TEXT NOT NULL,
+  "apiKey" TEXT UNIQUE,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+);
 
 CREATE TABLE "Session" (
   "sid" TEXT NOT NULL,
@@ -13,16 +23,7 @@ CREATE TABLE "Session" (
   "data" JSONB NOT NULL,
   "expires" TIMESTAMP(3) NOT NULL,
   CONSTRAINT "Session_pkey" PRIMARY KEY ("sid"),
-  CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE
-);
-
-CREATE TABLE "User" (
-  "id" UUID NOT NULL DEFAULT gen_random_uuid(),
-  "name" TEXT NOT NULL UNIQUE,
-  "password" TEXT NOT NULL,
-  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+  CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 CREATE TABLE "Agent" (

@@ -21,7 +21,7 @@ const login = async (req: Request, res: Response) => {
   try {
     const resultQueryText = `
       SELECT * FROM "User"
-      WHERE "name" = $1::uuid;
+      WHERE "name" = $1::text;
     `;
     const result = await pool.query(resultQueryText, [
       name,
@@ -33,7 +33,10 @@ const login = async (req: Request, res: Response) => {
     if (!match) return sendResponse(res, 401, "Invalid credentials");
 
     req.session.userId = user.id;
-    res.json({ success: true, userId: user.id})
+    res.status(200).json({
+      success: true,
+      userId: user.id
+    })
 
   } catch (error) {
     console.error("Failed to login: ", error);
