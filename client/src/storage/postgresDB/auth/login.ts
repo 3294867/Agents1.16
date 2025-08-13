@@ -5,7 +5,7 @@ interface Props {
 
 const login = async ({ name, password }: Props): Promise<{ userId: string }> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/login`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/log-in`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -14,11 +14,11 @@ const login = async ({ name, password }: Props): Promise<{ userId: string }> => 
 
     const data = await response.json();
     if (!response.ok || !data?.success || !data?.userId) {
-      throw new Error(data?.message || 'Login failed');
+      throw new Error(data?.message);
     }
     return { userId: data.userId as string };
   } catch (error) {
-    throw new Error(`Login failed: ${error}`);
+    throw new Error(`${error}`);
   }
 };
 

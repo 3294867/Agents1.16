@@ -26,8 +26,8 @@ import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
 
 const router = express.Router();
 
-router.post("/signup", signUp);
-router.post("/login", login);
+router.post("/sign-up", signUp);
+router.post("/log-in", login);
 router.post("/logout", logout);
 router.get("/get-current-user", getCurrentUser);
 router.post("/get-agents", getAgents);

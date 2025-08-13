@@ -28,9 +28,10 @@ const Root: FC<RootProps> = ({ children }) => {
 
 interface OverlayProps {
   isNestedInDropdown?: boolean;
+  isPermanent?: boolean;
 }
 
-const Overlay: FC<OverlayProps> = ({ isNestedInDropdown = false }) => {
+const Overlay: FC<OverlayProps> = ({ isNestedInDropdown = false, isPermanent = false }) => {
   const ctx = useContext(Context);
   if (!ctx) throw new Error('Dialog.Overlay must be within a Dialog');
   const { setIsOpen } = ctx;
@@ -38,7 +39,7 @@ const Overlay: FC<OverlayProps> = ({ isNestedInDropdown = false }) => {
   const overlay = (
     <div
       className={cn(styles.dialogOverlay)}
-      onClick={isNestedInDropdown ? undefined : () => setIsOpen(false)}
+      onClick={(isNestedInDropdown || isPermanent) ? undefined : () => setIsOpen(false)}
     />
   );
   
@@ -73,9 +74,10 @@ interface ContentProps {
   open?: boolean;
   className?: string;
   isNestedInDropdown?: boolean;
+  isPermanent?: boolean;
 }
 
-const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdown }) => {
+const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
   const ctx = useContext(Context);
   if (!ctx) throw new Error('Dialog.Content must be within a Dialog');
   const { isOpen, setIsOpen } = ctx;
@@ -86,11 +88,16 @@ const Content: FC<ContentProps> = ({ children, open, className, isNestedInDropdo
 
   const content = isOpen ? (
     <>
-      <Overlay isNestedInDropdown={isNestedInDropdown} />
+      <Overlay isNestedInDropdown={isNestedInDropdown} isPermanent={isPermanent} />
       <div className={cn(styles.dialogContent, className)}>
-        <button onClick={() => setIsOpen(false)} className={styles.dialogClose}>
-          <Icons.Close />
-        </button>
+        {!isPermanent && (
+          <button
+            onClick={() => setIsOpen(false)}
+            className={styles.dialogClose}
+          >
+            <Icons.Close />
+          </button>
+        )}
         {children}
       </div>
     </>

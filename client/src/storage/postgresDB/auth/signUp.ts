@@ -1,15 +1,16 @@
 interface Props {
   name: string;
   password: string;
+  apiKey: string;
 }
 
-const signUp = async ({ name, password }: Props): Promise<{ userId: string }> => {
+const signUp = async ({ name, password, apiKey }: Props): Promise<{ userId: string }> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/signup`, {
+    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/sign-up`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
-      body: JSON.stringify({ name, password })
+      body: JSON.stringify({ name, password, apiKey })
     });
 
     const data = await response.json();
@@ -18,7 +19,7 @@ const signUp = async ({ name, password }: Props): Promise<{ userId: string }> =>
     }
     return { userId: data.userId as string };
   } catch (error) {
-    throw new Error(`Sign up failed: ${error}`);
+    throw new Error(`${error}`);
   }
 };
 

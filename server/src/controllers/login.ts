@@ -16,9 +16,10 @@ interface Props {
 
 const login = async (req: Request, res: Response) => {
   const { name, password }: Props = req.body;
-  if (!name || !password) return sendResponse(res, 400, "Missing fields");
 
   try {
+    if (!name) return sendResponse(res, 400, "Name is required");
+    
     const resultQueryText = `
       SELECT * FROM "User"
       WHERE "name" = $1::text;
@@ -26,11 +27,13 @@ const login = async (req: Request, res: Response) => {
     const result = await pool.query(resultQueryText, [
       name,
     ]);
-    if (result.rows.length === 0) return sendResponse(res, 401,"Invalid credentails");
+    if (result.rows.length === 0) return sendResponse(res, 401,"Invalid name");
+    
+    if (!password) return sendResponse(res, 400, "Password is required");
 
     const user = result.rows[0];
     const match = await bcrypt.compare(password, user.password);
-    if (!match) return sendResponse(res, 401, "Invalid credentials");
+    if (!match) return sendResponse(res, 401, "Invalid password");
 
     req.session.userId = user.id;
     res.status(200).json({

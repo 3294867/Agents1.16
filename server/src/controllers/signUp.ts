@@ -12,11 +12,12 @@ declare module 'express-session' {
 interface Props {
   name: string;
   password: string;
+  apiKey: string;
 }
 
 const signUp = async (req: Request, res: Response) => {
-  const { name, password }: Props = req.body;
-  if (!name || !password) return sendResponse(res, 400, "Missing fields");
+  const { name, password, apiKey }: Props = req.body;
+  if (!name || !password) return sendResponse(res, 400, "All fields are required: name, password, apiKey");
 
   try {
     await pool.query("BEGIN"); 
@@ -34,13 +35,14 @@ const signUp = async (req: Request, res: Response) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     const newUserQueryText = `
-      INSERT INTO "User" ("name", "password")
-      VALUES ($1::text, $2::text)
+      INSERT INTO "User" ("name", "password", "apiKey")
+      VALUES ($1::text, $2::text, $3::text)
       RETURNING "id";
     `;
     const newUser = await pool.query(newUserQueryText, [
       name,
-      hashedPassword
+      hashedPassword,
+      apiKey
     ]);
     if (newUser.rows.length === 0) return sendResponse(res, 503,"Failed to add user");
     const newUserId = newUser.rows[0].id;
@@ -53,7 +55,6 @@ const signUp = async (req: Request, res: Response) => {
     if (!newGeneralAgent) return sendResponse(res, 503, "Failed to add general agent");
     
     await pool.query("COMMIT");
-
 
     req.session.userId = newUserId;
     res.json({ success: true, userId: newUserId})

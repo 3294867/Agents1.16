@@ -1,6 +1,6 @@
 import { memo, useCallback } from 'react';
 import Button from 'src/components/Button';
-import { useAuth } from 'src/auth/AuthContext';
+import { useAuth } from 'src/components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
 import Dropdown from 'src/components/Dropdown';
 import Icons from 'src/assets/icons';
@@ -14,7 +14,7 @@ const Account = memo(({ userId }: Props) => {
   const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {
-    logout().then(() => navigate('/auth'));
+    logout().then(() => navigate('/log-in'));
   }, [logout, navigate]);
 
   return (
@@ -25,7 +25,7 @@ const Account = memo(({ userId }: Props) => {
         </Button>
       </Dropdown.Trigger>
       <Dropdown.Content side='right' sideOffset={48} align='start'>
-        <Button data-prevent-dropdown-close onClick={handleLogout} variant='dropdown'>
+        <Button data-prevent-dropdown-close onClick={handleLogout} variant='dropdown' style={{ zIndex: '2000' }}>
           <Icons.Logout style={{ marginRight: '0.5rem' }}/>
           Logout
         </Button>

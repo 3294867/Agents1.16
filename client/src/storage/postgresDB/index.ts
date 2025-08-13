@@ -1,3 +1,7 @@
+import login from 'src/storage/postgresDB/auth/login';
+import signUp from 'src/storage/postgresDB/auth/signUp';
+import getCurrentUser from 'src/storage/postgresDB/auth/getCurrentUser';
+import logout from 'src/storage/postgresDB/auth/logout';
 import getAgents from 'src/storage/postgresDB/getAgents';
 import getAgentByName from 'src/storage/postgresDB/getAgentByName';
 import addAgent from 'src/storage/postgresDB/addAgent';
@@ -15,12 +19,14 @@ import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
 import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentsUpdatedAt';
-import login from 'src/storage/postgresDB/auth/login';
-import signUp from 'src/storage/postgresDB/auth/signUp';
-import getCurrentUser from 'src/storage/postgresDB/auth/getCurrentUser';
-import logout from 'src/storage/postgresDB/auth/logout';
 
 const postgresDB = {
+  auth: {
+    login,
+    signUp,
+    getCurrentUser,
+    logout
+  },
   getAgents,
   getAgentByName,
   addAgent,
@@ -37,13 +43,7 @@ const postgresDB = {
   removeThreadTitle,
   updatedThreadIsBookmarked,
   getThreadUpdatedAt,
-  getAgentsUpdatedAt,
-  auth: {
-    login,
-    signUp,
-    getCurrentUser,
-    logout
-  }
+  getAgentsUpdatedAt
 };
 
 export default postgresDB;

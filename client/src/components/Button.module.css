@@ -1,5 +1,6 @@
 /* Base */
 .base {
+  width: 100%;
   color: var(--text-button);
   cursor: pointer;
   display: flex;
@@ -13,7 +14,6 @@
 }
 
 .base:disabled {
-  opacity: 0.5;
   cursor: not-allowed;
 }
 
@@ -66,14 +66,15 @@
 }
 
 .linkVariant {
-  color: var(--accent-primary);
+  width: fit-content;
+  color: var(--text-primary);
   background-color: transparent;
   text-decoration: underline;
   text-underline-offset: 0.25rem; /* 4px */
 }
 
 .linkVariant:hover {
-  color: var(--accent-primary-hover);
+  color: var(--text-tertiary);
 }
 
 .base.dropdownVariant {

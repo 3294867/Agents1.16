@@ -1,16 +1,16 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useEffect, useMemo, useState } from 'react';
 import postgresDB from 'src/storage/postgresDB';
 
-interface AuthContextValue {
+export interface AuthContextValue {
   userId: string | null;
   isLoading: boolean;
   error: string | null;
   login: (name: string, password: string) => Promise<void>;
-  signUp: (name: string, password: string) => Promise<void>;
+  signUp: (name: string, password: string, apiKey: string) => Promise<void>;
   logout: () => Promise<void>;
 }
 
-const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [userId, setUserId] = useState<string | null>(null);
@@ -37,9 +37,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const { userId } = await postgresDB.auth.login({ name, password });
       setUserId(userId);
     },
-    signUp: async (name: string, password: string) => {
+    signUp: async (name: string, password: string, apiKey: string) => {
       setError(null);
-      const { userId } = await postgresDB.auth.signUp({ name, password });
+      const { userId } = await postgresDB.auth.signUp({ name, password, apiKey });
       setUserId(userId);
     },
     logout: async () => {
@@ -55,9 +55,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-export const useAuth = (): AuthContextValue => {
-  const ctx = useContext(AuthContext);
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider');
-  return ctx;
-}; 

@@ -5,11 +5,12 @@ import hooks from 'src/hooks';
 import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
-import { AuthProvider, useAuth } from 'src/auth/AuthContext';
-import LoginForm from 'src/auth/LoginForm';
+import SignUpForm from './components/SignUpForm';
+import LogInForm from './components/LogInForm';
+import { AuthProvider } from './components/AuthProvider';
 
 const ProtectedApp = () => {
-  const { userId, isLoading } = useAuth();
+  const { userId, isLoading } = hooks.useAuth();
   indexedDB.initialize();
   hooks.useHandleTheme();
 
@@ -19,16 +20,22 @@ const ProtectedApp = () => {
       element: <Layout userId={userId} />,
       children: [
         { path: '/', element: <Navigate to='/general'/> },
+        { path: '/sign-up', element: <Navigate to='/general' /> },
+        { path: '/login', element: <Navigate to='/general' /> },
         { path: '/:agentName', element: <Redirect userId={userId} /> },
-        { path: '/:agentName/:threadId', element: <Agent userId={userId} /> },
+        { path: '/:agentName/:threadId', element: <Agent userId={userId} /> }
       ]
     } : {
-      path: '/',
-      element: <Navigate to='/auth' />
+      path: '/*',
+      element: <Navigate to='/log-in' />,
     },
     {
-      path: '/auth',
-      element: <LoginForm />
+      path: '/sign-up',
+      element: <SignUpForm />
+    },
+    {
+      path: '/log-in',
+      element: <LogInForm />
     }
   ]),[userId]);
 

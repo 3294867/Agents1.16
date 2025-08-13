@@ -19,6 +19,9 @@ import Library from './Library';
 import Settings from './Settings';
 import ChevronDown from './ChevronDown';
 import Logout from './Logout';
+import EyeClosed from './EyeClosed';
+import EyeOpened from './EyeOpened';
+import CircleAlert from './CircleAlert';
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -46,7 +49,10 @@ const Icons: IconComponents = {
   Library,
   Settings,
   ChevronDown,
-  Logout
+  Logout,
+  EyeClosed,
+  EyeOpened,
+  CircleAlert
 };
 
 export default Icons;
