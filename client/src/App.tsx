@@ -5,12 +5,12 @@ import hooks from 'src/hooks';
 import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
-import SignUpForm from './components/SignUpForm';
-import LogInForm from './components/LogInForm';
-import { AuthProvider } from './components/AuthProvider';
+import SignUpForm from './features/auth/SignUpForm';
+import LogInForm from './features/auth/LogInForm';
+import Auth from './components/auth';
 
 const ProtectedApp = () => {
-  const { userId, isLoading } = hooks.useAuth();
+  const { userId, isLoading } = Auth.useContext();
   indexedDB.initialize();
   hooks.useHandleTheme();
 
@@ -44,9 +44,9 @@ const ProtectedApp = () => {
 };
 
 const App = () => (
-  <AuthProvider>
+  <Auth.Provider>
     <ProtectedApp />
-  </AuthProvider>
+  </Auth.Provider>
 );
 
 export default App;

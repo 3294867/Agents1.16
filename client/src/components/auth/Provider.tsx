@@ -1,18 +1,12 @@
-import { createContext, useEffect, useMemo, useState } from 'react';
+import { ReactNode, useEffect, useMemo, useState } from 'react';
+import AuthContext, { AuthContextValue } from './AuthContext';
 import postgresDB from 'src/storage/postgresDB';
 
-export interface AuthContextValue {
-  userId: string | null;
-  isLoading: boolean;
-  error: string | null;
-  login: (name: string, password: string) => Promise<void>;
-  signUp: (name: string, password: string, apiKey: string) => Promise<void>;
-  logout: () => Promise<void>;
+interface Props {
+  children: ReactNode;
 }
 
-export const AuthContext = createContext<AuthContextValue | undefined>(undefined);
-
-export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+const Provider = ({ children }: Props) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -55,3 +49,5 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     </AuthContext.Provider>
   );
 };
+
+export default Provider;

@@ -1,0 +1,24 @@
+.textarea {
+  display: flex;
+  padding: 0.5rem 0.75rem;
+  width: 100%;
+  min-height: 3.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px 0 rgba(0 0 0 / 0.1);
+  background-color: transparent;
+  color: var(--text-primary);
+  outline: none;
+  opacity: 100%
+}
+
+.textarea::placeholder {
+  color: var(--text-tertiary);
+}
+
+.textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}

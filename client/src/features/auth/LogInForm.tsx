@@ -1,17 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import { useCallback, useState } from 'react';
-import hooks from 'src/hooks';
-import Button from 'src/components/Button';
-import Input from 'src/components/Input';
-import Dialog from 'src/components/Dialog';
-import Heading from 'src/components/Heading';
-import Label from 'src/components/Label';
-import Paragraph from 'src/components/Paragraph';
+import Auth from '../../components/auth';
+import Button from 'src/components/button';
+import Input from 'src/components/input';
+import Dialog from 'src/components/dialog';
+import Heading from 'src/components/heading';
+import Label from 'src/components/label';
+import Paragraph from 'src/components/paragraph';
 import Icons from 'src/assets/icons';
-import styles from './AuthForm.module.css';
+import styles from './Form.module.css';
 
 const LogInForm = () => {
-  const { login, isLoading } = hooks.useAuth();
+  const { login, isLoading } = Auth.useContext();
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);

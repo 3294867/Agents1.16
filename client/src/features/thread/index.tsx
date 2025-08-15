@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
-import Error from 'src/components/Error';
+import Error from 'src/components/error';
 import Header from './header';
 import Chat from './chat';
 import Form from './form';

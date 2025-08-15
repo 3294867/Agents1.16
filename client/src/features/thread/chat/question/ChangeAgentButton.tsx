@@ -7,7 +7,7 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import hooks from 'src/hooks';
 import capitalizeFirstLetter from 'src/utils/capitalizeFirstLetter';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import { Agent, AgentType } from 'src/types';
 
 interface Props {

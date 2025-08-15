@@ -5,7 +5,7 @@ import indexedDB from 'src/storage/indexedDB';
 import openai from 'src/opanai';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import { AgentType } from 'src/types';
 

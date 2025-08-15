@@ -2,11 +2,11 @@ import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import Dialog from 'src/components/Dialog';
-import Button from 'src/components/Button';
+import Dialog from 'src/components/dialog';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
-import Heading from 'src/components/Heading';
-import Paragraph from 'src/components/Paragraph';
+import Heading from 'src/components/heading';
+import Paragraph from 'src/components/paragraph';
 import styles from './DeleteDialog.module.css';
 
 interface Props {

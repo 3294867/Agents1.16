@@ -1,6 +1,6 @@
 import Icons from 'src/assets/icons';
-import Button from 'src/components/Button';
-import Dropdown from 'src/components/Dropdown';
+import Button from 'src/components/button';
+import Dropdown from 'src/components/dropdown';
 import constants from 'src/constants';
 import { AgentModel } from 'src/types';
 

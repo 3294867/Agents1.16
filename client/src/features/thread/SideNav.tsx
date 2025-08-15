@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import constants from 'src/constants';
 import hooks from 'src/hooks';
 import { Query } from 'src/types';

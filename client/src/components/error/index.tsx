@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
-import Button from './Button';
-import Dialog from './Dialog';
-import Paragraph from './Paragraph';
+import Button from 'src/components/button';
+import Dialog from 'src/components//dialog';
+import Paragraph from 'src/components//paragraph';
+import Heading from 'src/components/heading';
 import styles from './Error.module.css';
-import Heading from './Heading';
 
 interface Props {
   error: string

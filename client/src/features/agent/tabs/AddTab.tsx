@@ -4,7 +4,7 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import constants from 'src/constants';
 import { Agent as AgentType, Tab as TabType} from 'src/types';

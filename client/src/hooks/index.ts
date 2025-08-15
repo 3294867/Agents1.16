@@ -11,10 +11,8 @@ import useHandleSideNav from 'src/hooks/useHandleSideNav';
 import useHandleAnimatedParagraph from 'src/hooks/useHandleAnimatedParagraph';
 import useHandleQuestion from 'src/hooks/useHandleQuestion';
 import useHandleThreadPostionY from 'src/hooks/useHandleThreadPostionY';
-import useAuth from 'src/hooks/useAuth';
 
 const hooks = {
-  useAuth,
   useHandleRedirect,
   useHandleAgents,
   useGetAgent,

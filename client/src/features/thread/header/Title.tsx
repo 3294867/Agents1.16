@@ -2,8 +2,8 @@ import { motion } from 'framer-motion';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Heading from 'src/components/Heading';
-import Button from 'src/components/Button';
+import Heading from 'src/components/heading';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
 interface TitleProps {

@@ -1,5 +1,5 @@
 import { memo, useCallback } from 'react';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import useHandleTheme from 'src/hooks/useHandleTheme';
 

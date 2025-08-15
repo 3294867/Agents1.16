@@ -5,7 +5,7 @@ import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './PauseRunButton.module.css';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 
 interface Props {
   threadId: string;

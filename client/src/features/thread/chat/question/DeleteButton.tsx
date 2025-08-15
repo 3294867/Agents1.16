@@ -2,7 +2,7 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
 interface Props {

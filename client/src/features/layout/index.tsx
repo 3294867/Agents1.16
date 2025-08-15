@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import hooks from 'src/hooks';
-import Error from 'src/components/Error';
+import Error from 'src/components/error';
 import Sidebar from 'src/features/layout/sidebar';
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import styles from './Layout.module.css';
 

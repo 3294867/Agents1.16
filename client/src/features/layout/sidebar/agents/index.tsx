@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom';
-import Button from 'src/components/Button';
-import Tooltip from 'src/components/Tooltip';
+import Button from 'src/components/button';
+import Tooltip from 'src/components/tooltip';
 import AddAgentDialog from './addAgentDialog';
 import { Agent } from 'src/types';
 import styles from './Agents.module.css';

@@ -1,8 +1,8 @@
 import { memo, useCallback } from 'react';
-import Button from 'src/components/Button';
-import { useAuth } from 'src/components/AuthProvider';
 import { useNavigate } from 'react-router-dom';
-import Dropdown from 'src/components/Dropdown';
+import Auth from 'src/components/auth';
+import Button from 'src/components/button';
+import Dropdown from 'src/components/dropdown';
 import Icons from 'src/assets/icons';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Account = memo(({ userId }: Props) => {
-  const { logout } = useAuth();
+  const { logout } = Auth.useContext();
   const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {

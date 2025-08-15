@@ -1,10 +1,10 @@
 import Icons from 'src/assets/icons';
-import Button from 'src/components/Button';
-import Dialog from 'src/components/Dialog';
-import Heading from 'src/components/Heading';
+import Button from 'src/components/button';
+import Dialog from 'src/components/dialog';
+import Heading from 'src/components/heading';
+import Error from 'src/components/error';
 import hooks from 'src/hooks';
 import AgentCard from './AddAgentCard';
-import Error from 'src/components/Error';
 import { Agent } from 'src/types';
 import styles from './AddAgentDialog.module.css';
 

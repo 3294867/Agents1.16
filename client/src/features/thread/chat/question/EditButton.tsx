@@ -1,4 +1,4 @@
-import Button from 'src/components/Button';
+import Button from 'src/components/button';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 

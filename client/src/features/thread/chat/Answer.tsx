@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import Paragraph from 'src/components/Paragraph';
+import Paragraph from 'src/components/paragraph';
 import hooks from 'src/hooks';
 import { AgentType } from 'src/types';
 

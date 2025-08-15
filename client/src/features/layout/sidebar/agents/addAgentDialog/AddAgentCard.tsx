@@ -4,8 +4,8 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import capitalizeFirstLetter from 'src/utils/capitalizeFirstLetter';
-import Heading from 'src/components/Heading';
-import Dialog from 'src/components/Dialog';
+import Heading from 'src/components/heading';
+import Dialog from 'src/components/dialog';
 import { Agent } from 'src/types';
 import styles from './AddAgentCard.module.css';
 
