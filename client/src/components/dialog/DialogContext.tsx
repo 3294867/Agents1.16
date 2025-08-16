@@ -1,8 +1,14 @@
-import { createContext } from 'react';
+import { createContext, RefObject } from 'react';
 
-const DialogContext = createContext<{
+interface DialogContextType {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-} | null>(null);
+  dialogRef: RefObject<HTMLDivElement | null>;
+  dialogId: string;
+  titleId: string;
+  descriptionId: string;
+}
+
+const DialogContext = createContext<DialogContextType | null>(null);
 
 export default DialogContext;

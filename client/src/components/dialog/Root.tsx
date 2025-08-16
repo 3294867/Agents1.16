@@ -1,4 +1,4 @@
-import { FC, ReactNode, useState } from 'react';
+import { FC, ReactNode, useState, useId, useRef } from 'react';
 import DialogContext from './DialogContext';
 import cn from 'src/utils/cn';
 import styles from './Dialog.module.css';
@@ -9,9 +9,20 @@ interface Props {
 
 const Root: FC<Props> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogId = useId();
+  const titleId = useId();
+  const descriptionId = useId();
 
   return (
-    <DialogContext.Provider value={{ isOpen, setIsOpen }}>
+    <DialogContext.Provider value={{ 
+      isOpen, 
+      setIsOpen, 
+      dialogRef,
+      dialogId, 
+      titleId, 
+      descriptionId 
+    }}>
       <span className={cn(styles.dialogContainer)}>
         {children}
       </span>

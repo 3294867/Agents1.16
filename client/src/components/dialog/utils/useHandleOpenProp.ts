@@ -1,0 +1,16 @@
+import { useEffect } from 'react';
+import useDialogContext from './useDialogContext';
+
+interface Props {
+  open?: boolean;
+}
+
+const useHandleOpenProp = ({ open }: Props): void => {
+  const { setIsOpen } = useDialogContext();
+
+  useEffect(() => {
+    if (open) setIsOpen(open);
+  },[open]);
+};
+
+export default useHandleOpenProp;

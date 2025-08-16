@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import Auth from '../../components/auth';
 import Button from 'src/components/button';
 import Input from 'src/components/input';
@@ -43,10 +43,10 @@ const LogInForm = () => {
         </div>
         <div className={styles.error}>
           {error && (
-            <>
+            <Fragment>
               <Icons.CircleAlert />
               <Paragraph>{error}</Paragraph>
-            </>
+            </Fragment>
           )}
         </div>
         <form onSubmit={onSubmit} className={styles.form}>
@@ -96,10 +96,10 @@ const LogInForm = () => {
               disabled={isLoading}
             >
               {isLoading ? (
-                <>
+                <Fragment>
                   <Icons.Loader className={styles.loader} />
                   Signing In...
-                </>
+                </Fragment>
               ) : (
                 'Sign In'
               )}

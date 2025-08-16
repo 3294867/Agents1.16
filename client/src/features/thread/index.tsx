@@ -8,6 +8,7 @@ import SideNavigation from './SideNav';
 import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './Thread.module.css'
+import DemoDialog from 'src/components/dialog/DemoDialog';
 
 interface Props {
   userId: string;
@@ -31,6 +32,7 @@ const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) =>
 
   return (
     <main id='thread' className={styles.main}>
+      <DemoDialog />
       <Header
         threadId={threadId}
         threadTitle={threadTitle}

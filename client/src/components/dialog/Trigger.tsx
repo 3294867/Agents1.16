@@ -1,5 +1,5 @@
 import { cloneElement, FC, isValidElement, ReactElement } from 'react';
-import useDialogContext from './useDialogContext';
+import utils from './utils';
 
 interface Props {
   asChild?: boolean;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Trigger: FC<Props> = ({ asChild, children }) => {
-  const { setIsOpen } = useDialogContext();
+  const { setIsOpen } = utils.useDialogContext();
 
   const childProps = {
     onClick: () => setIsOpen(true),

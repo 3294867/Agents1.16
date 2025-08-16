@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useCallback, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import Auth from '../../components/auth';
 import Button from 'src/components/button';
 import Input from 'src/components/input';
@@ -54,10 +54,10 @@ const SignUpForm = () => {
         </div>
         <div className={styles.error}>
           {error && (
-            <>
+            <Fragment>
               <Icons.CircleAlert />
               <Paragraph style={{ margin: 0 }}>{error}</Paragraph>
-            </>
+            </Fragment>
           )}
         </div>
         <form onSubmit={onSubmit} className={styles.form}>
