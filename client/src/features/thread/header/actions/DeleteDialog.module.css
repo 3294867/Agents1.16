@@ -1,3 +1,11 @@
+.trigger {
+  width: 100;
+}
+
+.trigger:focus-visible {
+  background-color: var(--background-dropdown-button-hover);
+}
+
 .container {
   width: 100%;
   display: flex;

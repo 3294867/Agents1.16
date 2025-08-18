@@ -1,8 +1,11 @@
-import { createContext } from 'react';
+import { createContext, RefObject } from 'react';
 
-const DropdownContext = createContext<{
+interface DropdownContextType {
+  dropdownRef: RefObject<HTMLDivElement | null>;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-} | null>(null);
+}
+
+const DropdownContext = createContext<DropdownContextType | null>(null);
 
 export default DropdownContext;

@@ -5,7 +5,7 @@ interface Props {
   delay?: number;
 }
 
-const useMounted = ({ isVisible, delay = 0 }: Props): boolean => {
+const useHandleMount = ({ isVisible, delay = 0 }: Props): boolean => {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -24,4 +24,4 @@ const useMounted = ({ isVisible, delay = 0 }: Props): boolean => {
   return mounted;
 };
 
-export default useMounted; 
+export default useHandleMount; 

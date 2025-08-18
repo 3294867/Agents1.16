@@ -40,7 +40,13 @@ const Button = forwardRef<HTMLButtonElement, Props>(
     return (
       <button
         ref={ref}
-        className={cn(styles.base, variantClass, sizeClass, isPressedClass, className)}
+        className={cn(
+          styles.base,
+          variantClass,
+          sizeClass,
+          isPressedClass,
+          className
+        )}
         {...props}
       >
         {children}

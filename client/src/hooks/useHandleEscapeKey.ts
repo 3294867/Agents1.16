@@ -7,7 +7,7 @@ interface Props {
 
 const useHandleEscapeKey = ({ isOpen, setIsOpen }: Props ): void => {
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (event.key === 'Escape' && isOpen) {
+    if (isOpen && event.key === 'Escape') {
       setIsOpen(false);
     }
   }, [isOpen]);

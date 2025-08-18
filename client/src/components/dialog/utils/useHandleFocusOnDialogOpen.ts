@@ -1,14 +1,14 @@
 import { RefObject, useEffect } from 'react';
 
 interface Props {
-  isOpen: boolean;
   dialogRef: RefObject<HTMLDivElement | null>;
+  isOpen: boolean;
 }
 
-const useHandleFocusOnDialogOpen = ({ isOpen, dialogRef }: Props): void => {
+const useHandleFocusOnDialogOpen = ({ dialogRef, isOpen }: Props): void => {
   useEffect(() => {
     setTimeout(() => {
-      if (isOpen && dialogRef.current) {
+      if (dialogRef.current && isOpen) {
         const focusableElement = dialogRef.current
           .querySelector('[data-focus-on-dialog-open]') as HTMLElement;
         
@@ -19,7 +19,7 @@ const useHandleFocusOnDialogOpen = ({ isOpen, dialogRef }: Props): void => {
         }
       }
     }, 200)
-  }, [isOpen, dialogRef]);
+  }, [dialogRef, isOpen]);
 };
 
 export default useHandleFocusOnDialogOpen;

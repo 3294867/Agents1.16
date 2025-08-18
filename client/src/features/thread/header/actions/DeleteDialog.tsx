@@ -28,7 +28,15 @@ const DeleteDialog = ({ threadId, agentName }: Props) => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <Button data-prevent-dropdown-close variant='dropdown' style={{ width: '100%' }}>
+        <Button
+          id={`delete_thread_button_${threadId}`}
+          role='menuitem'
+          variant='dropdown'
+          className={styles.trigger}
+          data-prevent-dropdown-close
+          data-thread-id={threadId}
+          data-agent-name={agentName}
+        >
           <Icons.Delete style={{ marginRight: '0.5rem' }}/>
           Delete
         </Button>

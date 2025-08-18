@@ -17,10 +17,10 @@ interface Props {
 
 const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
   const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId } = utils.useDialogContext();
-  const mounted = hooks.useMounted({ isVisible: isOpen });
+  const mounted = hooks.ui.useHandleMount({ isVisible: isOpen });
+  hooks.ui.useHandleEscapeKey({ isOpen, setIsOpen });
   utils.useHandleOpenProp({ open });
-  utils.useHandleFocusOnDialogOpen({ isOpen, dialogRef });
-  utils.useHandleEscapeKey({ isOpen, setIsOpen });
+  utils.useHandleFocusOnDialogOpen({ dialogRef, isOpen });
   utils.useHandleAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
 
   if (!mounted) return null;

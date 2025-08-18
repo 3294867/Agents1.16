@@ -11,21 +11,20 @@ interface Props {
 
 const BookmarkButton = ({ threadId, currentIsBookmarked }: Props) => {
   const handleClick = async () => {
-    /** Update 'isBookmarked' property (PostgresDB) */
     await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    
-    /** Update 'isBookmarked' property (IndexedDB) */
     await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-
-    /** Dispatch isBookmarkedUpdated event (Events) */
     dispatchEvent.threadIsBookmarkedUpdated(threadId, !currentIsBookmarked);
   };
   
   return (
     <Button
+      id={`bookmark_thread_button_${threadId}`}
+      role='menuitem'
       variant='dropdown'
       onClick={handleClick}
       style={{ width: '100%' }}
+      data-thread-id={threadId}
+      data-is-bookmarked={currentIsBookmarked.toString()}
     >
       <Icons.BookmarkOutlined style={{ marginRight: '0.5rem' }}/>
       Bookmark

@@ -87,6 +87,10 @@
   background-color: var(--background-dropdown-button-hover);
 }
 
+.dropdownVariant:focus {
+  background-color: var(--background-dropdown-button-hover);
+}
+
 /* Sizes */
 .defaultSize {
   height: 2.25rem; /* 36px */

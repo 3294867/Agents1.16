@@ -11,7 +11,8 @@ import useHandleSideNav from 'src/hooks/useHandleSideNav';
 import useHandleAnimatedParagraph from 'src/hooks/useHandleAnimatedParagraph';
 import useHandleQuestion from 'src/hooks/useHandleQuestion';
 import useHandleThreadPostionY from 'src/hooks/useHandleThreadPostionY';
-import useMounted from 'src/hooks/useMounted';
+import useHandleMount from 'src/hooks/useHandleMount';
+import useHandleEscapeKey from 'src/hooks/useHandleEscapeKey';
 
 const hooks = {
   useHandleRedirect,
@@ -27,7 +28,11 @@ const hooks = {
   useHandleAnimatedParagraph,
   useHandleQuestion,
   useHandleThreadPostionY,
-  useMounted,
+  ui: {
+    useHandleMount,
+    useHandleEscapeKey,
+    
+  }
 };
 
 export default hooks;

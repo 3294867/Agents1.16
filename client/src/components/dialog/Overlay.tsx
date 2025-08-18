@@ -12,11 +12,9 @@ interface Props {
 
 const Overlay: FC<Props> = ({ isNestedInDropdown = false, isPermanent = false }) => {
   const { isOpen, setIsOpen } = utils.useDialogContext();
-  const mounted = hooks.useMounted({ isVisible: isOpen });
+  const mounted = hooks.ui.useHandleMount({ isVisible: isOpen });
 
-  if (!mounted) {
-    return null;
-  }
+  if (!mounted) return null;
 
   return createPortal(
     <div
