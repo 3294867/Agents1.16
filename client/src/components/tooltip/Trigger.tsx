@@ -8,15 +8,10 @@ interface Props {
 }
 
 const Trigger: FC<Props> = ({ asChild, children }) => {
-  const { setIsOpen, triggerRef } = useTooltipContext();
+  const { triggerRef, setIsOpen } = useTooltipContext();
 
-  const childProps = {
-    ref: (node: HTMLElement) => {
-      triggerRef.current = node;
-      const childRef = (children as any).ref;
-      if (typeof childRef === 'function') childRef(node);
-      else if (childRef && typeof childRef === 'object') childRef.current = node;
-    },
+  const props = {
+    ref: triggerRef,
     onMouseEnter: () => setIsOpen(true),
     onMouseLeave: () => setIsOpen(false),
     onFocus: () => setIsOpen(true),
@@ -26,9 +21,10 @@ const Trigger: FC<Props> = ({ asChild, children }) => {
   };
 
   if (asChild && isValidElement(children)) {
-    return cloneElement(children, Object.assign({}, children.props, childProps));
+    return cloneElement(children, Object.assign({}, props, children.props));
   }
-  return <span {...childProps}>{children}</span>;
+
+  return <span {...props}>{children}</span>;
 };
 
 export default Trigger;

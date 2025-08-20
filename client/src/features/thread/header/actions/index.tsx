@@ -24,7 +24,7 @@ const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
             <Icons.Share />
           </Button>
         </Tooltip.Trigger>
-        <Tooltip.Content side='bottom' sideOffset={4}>
+        <Tooltip.Content>
           Share
         </Tooltip.Content>
       </Tooltip.Root>
@@ -34,7 +34,7 @@ const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
             <Icons.More />
           </Button>
         </Dropdown.Trigger>
-        <Dropdown.Content align='end'>
+        <Dropdown.Content align='end' sideOffset={4}>
           {!currentIsBookmarked && <BookmarkButton threadId={threadId} currentIsBookmarked={currentIsBookmarked} />}
           <DeleteDialog threadId={threadId} agentName={agentName} />
         </Dropdown.Content>

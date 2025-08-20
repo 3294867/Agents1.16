@@ -1,9 +1,9 @@
 import { createContext, RefObject } from 'react';
 
 interface DialogContextType {
+  dialogRef: RefObject<HTMLDivElement | null>;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  dialogRef: RefObject<HTMLDivElement | null>;
   dialogId: string;
   titleId: string;
   descriptionId: string;

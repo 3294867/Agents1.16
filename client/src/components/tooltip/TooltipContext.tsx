@@ -1,9 +1,10 @@
 import { createContext, RefObject } from 'react';
 
 const TooltipContext = createContext<{
+  triggerRef: RefObject<HTMLElement | null>;
+  contentRef: RefObject<HTMLDivElement | null>;
   isOpen: boolean;
   setIsOpen: (open: boolean) => void;
-  triggerRef: RefObject<HTMLElement | null>;
 } | null>(null);
 
 export default TooltipContext;

@@ -9,9 +9,10 @@ interface Props {
 const Root: FC<Props> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const triggerRef = useRef<HTMLElement | null>(null);
+  const contentRef = useRef<HTMLDivElement | null>(null);
 
   return (
-    <TooltipContext.Provider value={{ isOpen, setIsOpen, triggerRef }}>
+    <TooltipContext.Provider value={{ triggerRef, contentRef, isOpen, setIsOpen}}>
       <span className={styles.tooltipContainer}>{children}</span>
     </TooltipContext.Provider>
   );

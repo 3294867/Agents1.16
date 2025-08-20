@@ -9,7 +9,6 @@ A modern AI agent management platform built with Express.js and React that allow
 - **User Authentication**: Secure sign-up, login, and session management
 - **Thread Management**: Organize conversations into threads
 - **Real-time Updates**: Live chat with streaming responses
-- **Cross-platform**: Web-based application accessible from any device
 
 ## 🏗️ Architecture
 

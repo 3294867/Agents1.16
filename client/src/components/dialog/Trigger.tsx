@@ -9,17 +9,17 @@ interface Props {
 const Trigger: FC<Props> = ({ asChild, children }) => {
   const { setIsOpen } = utils.useDialogContext();
 
-  const childProps = {
+  const props = {
     onClick: () => setIsOpen(true),
     'aria-describedby': undefined as string | undefined,
     tabIndex: 0,
   };
 
   if (asChild && isValidElement(children)) {
-    return cloneElement(children, Object.assign({}, children.props, childProps));
+    return cloneElement(children, Object.assign({}, props, children.props));
   }
 
-  return <span>{children}</span>;
+  return <span {...props}>{children}</span>;
 };
 
 export default Trigger;

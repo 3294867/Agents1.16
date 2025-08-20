@@ -6,31 +6,31 @@ interface Props {
 }
 
 const useHandleTabKey = ({ dropdownRef, isOpen }: Props): void => {
-  const handleKeyDown = useCallback(
-    (event: KeyboardEvent) => {
-      if (!isOpen || !dropdownRef.current || event.key !== 'Tab') return;
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (!isOpen || !dropdownRef.current || event.key !== 'Tab') return;
 
-      const focusableElements = Array.from(
-        dropdownRef.current.querySelectorAll<HTMLElement>(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        )
-      ).filter(el => !el.hasAttribute('disabled') && !el.getAttribute('aria-hidden'));
+    const focusableElements = Array.from(
+      dropdownRef.current.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter(el => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
 
-      if (focusableElements.length === 0) return;
+    if (focusableElements.length === 0) return;
 
-      const activeElement = document.activeElement as HTMLElement | null;
-      const currentIndex = focusableElements.indexOf(activeElement!);
+    const activeElement = document.activeElement as HTMLElement | null;
 
-      event.preventDefault();
+    if (!activeElement) return;
+    
+    const currentIndex = focusableElements.indexOf(activeElement);
 
-      const nextIndex = event.shiftKey
-        ? (currentIndex - 1 + focusableElements.length) % focusableElements.length
-        : (currentIndex + 1) % focusableElements.length;
+    event.preventDefault();
 
-      focusableElements[nextIndex].focus();
-    },
-    [dropdownRef, isOpen]
-  );
+    const nextIndex = event.shiftKey
+      ? (currentIndex - 1 + focusableElements.length) % focusableElements.length
+      : (currentIndex + 1) % focusableElements.length;
+
+    focusableElements[nextIndex].focus();
+  },[dropdownRef, isOpen]);
 
   useEffect(() => {
     if (isOpen) {

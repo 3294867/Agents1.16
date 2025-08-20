@@ -20,6 +20,9 @@
   --background-card: oklch(0.865 0.001 106.423);
   --background-card-hover: oklch(0.5326 0.001 106.423);
 
+  --background-tooltip: oklch(0.865 0.001 106.423);
+  --background-tooltip: oklch(0.5326 0.001 106.423);
+
   --background-dropdown-button-hover: oklch(0.7516 0.001 106.423); 
   --background-is-pressed-button: oklch(0.7516 0.001 106.423);
   
@@ -52,6 +55,9 @@
   --background-card: oklch(0.2181 0.007 34.298);
   --background-card-hover: oklch(0.3398 0.007 34.298);
 
+  --background-tooltip: oklch(0.2181 0.007 34.298);
+  --background-tooltip: oklch(0.3398 0.007 34.298);
+
   --background-dropdown-button-hover:oklch(0.3095 0.007 34.298);
   --background-is-pressed-button: oklch(0.3095 0.007 34.298);
 
@@ -83,6 +89,9 @@
 
   --color-background-card: var(--background-card);
   --color-background-card-hover: var(--background-card-hover);
+
+  --color-background-tooltip: var(--background-tooltip);
+  --color-background-card-tooltip: var(--background-card-tooltip);
 
   --color-background-dropdown-button-hover: var(--background-dropdown-button-hover);
   --color-background-is-pressed-button: var(--background-is-pressed-button);

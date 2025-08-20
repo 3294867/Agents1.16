@@ -1,50 +1,80 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { forwardRef, HTMLAttributes, ReactNode, RefObject, useRef } from 'react';
+import { FC, HTMLAttributes, ReactNode } from 'react';
 import useTooltipContext from './useTooltipContext';
-import styles from './Tooltip.module.css';
+import hooks from 'src/hooks';
+import useGetSize from './useGetSize';
 import cn from 'src/utils/cn';
+import styles from './Tooltip.module.css';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   side?: 'top' | 'bottom' | 'left' | 'right';
   sideOffset?: number;
+  align?: 'start' | 'center' | 'end';
+  alignOffset?: number;
+  className?: string;
   children: ReactNode;
 }
 
-const Content = forwardRef<HTMLDivElement, Props>(
-  ({ side = 'bottom', sideOffset = 4, style, children, ...props }, ref) => {
-    const { isOpen } = useTooltipContext();
-    const contentRef = useRef<HTMLDivElement>(null);
+const Content: FC<Props> = ({
+  side = 'bottom',
+  sideOffset = 4,
+  align = 'center',
+  alignOffset = 0,
+  className,
+  children,
+  ...props
+}) => {
+  const { contentRef, triggerRef, isOpen, } = useTooltipContext();
+  const mounted = hooks.ui.useHandleMount({ isVisible: isOpen });
+  const { height: contentHeight, width: contentWidth } = useGetSize({ref: contentRef, mounted});
+  const { height: triggerHeight, width: triggerWidth } = useGetSize({ref: triggerRef, mounted});
 
-    const setRefs = (node: HTMLDivElement) => {
-      if (typeof ref === 'function') ref(node);
-      else if (ref && typeof ref === 'object') (ref as RefObject<any>).current = node;
-      contentRef.current = node;
-    };
-
-
-    const sideClass =
-      side === 'top' ? styles.tooltipContentTop :
-      side === 'left' ? styles.tooltipContentLeft :
-      side === 'right' ? styles.tooltipContentRight :
-      styles.tooltipContentBottom;
-
-    return (
-      <div
-        ref={setRefs}
-        role='tooltip'
-        className={cn(
-          styles.tooltipContent,
-          sideClass,
-          isOpen && styles.tooltipContentVisible,
-        )}
-        style={{ ...style, ['--side-offset' as any]: `${sideOffset}px` }}
-        {...props}
-      >
-        {children}
-      </div>
+  const positioningClass =
+    side === 'top' ? (
+      align === 'start' ? styles.tooltipContentTopStart :
+      align === 'center' ? styles.tooltipContentTopCenter :
+      styles.tooltipContentTopEnd
+    ) : (
+      side === 'bottom' ? (
+        align === 'start' ? styles.tooltipContentBottomStart :
+        align === 'center' ? styles.tooltipContentBottomCenter :
+        styles.tooltipContentBottomEnd
+      ) : (
+        side === 'right' ? (
+          align === 'start' ? styles.tooltipContentRightStart :
+          align === 'center' ? styles.tooltipContentRightCenter :
+          styles.tooltipContentRightEnd
+        ) : (
+          align === 'start' ? styles.tooltipContentLeftStart :
+          align === 'center' ? styles.tooltipContentLeftCenter :
+          styles.tooltipContentLeftEnd
+        )
+      )
     );
-  }
-);
-Content.displayName = 'Tooltip.Content';
+  
+  if (!mounted) return;  
+
+  return (
+    <div
+      ref={contentRef}
+      role='tooltip'
+      className={cn(
+        styles.tooltipContent,
+        positioningClass,
+        className
+      )}
+      style={{
+        '--content-height': `${contentHeight}px`, 
+        '--content-width': `${contentWidth}px`,
+        '--trigger-height': `${triggerHeight}px`,
+        '--trigger-width': `${triggerWidth}px`,
+        '--side-offset': `${sideOffset}px`,
+        '--align-offset': `${alignOffset}px`
+      } as React.CSSProperties}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+};
 
 export default Content;
