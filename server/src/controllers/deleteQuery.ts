@@ -62,7 +62,7 @@ const deleteQuery = async (req: Request, res: Response) => {
     try {
       await pool.query("ROLLBACK");
     } catch (rollbackError) {
-      console.error("Failed to roll back changes: ", rollbackError);
+      console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to update thread: ", error);
     res.status(500).json({ error: "Internal server error" });
