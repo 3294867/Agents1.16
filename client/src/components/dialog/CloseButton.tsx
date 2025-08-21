@@ -1,9 +1,9 @@
 import { FC } from 'react';
 import Button from '../button';
-import utils from './utils';
+import utils from 'src/utils';
 
 const CloseButton: FC = () => {
-  const { setIsOpen } = utils.useDialogContext();
+  const { setIsOpen } = utils.components.useDialogContext();
 
   return (
     <Button variant='ghost' onClick={() => setIsOpen(false)}>

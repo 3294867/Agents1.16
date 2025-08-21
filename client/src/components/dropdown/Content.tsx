@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any*/
 import { FC, HTMLAttributes, ReactNode } from 'react';
 import hooks from 'src/hooks';
-import utils from './utils';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Dropdown.module.css';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -13,11 +12,11 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 const Content: FC<Props> = ({ side = 'bottom', sideOffset = 4, align = 'start', style, children, ...props }) => {
-  const { dropdownRef, isOpen, setIsOpen } = utils.useDropdownContext();
-  utils.useHandleFocusOnDropdownOpen({ dropdownRef, isOpen });
-  hooks.ui.useHandleEscapeKey({ isOpen, setIsOpen });
-  utils.useHandleEnterKey({ dropdownRef, isOpen, setIsOpen, });
-  utils.useHandleTabKey({ dropdownRef, isOpen });
+  const { dropdownRef, isOpen, setIsOpen } = utils.components.useDropdownContext();
+  utils.components.useHandleDropdownFocusOnOpen({ dropdownRef, isOpen });
+  hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
+  utils.components.useHandleDropdownEnterKey({ dropdownRef, isOpen, setIsOpen, });
+  utils.components.useHandleDropdownTabKey({ dropdownRef, isOpen });
 
   if (!isOpen) return null;
 
@@ -36,7 +35,7 @@ const Content: FC<Props> = ({ side = 'bottom', sideOffset = 4, align = 'start', 
     <div
       ref={dropdownRef}
       role='menu'
-      className={cn(
+      className={utils.cn(
         styles.dropdownContent,
         sideClass,
         alignClass,

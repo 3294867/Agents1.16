@@ -5,7 +5,7 @@ interface Props {
   isOpen: boolean;
 }
 
-const useHandleFocusOnDialogOpen = ({ dialogRef, isOpen }: Props): void => {
+const useHandleDialogFocusOnOpen = ({ dialogRef, isOpen }: Props): void => {
   useEffect(() => {
     setTimeout(() => {
       if (dialogRef.current && isOpen) {
@@ -22,4 +22,4 @@ const useHandleFocusOnDialogOpen = ({ dialogRef, isOpen }: Props): void => {
   }, [dialogRef, isOpen]);
 };
 
-export default useHandleFocusOnDialogOpen;
+export default useHandleDialogFocusOnOpen;

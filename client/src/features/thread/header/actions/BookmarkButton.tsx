@@ -9,7 +9,7 @@ interface Props {
   currentIsBookmarked: boolean;
 }
 
-const BookmarkButton = ({ threadId, currentIsBookmarked }: Props) => {
+const BookmarkThreadButton = ({ threadId, currentIsBookmarked }: Props) => {
   const handleClick = async () => {
     await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
     await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
@@ -32,4 +32,4 @@ const BookmarkButton = ({ threadId, currentIsBookmarked }: Props) => {
   );
 };
 
-export default BookmarkButton;
+export default BookmarkThreadButton;

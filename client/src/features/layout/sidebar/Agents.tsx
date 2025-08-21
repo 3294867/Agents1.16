@@ -1,10 +1,10 @@
 import { Link, useParams } from 'react-router-dom';
+import utils from 'src/utils';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
 import AddAgentDialog from './agents/addAgentDialog';
 import { Agent } from 'src/types';
 import styles from './Agents.module.css';
-import capitalizeFirstLetter from 'src/utils/capitalizeFirstLetter';
 
 interface Props {
   userId: string;
@@ -30,7 +30,7 @@ const Agents = ({ userId, agents }: Props) => {
             </Link>
           </Tooltip.Trigger>
           <Tooltip.Content side='right' sideOffset={12}>
-            {capitalizeFirstLetter(a.name)}
+            {utils.capitalizeFirstLetter(a.name)}
           </Tooltip.Content>
         </Tooltip.Root>
       ))}

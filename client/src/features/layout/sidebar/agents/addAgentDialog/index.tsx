@@ -14,7 +14,7 @@ interface Props {
 }
 
 const AddAgentDialog = ({ userId, addedAgents }: Props) => {
-  const availableAgents = hooks.useGetAvailableAgents({ addedAgents });
+  const availableAgents = hooks.features.useGetAvailableAgents({ addedAgents });
   if (!availableAgents) return <Error error='Failed to fetch available agents' />
 
   return (

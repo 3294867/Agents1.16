@@ -5,7 +5,7 @@ interface Props {
   open?: boolean;
 }
 
-const useHandleOpenProp = ({ open }: Props): void => {
+const useHandleDialogOpenProp = ({ open }: Props): void => {
   const { setIsOpen } = useDialogContext();
 
   useEffect(() => {
@@ -13,4 +13,4 @@ const useHandleOpenProp = ({ open }: Props): void => {
   },[open]);
 };
 
-export default useHandleOpenProp;
+export default useHandleDialogOpenProp;

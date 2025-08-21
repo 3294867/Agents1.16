@@ -14,7 +14,7 @@ interface Props {
 
 const Agent = ({ userId }: Props) => {
   const { agentName } = useParams();
-  const { agent, error, isLoading } = hooks.useGetAgent({ userId, agentName });
+  const { agent, error, isLoading } = hooks.features.useGetAgent({ userId, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;

@@ -3,7 +3,7 @@ import { v4 as uuidV4 } from 'uuid';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
-import capitalizeFirstLetter from 'src/utils/capitalizeFirstLetter';
+import utils from 'src/utils';
 import Heading from 'src/components/heading';
 import Dialog from 'src/components/dialog';
 import { Agent } from 'src/types';
@@ -54,7 +54,7 @@ const AgentCard = ({ userId, availableAgent }: Props) => {
           />
         <div className={styles.cardContent}>
           <Heading variant='h5' className={styles.cardTitle}>
-            {capitalizeFirstLetter(availableAgent.name)}
+            {utils.capitalizeFirstLetter(availableAgent.name)}
           </Heading>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { FC, ReactNode, useState, useId, useRef } from 'react';
+import utils from 'src/utils';
 import DialogContext from './DialogContext';
-import cn from 'src/utils/cn';
 import styles from './Dialog.module.css';
 
 interface Props {
@@ -23,7 +23,7 @@ const Root: FC<Props> = ({ children }) => {
       titleId, 
       descriptionId 
     }}>
-      <span className={cn(styles.dialogContainer)}>
+      <span className={utils.cn(styles.dialogContainer)}>
         {children}
       </span>
     </DialogContext.Provider>

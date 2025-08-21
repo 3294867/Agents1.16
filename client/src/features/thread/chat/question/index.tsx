@@ -32,7 +32,7 @@ const Question = ({
   const { requestId, requestBody, responseId, responseBody, isNew, inferredAgentType } = query;
   const [input, setInput] = useState(requestBody);
   const [isEditing, setIsEditing] = useState(false);
-  const { textareaRef, progressBarLength } = hooks.useHandleQuestion({ input, isEditing });
+  const { textareaRef, progressBarLength } = hooks.features.useHandleQuestion({ input, isEditing });
   
   return (
     <div className={styles.container}>

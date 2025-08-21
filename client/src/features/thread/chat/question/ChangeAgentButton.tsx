@@ -6,7 +6,7 @@ import openai from 'src/opanai';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import hooks from 'src/hooks';
-import capitalizeFirstLetter from 'src/utils/capitalizeFirstLetter';
+import utils from 'src/utils';
 import Button from 'src/components/button';
 import { Agent, AgentType } from 'src/types';
 
@@ -40,7 +40,7 @@ const ChangeAgentButton = ({
   isEditing
 }: Props) => {
   const navigate = useNavigate();
-  const currentThreadPositionY = hooks.useHandleThreadPostionY();
+  const currentThreadPositionY = hooks.features.useHandleThreadPostionY();
   
   const handleClick = async () => {
     /** Remove query from the 'body' property of the current thread (IndexedDB, PostgresDB) */
@@ -170,7 +170,7 @@ const ChangeAgentButton = ({
       variant={buttonVariant}
       style={{ borderRadius: '999px' }}
     >
-      Open in {capitalizeFirstLetter(String(inferredAgentType))} Agent
+      Open in {utils.capitalizeFirstLetter(String(inferredAgentType))} Agent
     </Button>
   )
 };

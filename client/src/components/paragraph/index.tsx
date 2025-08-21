@@ -1,5 +1,5 @@
 import { forwardRef, HTMLAttributes } from 'react';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Paragraph.module.css';
 
 interface Props extends HTMLAttributes<HTMLParagraphElement> {
@@ -16,7 +16,7 @@ const Paragraph = forwardRef<HTMLParagraphElement, Props>(
     return (
       <p
         ref={ref}
-        className={cn(
+        className={utils.cn(
           styles.base,
           styles[variant],
           styles[size],

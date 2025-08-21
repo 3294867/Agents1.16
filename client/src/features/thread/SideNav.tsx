@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SideNavigation = ({ threadBody, threadBodyLength }: Props) => {
-  const { isVisible, chatWidth } = hooks.useHandleSideNav({ threadBodyLength });
+  const { isVisible, chatWidth } = hooks.features.useHandleSideNav({ threadBodyLength });
 
   const handleScrollToQuestion = (id: string) => {
     const question = document.getElementById(`question_${id}`);

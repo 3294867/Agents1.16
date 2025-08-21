@@ -5,7 +5,7 @@ interface Props {
   isOpen: boolean;
 }
 
-const useHandleTabKey = ({ dropdownRef, isOpen }: Props): void => {
+const useHandleDropdownTabKey = ({ dropdownRef, isOpen }: Props): void => {
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (!isOpen || !dropdownRef.current || event.key !== 'Tab') return;
 
@@ -40,4 +40,4 @@ const useHandleTabKey = ({ dropdownRef, isOpen }: Props): void => {
   }, [handleKeyDown, isOpen]);
 };
 
-export default useHandleTabKey;
+export default useHandleDropdownTabKey;

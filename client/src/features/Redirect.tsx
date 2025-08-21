@@ -5,7 +5,7 @@ interface Props {
 }
 
 const Redirect = ({ userId }: Props) => {
-  hooks.useHandleRedirect({ userId });
+  hooks.features.useHandleRedirect({ userId });
   return null;
 };
 

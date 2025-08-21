@@ -1,5 +1,5 @@
 import { forwardRef, LabelHTMLAttributes, memo, ReactNode } from 'react';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Label.module.css';
 
 interface Props extends LabelHTMLAttributes<HTMLLabelElement> {
@@ -12,7 +12,7 @@ const Label = forwardRef<HTMLLabelElement, Props>(
     return (
       <label
         ref={ref}
-        className={cn(styles.label, className)}
+        className={utils.cn(styles.label, className)}
         {...props}
         >
           {children}

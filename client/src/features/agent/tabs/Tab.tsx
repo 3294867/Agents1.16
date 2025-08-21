@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
+import utils from 'src/utils';
 import Icons from 'src/assets/icons';
 import { Agent as AgentType, Tab as TabType} from 'src/types';
 import styles from './Tab.module.css';
-import cn from 'src/utils/cn';
 
 interface Props {
   agent: AgentType;
@@ -69,7 +69,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
   return (
     <a
       href={`/${agent.name}/${tab.id}`}
-      className={cn(styles.tab, tab.isActive ? styles.active : styles.inactive)}
+      className={utils.cn(styles.tab, tab.isActive ? styles.active : styles.inactive)}
       onClick={() => handleSelectTab(tab.id, tab.agentId)}
     >
       <span className={styles.title}>
@@ -80,7 +80,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
           className={styles.closeBtn}
           onClick={(e) => handleRemoveTab(e, tab.id)}
         >
-          <Icons.Close className={cn(styles.icon, tab.isActive ? styles.iconActive : styles.iconInactive)} />
+          <Icons.Close className={utils.cn(styles.icon, tab.isActive ? styles.iconActive : styles.iconInactive)} />
         </button>
       )}
     </a>

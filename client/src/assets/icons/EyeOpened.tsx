@@ -1,11 +1,11 @@
 import { SVGProps  } from 'react';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Icons.module.css';
 
 const EyeOpened = ({ className = styles.base, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      className={cn(styles.base, className)}
+      className={utils.cn(styles.base, className)}
       {...props}
       xmlns='http://www.w3.org/2000/svg'
       width='24'

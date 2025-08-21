@@ -11,7 +11,7 @@ interface Props {
 
 const Tabs = ({ userId, agent }: Props) => {
   const { threadId: currentThreadId } = useParams();
-  const { tabs, currentThreadPositionY } = hooks.useHandleTabs({ agentName: agent.name });
+  const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ agentName: agent.name });
   if (!tabs || !currentThreadId) return null;
 
   return (

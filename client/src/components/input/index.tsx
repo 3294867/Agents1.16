@@ -1,5 +1,5 @@
 import { forwardRef, InputHTMLAttributes, memo, ReactNode } from 'react';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Input.module.css';
 
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, Props>(
     return (
       <input
         ref={ref}
-        className={cn(styles.input, className)}
+        className={utils.cn(styles.input, className)}
         {...props}
         >
         {children}

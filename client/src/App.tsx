@@ -12,7 +12,7 @@ import Auth from './components/auth';
 const ProtectedApp = () => {
   const { userId, isLoading } = Auth.useContext();
   indexedDB.initialize();
-  hooks.useHandleTheme();
+  hooks.features.useHandleTheme();
 
   const router = useMemo(() => createBrowserRouter([
     userId ? {

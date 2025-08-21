@@ -3,8 +3,7 @@ import { createPortal } from 'react-dom';
 import Overlay from './Overlay';
 import Icons from 'src/assets/icons';
 import hooks from 'src/hooks';
-import utils from './utils';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Dialog.module.css'
 
 interface Props {
@@ -16,12 +15,13 @@ interface Props {
 }
 
 const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
-  const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId } = utils.useDialogContext();
-  const mounted = hooks.ui.useHandleMount({ isVisible: isOpen });
-  hooks.ui.useHandleEscapeKey({ isOpen, setIsOpen });
-  utils.useHandleOpenProp({ open });
-  utils.useHandleFocusOnDialogOpen({ dialogRef, isOpen });
-  utils.useHandleAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
+  const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId }
+    = utils.components.useDialogContext();
+  const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
+  hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
+  utils.components.useHandleDialogOpenProp({ open });
+  utils.components.useHandleDialogFocusOnOpen({ dialogRef, isOpen });
+  utils.components.useHandleDialogAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
 
   if (!mounted) return null;
 
@@ -36,7 +36,7 @@ const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isP
         aria-describedby={descriptionId}
         id={dialogId}
         tabIndex={-1}
-        className={cn(styles.dialogContent, className)}
+        className={utils.cn(styles.dialogContent, className)}
       >
         {!isPermanent && (
           <button

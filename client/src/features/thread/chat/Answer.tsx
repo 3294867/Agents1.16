@@ -37,7 +37,7 @@ interface AnimatedParagraphProps {
 }
 
 const AnimatedParagraph = ({ threadId, requestId, responseId, responseBody, inferredAgentType }: AnimatedParagraphProps) => {
-  const copy = hooks.useHandleAnimatedParagraph({
+  const copy = hooks.features.useHandleAnimatedParagraph({
     threadId,
     requestId,
     responseId,

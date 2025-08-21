@@ -35,7 +35,7 @@ const MoveButton = ({
   inferredAgentType
 }: Props) => {
   const navigate = useNavigate();
-  const currentThreadPositionY = hooks.useHandleThreadPostionY();
+  const currentThreadPositionY = hooks.features.useHandleThreadPostionY();
   
   const handleClick = async () => {
     /** Remove query from the 'body' property of the current thread (IndexedDB, PostgresDB) */

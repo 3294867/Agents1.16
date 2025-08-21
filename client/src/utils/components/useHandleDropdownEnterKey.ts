@@ -11,7 +11,7 @@ interface Props {
   setIsOpen: (isOpen: boolean) => void;
 }
 
-const useHandleEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): void => {
+const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): void => {
   const navigate = useNavigate();
   
   const handleBookmarkThread = async ({ threadId, isBookmarked} : { threadId: string; isBookmarked: boolean }) => {
@@ -66,4 +66,4 @@ const useHandleEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): void => {
   },[dropdownRef, isOpen]);
 };
 
-export default useHandleEnterKey;
+export default useHandleDropdownEnterKey;

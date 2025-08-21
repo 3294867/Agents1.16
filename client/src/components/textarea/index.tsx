@@ -1,5 +1,5 @@
 import { ComponentProps, forwardRef } from 'react';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
 import styles from './Textarea.module.css'
 
 const Textarea = forwardRef<HTMLTextAreaElement, ComponentProps<'textarea'>>(
@@ -7,7 +7,7 @@ const Textarea = forwardRef<HTMLTextAreaElement, ComponentProps<'textarea'>>(
     return (
       <textarea
         ref={ref}
-        className={cn( styles.textarea, className )}
+        className={utils.cn( styles.textarea, className )}
         {...props}
       />
     )

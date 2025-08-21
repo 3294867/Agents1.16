@@ -1,8 +1,8 @@
 import { FC, HTMLAttributes, ReactNode } from 'react';
 import useTooltipContext from './useTooltipContext';
 import hooks from 'src/hooks';
-import useGetSize from './useGetSize';
-import cn from 'src/utils/cn';
+import utils from 'src/utils';
+import useGetTooltipTriggerSize from './useGetTooltipTriggerSize';
 import styles from './Tooltip.module.css';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
@@ -24,32 +24,9 @@ const Content: FC<Props> = ({
   ...props
 }) => {
   const { contentRef, triggerRef, isOpen, } = useTooltipContext();
-  const mounted = hooks.ui.useHandleMount({ isVisible: isOpen });
-  const { height: contentHeight, width: contentWidth } = useGetSize({ref: contentRef, mounted});
-  const { height: triggerHeight, width: triggerWidth } = useGetSize({ref: triggerRef, mounted});
-
-  const positioningClass =
-    side === 'top' ? (
-      align === 'start' ? styles.tooltipContentTopStart :
-      align === 'center' ? styles.tooltipContentTopCenter :
-      styles.tooltipContentTopEnd
-    ) : (
-      side === 'bottom' ? (
-        align === 'start' ? styles.tooltipContentBottomStart :
-        align === 'center' ? styles.tooltipContentBottomCenter :
-        styles.tooltipContentBottomEnd
-      ) : (
-        side === 'right' ? (
-          align === 'start' ? styles.tooltipContentRightStart :
-          align === 'center' ? styles.tooltipContentRightCenter :
-          styles.tooltipContentRightEnd
-        ) : (
-          align === 'start' ? styles.tooltipContentLeftStart :
-          align === 'center' ? styles.tooltipContentLeftCenter :
-          styles.tooltipContentLeftEnd
-        )
-      )
-    );
+  const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
+  const { triggerHeight, triggerWidth } = useGetTooltipTriggerSize({ triggerRef });
+  const positioningClass = utils.components.getTooltipContentPositioningClass(side, align);
   
   if (!mounted) return;  
 
@@ -57,14 +34,12 @@ const Content: FC<Props> = ({
     <div
       ref={contentRef}
       role='tooltip'
-      className={cn(
+      className={utils.cn(
         styles.tooltipContent,
         positioningClass,
         className
       )}
       style={{
-        '--content-height': `${contentHeight}px`, 
-        '--content-width': `${contentWidth}px`,
         '--trigger-height': `${triggerHeight}px`,
         '--trigger-width': `${triggerWidth}px`,
         '--side-offset': `${sideOffset}px`,

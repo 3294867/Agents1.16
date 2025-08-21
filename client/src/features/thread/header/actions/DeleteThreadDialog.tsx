@@ -14,7 +14,7 @@ interface Props {
   agentName: string;
 }
 
-const DeleteDialog = ({ threadId, agentName }: Props) => {
+const DeleteThreadDialog = ({ threadId, agentName }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
@@ -57,4 +57,4 @@ const DeleteDialog = ({ threadId, agentName }: Props) => {
   );
 };
 
-export default DeleteDialog;
+export default DeleteThreadDialog;

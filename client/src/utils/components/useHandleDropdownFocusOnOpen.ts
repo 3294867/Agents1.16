@@ -5,7 +5,7 @@ interface Props {
   isOpen: boolean;
 }
 
-const useHandleFocusOnDropdownOpen = ({ dropdownRef, isOpen }: Props): void => {
+const useHandleDropdownFocusOnOpen = ({ dropdownRef, isOpen }: Props): void => {
   useEffect(() => {
     setTimeout(() => {
       if (dropdownRef.current && isOpen) {
@@ -22,4 +22,4 @@ const useHandleFocusOnDropdownOpen = ({ dropdownRef, isOpen }: Props): void => {
   },[dropdownRef, isOpen]);
 };
 
-export default useHandleFocusOnDropdownOpen;
+export default useHandleDropdownFocusOnOpen;
