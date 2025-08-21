@@ -1,6 +1,7 @@
 import openai from 'src/opanai';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
@@ -10,6 +11,7 @@ import Button from 'src/components/button';
 interface Props {
   threadId: string;
   agentId: string;
+  agentName: string;
   agentModel: AgentModel;
   requestId: string;
   responseId: string;
@@ -23,6 +25,7 @@ interface Props {
 const PauseRunButton = ({
   threadId,
   agentId,
+  agentName,
   agentModel,
   requestId,
   responseId,
@@ -30,7 +33,7 @@ const PauseRunButton = ({
   isNew,
   inferredAgentType,
   isEditing,
-  setIsEditing
+  setIsEditing,
 }: Props) => {
   const handlePause = () => {
     setIsEditing(true);
@@ -51,7 +54,16 @@ const PauseRunButton = ({
       isNew: true,
       inferredAgentType
     };
-    await indexedDB.updateQuery({ threadId, query });
+    const queryIndex = await indexedDB.updateQuery({ threadId, query });
+    dispatchEvent.queryUpdated(threadId, query);
+    
+    if (queryIndex === 0) {
+      const newThreadTitle = await openai.createThreadTitle({ question: input, answer: response});
+      await postgresDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
+      tabsStorage.update(agentName, agentId, threadId, newThreadTitle);
+      dispatchEvent.threadTitleUpdated(threadId, newThreadTitle);
+    }
   };
   
   return (

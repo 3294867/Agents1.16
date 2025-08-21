@@ -2,15 +2,16 @@ import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';
+import utils from 'src/utils';
 import Layout from 'src/features/layout';
 import Redirect from 'src/features/Redirect';
 import Agent from 'src/features/agent';
-import SignUpForm from './features/auth/SignUpForm';
-import LogInForm from './features/auth/LogInForm';
-import Auth from './components/auth';
+import SignUpForm from 'src/features/auth/SignUpForm';
+import LogInForm from 'src/features/auth/LogInForm';
+import Auth from 'src/components/auth';
 
 const ProtectedApp = () => {
-  const { userId, isLoading } = Auth.useContext();
+  const { userId, isLoading } = utils.components.useAuthContext();
   indexedDB.initialize();
   hooks.features.useHandleTheme();
 

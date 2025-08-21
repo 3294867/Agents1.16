@@ -89,6 +89,7 @@ const Question = ({
             <PauseRunButton
               threadId={threadId}
               agentId={agentId}
+              agentName={agentName}
               agentModel={agentModel}
               requestId={requestId}
               responseId={responseId}

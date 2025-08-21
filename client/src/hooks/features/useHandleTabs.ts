@@ -41,7 +41,7 @@ const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThrea
   useEffect(() => {
     const handleThreadTitleUpdated = () => {
       const savedTabs = tabsStorage.load(agentName);
-      if (savedTabs !== null) setTabs(savedTabs);
+      if (savedTabs) setTabs(savedTabs);
     };
 
     window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);

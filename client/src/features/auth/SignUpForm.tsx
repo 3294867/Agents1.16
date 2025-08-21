@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { Fragment, useCallback, useState } from 'react';
-import Auth from '../../components/auth';
+import utils from 'src/utils';
 import Button from 'src/components/button';
 import Input from 'src/components/input';
 import Dialog from 'src/components/dialog';
@@ -11,7 +11,7 @@ import Icons from 'src/assets/icons';
 import styles from './Form.module.css';
 
 const SignUpForm = () => {
-  const { signUp, isLoading } = Auth.useContext();
+  const { signUp, isLoading } = utils.components.useAuthContext();
   const [error, setError] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');

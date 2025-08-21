@@ -1,3 +1,4 @@
+import useAuthContext from './useAuthContext';
 import getHeadingTag from './getHeadingTag';
 import getTooltipContentPositioningClass from './getTooltipContentPositioningClass';
 import useDialogContext from './useDialogContext';
@@ -10,17 +11,15 @@ import useHandleDropdownFocusOnOpen from './useHandleDropdownFocusOnOpen';
 import useHandleDropdownTabKey from './useHandleDropdownTabKey';
 
 export const utils = {
+  useAuthContext,
   useDialogContext,
   useHandleDialogOpenProp,
   useHandleDialogFocusOnOpen,
   useHandleDialogAriaAttributes,
-
   useDropdownContext,
   useHandleDropdownEnterKey,
   useHandleDropdownFocusOnOpen,
   useHandleDropdownTabKey,
-
   getTooltipContentPositioningClass,
-
   getHeadingTag
 };
