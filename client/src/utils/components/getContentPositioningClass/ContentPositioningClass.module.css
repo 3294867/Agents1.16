@@ -1,0 +1,97 @@
+/* Top Positioning */
+.contentTopStart {
+  bottom: 100%;
+  transform:
+    translateX(var(--align-offset))
+    translateY(calc(-1 * var(--side-offset)));
+}
+
+.contentTopCenter {
+  bottom: 100%;
+  left: 100%;
+  transform:
+    translateX(calc(-1/2 * var(--trigger-width) - 50% + var(--align-offset)))
+    translateY(calc(-1 * var(--side-offset)));
+}
+
+.contentTopEnd {
+  bottom: 100%;
+  left: 100%;
+  transform:
+    translateX(calc(-100% + var(--align-offset)))
+    translateY(calc(-1 * var(--side-offset)));
+}
+
+/* Bottom Positioning*/
+.contentBottomStart {
+  top: 100%;
+  transform:
+    translateX(var(--align-offset))
+    translateY(var(--side-offset));
+}
+
+.contentBottomCenter {
+  top: 100%;
+  left: 100%;
+  transform:
+    translateX(calc(-1/2 * var(--trigger-width) - 50% + var(--align-offset)))
+    translateY(var(--side-offset));
+}
+
+.contentBottomEnd {
+  top: 100%;
+  left: 100%;
+  transform:
+    translateX(calc(-100% + var(--align-offset)))
+    translateY(var(--side-offset));
+}
+
+/* Right Positioning*/
+.contentRightStart {
+  bottom: 100%;
+  left: 100%;
+  transform:
+    translateX(var(--side-offset))
+    translateY(calc(100% + var(--align-offset)));
+}
+
+.contentRightCenter {
+  left: 100%;
+  top: 100%;
+  transform:
+    translateX(var(--side-offset))
+    translateY(calc(-1/2 * var(--trigger-height) - 50% + var(--align-offset)));
+}
+
+.contentRightEnd {
+  left: 100%;
+  top: 100%;
+  transform:
+    translateX(var(--side-offset))
+    translateY(calc(-100% + var(--align-offset)));
+}
+
+/* Left Positioning */
+.contentLeftStart {
+  right: 100%;
+  bottom: 100%;
+  transform:
+    translateX(calc(-1 * var(--side-offset)))
+    translateY(calc(100% + var(--align-offset)));
+}
+
+.contentLeftCenter {
+  right: 100%;
+  top: 100%;
+  transform:
+    translateX(calc(-1 * var(--side-offset)))
+    translateY(calc(-1/2 * var(--trigger-height) - 50% + var(--align-offset)));
+}
+
+.contentLeftEnd {
+  right: 100%;
+  top: 100%;
+  transform:
+    translateX(calc(-1 * var(--side-offset)))
+    translateY(calc(-100% + var(--align-offset)));
+}

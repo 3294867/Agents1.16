@@ -1,10 +1,10 @@
-import BookmarkThreadButton from './BookmarkButton';
+import BookmarkThreadButton from './BookmarkThreadButton';
 import DeleteThreadDialog from './DeleteThreadDialog';
 import Dropdown from 'src/components/dropdown';
-import Tooltip from 'src/components/tooltip';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import ShareThreadButton from './ShareThreadButton';
 
 interface Props {
   threadId: string;
@@ -18,16 +18,7 @@ const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '0.375rem', justifyContent: 'end', alignItems: 'start'}}>
-      <Tooltip.Root>
-        <Tooltip.Trigger asChild>
-          <Button variant='outline' size='icon'>
-            <Icons.Share />
-          </Button>
-        </Tooltip.Trigger>
-        <Tooltip.Content>
-          Share
-        </Tooltip.Content>
-      </Tooltip.Root>
+      <ShareThreadButton threadId={threadId} />
       <Dropdown.Root>
         <Dropdown.Trigger asChild>
           <Button variant='outline' size='icon'>

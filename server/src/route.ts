@@ -24,6 +24,7 @@ import createResponse from "./controllers/createResponse";
 import inferAgentType from './controllers/inferAgentType';
 import getThreadUpdatedAt from './controllers/getThreadUpdatedAt';
 import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
+import duplicateThread from './controllers/duplicateThread';
 
 const router = express.Router();
 
@@ -39,6 +40,7 @@ router.post("/get-available-agent", getAvailableAgent)
 router.post("/get-thread", getThread);
 router.post("/add-thread", addThread);
 router.post("/add-public-thread", addPublicThread);
+router.post("/duplicate-thread", duplicateThread);
 router.post("/delete-thread", deleteThread);
 router.post("/add-query", addQuery);
 router.post("/delete-query", deleteQuery);

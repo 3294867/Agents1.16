@@ -2,7 +2,7 @@ import { Agent } from 'src/types';
 
 const getAvailableAgents = async (): Promise<Agent[]> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-available-agents`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-available-agents`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     });

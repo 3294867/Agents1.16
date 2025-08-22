@@ -1,6 +1,6 @@
 const getCurrentUser = async (): Promise<{ userId: string | null }> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-current-user`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-current-user`, {
       method: 'GET',
       credentials: 'include'
     });

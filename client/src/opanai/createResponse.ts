@@ -7,7 +7,7 @@ interface Props {
 }
 
 const createResponse = async ({ agentId, agentModel, input }: Props): Promise<string> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-response`, {
+  const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/create-response`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId, agentModel, input })

@@ -12,7 +12,7 @@ interface Props {
 const useHandleRedirect = ({ userId }: Props): void => {
   const navigate = useNavigate();
   const { agentName } = useParams();
-  
+
   useEffect(() => {
     if (!agentName) return;
 
@@ -24,17 +24,17 @@ const useHandleRedirect = ({ userId }: Props): void => {
         const savedTabs = tabsStorage.load(agentName);
         if (!savedTabs || savedTabs.length === 0) {
           const id = uuidV4();
-          const createdThread = await postgresDB.addThread({
+          const addedThread = await postgresDB.addThread({
             id,
             userId,
             agentId: agent.id,
           });
-          if (!createdThread) return;
-          await indexedDB.addThread({ thread: createdThread }).then(() => {
+          if (!addedThread) return;
+          await indexedDB.addThread({ thread: addedThread }).then(() => {
             const tab = {
-              id: createdThread.id,
-              agentId: createdThread.agentId,
-              title: createdThread.title,
+              id: addedThread.id,
+              agentId: addedThread.agentId,
+              title: addedThread.title,
               isActive: true
             };
             tabsStorage.addTab(agentName, tab);

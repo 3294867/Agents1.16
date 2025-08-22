@@ -4,7 +4,7 @@ interface Props {
 
 const getThreadUpdatedAt = async ({ threadId }: Props): Promise<Date> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread-updated-at`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-thread-updated-at`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ threadId })

@@ -7,7 +7,7 @@ interface Props {
 
 /** Infers agent type from the question */
 const inferAgentType = async ({ agentId, input }: Props): Promise<AgentType> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/infer-agent-type`, {
+  const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/infer-agent-type`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ agentId, input })

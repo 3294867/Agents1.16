@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import useDialogContext from './useDialogContext';
+import useDialogContext from '../../hooks/components/useDialogContext';
 
 interface Props {
   open?: boolean;

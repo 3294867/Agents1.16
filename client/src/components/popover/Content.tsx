@@ -1,7 +1,8 @@
 import { CSSProperties, FC, HTMLAttributes, ReactNode } from 'react';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
-import styles from './Tooltip.module.css';
+import Icons from 'src/assets/icons';
+import styles from './Popover.module.css';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   side?: 'top' | 'bottom' | 'left' | 'right';
@@ -21,7 +22,7 @@ const Content: FC<Props> = ({
   children,
   ...props
 }) => {
-  const { contentRef, triggerRef, isOpen, } = hooks.components.useTooltipContext();
+  const { contentRef, triggerRef, isOpen, setIsOpen } = hooks.components.usePopoverContext();
   const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
   const { triggerHeight, triggerWidth } = hooks.components.useGetTriggerSize({ triggerRef });
   const positioningClass = utils.components.getContentPositioningClass(side, align);
@@ -33,7 +34,7 @@ const Content: FC<Props> = ({
       ref={contentRef}
       role='tooltip'
       className={utils.cn(
-        styles.tooltipContent,
+        styles.popoverContent,
         positioningClass,
         className
       )}
@@ -45,6 +46,13 @@ const Content: FC<Props> = ({
       } as CSSProperties}
       {...props}
     >
+      <button
+        onClick={() => setIsOpen(false)}
+        className={styles.popoverClose}
+        aria-label='Close popover'
+      >
+        <Icons.Close />
+      </button>
       {children}
     </div>
   );

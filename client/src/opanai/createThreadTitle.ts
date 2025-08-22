@@ -4,7 +4,7 @@ interface Props {
 }
 
 const createThreadTitle = async ({ question, answer }: Props): Promise<string> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/create-thread-title`, {
+  const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/create-thread-title`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ question, answer })

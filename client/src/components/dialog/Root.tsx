@@ -16,11 +16,11 @@ const Root: FC<Props> = ({ children }) => {
 
   return (
     <DialogContext.Provider value={{ 
-      isOpen, 
-      setIsOpen, 
+      isOpen,
+      setIsOpen,
       dialogRef,
       dialogId, 
-      titleId, 
+      titleId,
       descriptionId 
     }}>
       <span className={utils.cn(styles.dialogContainer)}>

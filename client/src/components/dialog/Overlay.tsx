@@ -1,8 +1,8 @@
 import { FC } from 'react';
 import { createPortal } from 'react-dom';
 import hooks from 'src/hooks';
-import styles from './Dialog.module.css';
 import utils from 'src/utils';
+import styles from './Dialog.module.css';
 
 interface Props {
   isNestedInDropdown?: boolean;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Overlay: FC<Props> = ({ isNestedInDropdown = false, isPermanent = false }) => {
-  const { isOpen, setIsOpen } = utils.components.useDialogContext();
+  const { isOpen, setIsOpen } = hooks.components.useDialogContext();
   const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
 
   if (!mounted) return null;

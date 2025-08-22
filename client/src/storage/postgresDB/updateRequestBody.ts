@@ -6,7 +6,7 @@ interface Props {
 /** Updates request body on edited question (PostgresDB) */
 const updateRequestBody = async ({ requestId, requestBody }: Props): Promise<void> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/update-request-body`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/update-request-body`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ requestId, requestBody })

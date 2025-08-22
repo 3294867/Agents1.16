@@ -1,5 +1,5 @@
 import { cloneElement, FC, isValidElement, ReactElement } from 'react';
-import utils from 'src/utils';
+import hooks from 'src/hooks';
 
 interface Props {
   asChild?: boolean;
@@ -7,7 +7,7 @@ interface Props {
 }
 
 const Trigger: FC<Props> = ({ asChild, children }: Props) => {
-  const { setIsOpen } = utils.components.useDropdownContext();
+  const { setIsOpen } = hooks.components.useDropdownContext();
   
   const childProps = {
     onClick: () => setIsOpen(true),

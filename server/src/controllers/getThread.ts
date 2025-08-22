@@ -11,72 +11,61 @@ const getThread = async (req: Request, res: Response) => {
   const { threadId } = req.body as Props;
 
   try {
-    /** Get thread from the database (PostgresDB) */
     const resultQueryText = `
-      WITH ordered_requests AS (
-        SELECT 
-          "id",
-          "threadId",
-          "body",
-          ROW_NUMBER() OVER (PARTITION BY "threadId" ORDER BY "createdAt") AS rn
-        FROM "Request"
-      ),
-      ordered_responses AS (
-        SELECT 
-          "id",
-          "threadId",
-          "body",
-          ROW_NUMBER() OVER (PARTITION BY "threadId" ORDER BY "createdAt") AS rn
-        FROM "Response"
-      )
       SELECT 
         t."id",
         t."userId",
         t."agentId",
         t."title",
-        jsonb_agg(
-          jsonb_build_object(
-            'requestId', req.id,
-            'requestBody', req.body,
-            'responseId', res.id,
-            'responseBody', res.body
-          )
-        ) AS "body",
+        t."body" AS "body",
         t."isBookmarked",
         t."createdAt",
         t."updatedAt"
       FROM "Thread" t
-      LEFT JOIN ordered_requests req ON t."id" = req."threadId"
-      LEFT JOIN ordered_responses res ON t."id" = res."threadId" AND req.rn = res.rn
-      WHERE t.id = $1::uuid
-      GROUP BY t."id", t."userId", t."agentId", t."title", t."isBookmarked", t."createdAt", t."updatedAt";
+      WHERE t.id = $1::uuid;
     `;
-    const result = await pool.query(resultQueryText, [ threadId ]);
-    if (!result) sendResponse(res, 404, "Failed to fetch thread")
-
-    const threadBody: Query[] = result.rows[0].body[0].requestId === null
-      ? []
-      : result.rows[0].body;
+    const result = await pool.query(resultQueryText, [threadId]);
+    if (!result.rows[0]) {
+      return sendResponse(res, 404, "Thread not found");
+    }
 
     const thread: Thread = {
       id: result.rows[0].id,
       userId: result.rows[0].userId,
       agentId: result.rows[0].agentId,
       title: result.rows[0].title,
-      body: threadBody,
+      body: result.rows[0].body.map((item: { requestId: string, responseId: string }) => ({
+        requestId: item.requestId,
+        responseId: item.responseId,
+        requestBody: null,
+        responseBody: null
+      })),
       isBookmarked: result.rows[0].isBookmarked,
       createdAt: result.rows[0].createdAt,
       updatedAt: result.rows[0].updatedAt,
     };
 
-    /** On success send data (Client) */
+    const bodyWithDetails = await Promise.all(
+      thread.body.map(async (query: Query) => {
+        const request = await pool.query('SELECT body FROM "Request" WHERE id = $1', [query.requestId]);
+        const response = await pool.query('SELECT body FROM "Response" WHERE id = $1', [query.responseId]);
+        return {
+          requestId: query.requestId,
+          requestBody: request.rows[0]?.body || null,
+          responseId: query.responseId,
+          responseBody: response.rows[0]?.body || null,
+        };
+      })
+    );
+
+    thread.body = bodyWithDetails;
+
     res.status(200).json({
       message: "Thread fetched",
       data: thread
     });
-
   } catch (error) {
-    console.error("Failed to fetch thread.: ", error);
+    console.error("Failed to fetch thread: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

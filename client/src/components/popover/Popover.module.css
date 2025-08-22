@@ -1,14 +1,17 @@
-.tooltipContainer {
+.popoverContainer {
   position: relative;
   display: inline-block;
 }
 
-.tooltipContent {
+.popoverContent {
   position: absolute;
   z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1rem;
+  gap: 1rem;
   background-color: rgba(0, 0, 0);
   color: var(--text-primary);
-  padding: 0.375rem 0.75rem;
   border: 1px solid var(--border);
   border-radius: 0.5rem;
   font-size: 0.75rem;
@@ -28,3 +31,17 @@
     opacity: 1;
   }
 }
+
+.popoverClose {
+  position: absolute;
+  cursor: pointer;
+  top: 1.25rem;
+  right: 1.25rem;
+  border-radius: 2px;
+  transition: color 0.3s ease;
+}
+
+.dialogClose:hover {
+  opacity: 0.8;
+}
+

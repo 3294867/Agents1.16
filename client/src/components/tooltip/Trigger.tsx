@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { cloneElement, FC, isValidElement, ReactElement } from 'react';
-import useTooltipContext from './useTooltipContext';
+import hooks from 'src/hooks';
 
 interface Props {
   asChild?: boolean;
@@ -8,7 +8,7 @@ interface Props {
 }
 
 const Trigger: FC<Props> = ({ asChild, children }) => {
-  const { triggerRef, setIsOpen } = useTooltipContext();
+  const { triggerRef, setIsOpen } = hooks.components.useTooltipContext();
 
   const props = {
     ref: triggerRef,

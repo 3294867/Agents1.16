@@ -7,7 +7,7 @@ interface Props {
 }
 
 const addThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
-  const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/add-thread`, {
+  const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/add-thread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -17,7 +17,7 @@ const addThread = async ({ id, userId, agentId }: Props): Promise<Thread> => {
   
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error (`Failed to create thread: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error (`Failed to add thread: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const data: { message: string, data: Thread | null } = await response.json();

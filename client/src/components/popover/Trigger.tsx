@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { cloneElement, FC, isValidElement, ReactElement } from 'react';
 import hooks from 'src/hooks';
 
@@ -7,10 +8,13 @@ interface Props {
 }
 
 const Trigger: FC<Props> = ({ asChild, children }) => {
-  const { setIsOpen } = hooks.components.useDialogContext();
+  const { triggerRef, setIsOpen } = hooks.components.usePopoverContext();
 
   const props = {
+    ref: triggerRef,
     onClick: () => setIsOpen(true),
+    onFocus: () => setIsOpen(true),
+    // onBlur: () => setIsOpen(false),
     'aria-describedby': undefined as string | undefined,
     tabIndex: 0,
   };

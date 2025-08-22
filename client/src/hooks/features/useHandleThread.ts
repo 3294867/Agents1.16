@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { v4 as uuidV4 } from 'uuid';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import { Query, Thread } from 'src/types';
+import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {
+  userId: string;
+  agentId: string;
+  agentName: string;
   threadId: string | undefined;
 }
 
 /** Handles thread */
-const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
+const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
+  const navigate = useNavigate();
+  const [ searchParams ] = useSearchParams();
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
@@ -16,12 +24,36 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   
   /** Get thread (IndexedDB, PostgresDB) */
   useEffect(() => {
+    if (!threadId) {
+      setError('Missing thread id');
+      return;
+    }
+    const isShared = searchParams.get('share');
+    const addSharedThread = async () => {
+      if (isShared === 'true') {
+        const id = uuidV4();
+        const duplicatedThread = await postgresDB.duplicateThread({
+          publicThreadId: threadId,
+          newThreadId: id,
+          userId,
+          agentId
+        });
+        
+        const newThreadPostgres = await postgresDB.getThread({ threadId: duplicatedThread.id });
+        await indexedDB.addThread({ thread: newThreadPostgres }).then(() => {
+          const tab = {
+            id: newThreadPostgres.id,
+            agentId: newThreadPostgres.agentId,
+            title: newThreadPostgres.title,
+            isActive: true
+          };
+          tabsStorage.addTab(agentName, tab);
+          navigate(`/${agentName}/${id}`);
+        });
+      }
+    };
     const getThread = async () => {
       try {
-        if (!threadId) {
-          setError('Missing thread id');
-          return;
-        }
         setIsLoading(true);
         setError(null);
   
@@ -42,8 +74,13 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         throw new Error(`Failed to get thread: ${error}`);
       }
     };
-    getThread();
-  },[threadId]);
+
+    if (!isShared) {
+      getThread();
+    } else {
+      addSharedThread();
+    }
+  },[userId, agentId, agentName, threadId, searchParams]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */
   useEffect(() => {

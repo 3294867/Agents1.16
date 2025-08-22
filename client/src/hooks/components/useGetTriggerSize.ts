@@ -4,7 +4,7 @@ interface Props {
   triggerRef: RefObject<HTMLElement | null>;
 }
 
-const useGetTooltipTriggerSize = ({ triggerRef }: Props): { triggerHeight: number, triggerWidth: number } => {
+const useGetTriggerSize = ({ triggerRef }: Props): { triggerHeight: number, triggerWidth: number } => {
   const [triggerHeight, setTriggerHeight] = useState(0);
   const [triggerWidth, setTriggerWidth] = useState(0);
 
@@ -33,4 +33,4 @@ const useGetTooltipTriggerSize = ({ triggerRef }: Props): { triggerHeight: numbe
   };
 };
 
-export default useGetTooltipTriggerSize;
+export default useGetTriggerSize;

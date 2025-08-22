@@ -5,7 +5,7 @@ interface Props {
 
 const login = async ({ name, password }: Props): Promise<{ userId: string }> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/log-in`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/log-in`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',

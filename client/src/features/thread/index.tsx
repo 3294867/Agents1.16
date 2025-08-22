@@ -19,7 +19,9 @@ interface Props {
 
 const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) => {
   const { threadId } = useParams();
-  const { thread, isLoading, error } = hooks.features.useHandleThread({ threadId });
+  const { thread, isLoading, error } = hooks.features.useHandleThread({
+    userId, agentId, agentName, threadId
+  });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;

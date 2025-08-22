@@ -5,7 +5,7 @@ interface Props {
 /** Sets 'title' property of the thread to null (PostgresDB) */
 const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/remove-thread-title`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/remove-thread-title`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ threadId })

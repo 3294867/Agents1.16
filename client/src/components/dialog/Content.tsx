@@ -1,9 +1,9 @@
 import { FC, Fragment, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import Overlay from './Overlay';
-import Icons from 'src/assets/icons';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
+import Overlay from './Overlay';
+import Icons from 'src/assets/icons';
 import styles from './Dialog.module.css'
 
 interface Props {
@@ -16,12 +16,12 @@ interface Props {
 
 const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
   const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId }
-    = utils.components.useDialogContext();
+    = hooks.components.useDialogContext();
   const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
   hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
-  utils.components.useHandleDialogOpenProp({ open });
-  utils.components.useHandleDialogFocusOnOpen({ dialogRef, isOpen });
-  utils.components.useHandleDialogAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
+  hooks.components.useHandleDialogOpenProp({ open });
+  hooks.components.useHandleDialogFocusOnOpen({ dialogRef, isOpen });
+  hooks.components.useHandleDialogAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
 
   if (!mounted) return null;
 

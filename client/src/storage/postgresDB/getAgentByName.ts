@@ -7,7 +7,7 @@ interface Props {
 
 const getAgentByName = async ({ userId, agentName }: Props): Promise<Agent> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-agent-by-name`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agent-by-name`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId, agentName })

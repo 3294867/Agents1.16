@@ -6,7 +6,7 @@ interface Props {
 
 const getAvailableAgent = async ({ agentType }: Props): Promise<Agent> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-available-agent`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-available-agent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ agentType })

@@ -6,7 +6,7 @@ interface Props {
 
 const getThread = async ({ threadId }: Props): Promise<Thread> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_BASE_URL}/api/get-thread`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-thread`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ threadId })

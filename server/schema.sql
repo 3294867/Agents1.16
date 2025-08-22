@@ -84,8 +84,8 @@ CREATE INDEX IF NOT EXISTS "Thread_userId_idx" ON "Thread"("userId");
 -- Insert users (passwords will be hashed programmatically)
 INSERT INTO "User" ("id", "name", "password", "createdAt", "updatedAt")
 VALUES
-  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'placeholder', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'placeholder', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+  ('79fa0469-8a88-4bb0-9bc5-3623b09cf379', 'Root', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+  ('206776bc-6920-4f04-8580-f36b45b51e93', 'Test', 'password', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- Insert agents
 INSERT INTO "Agent"
