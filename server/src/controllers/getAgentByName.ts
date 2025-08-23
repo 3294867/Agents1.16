@@ -11,22 +11,14 @@ const getAgentByName = async (req: Request, res: Response) => {
   const { userId, agentName }: Props = req.body;
 
   try {
-    /** Get agent from the database (PostgresDB) */
-    const queryText = `
-      SELECT * FROM "Agent"
-      WHERE "userId" = $1::uuid
-        AND "name" = $2::text
-    `;
-    const result = await pool.query(queryText, [
-      userId,
-      agentName
-    ])
-    if (!result) return sendResponse(res, 404, "Failed to fetch agent");
+    const getAgent = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid AND "name" = $2::text;`, [
+      userId, agentName
+    ]);
+    if (!getAgent) return sendResponse(res, 404, "Failed to fetch agent");
     
-    /** On success send data (Client) */
     res.status(200).json({
       message: "Agent has been fetched",
-      data: result.rows[0]
+      data: getAgent.rows[0]
     });
 
   } catch (error) {

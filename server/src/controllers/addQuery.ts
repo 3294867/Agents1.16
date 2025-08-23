@@ -15,74 +15,46 @@ const addQuery = async (req: Request, res: Response) => {
   try {
     await pool.query("BEGIN");
 
-    /** Store request in the database (PostgresDB) */
-    const requestQueryText = `
-      INSERT INTO "Request" ("threadId", "body")
-      VALUES ($1::uuid, $2::text)
-      RETURNING "id", "createdAt";
-    `;
-    const request = await pool.query(requestQueryText, [threadId, requestBody]);
-    if (!request) return sendResponse(res, 503, "Failed to add request");
-
-    /** Store response in the database (PostgresDB) */
-    const responseQueryText = `
-      INSERT INTO "Response" (
-        "threadId",
-        "body"
+    const addRequest = await pool.query(`
+      INSERT INTO "Request" (
+        "threadId", "body"
       )
       SELECT
-        $1::uuid AS "threadId",
-        $2::text AS "body"
+        $1::uuid, $2::text
+      RETURNING "id", "createdAt";
+    `, [ threadId, requestBody ]);
+    if (!addRequest) return sendResponse(res, 503, "Failed to add request");
+
+    const addResponse = await pool.query(`
+      INSERT INTO "Response" (
+        "threadId", "body"
+      )
+      SELECT
+        $1::uuid, $2::text
       Returning "id", "createdAt";
-    `;
-    const response = await pool.query(responseQueryText, [
-      threadId,
-      responseBody
-    ]);
-    if (!response) return sendResponse(res, 503, "Failed to add response");
+    `, [ threadId, responseBody ]);
+    if (!addResponse) return sendResponse(res, 503, "Failed to add response");
     
-    /** Get current thread body from database (PostgresDB) */
-    const threadBodyQueryText = `
-      SELECT "body"
-      FROM "Thread"
-      WHERE "id" = $1::uuid
-    `;
-    const threadBody = await pool.query(threadBodyQueryText, [
+    const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`,[
       threadId
     ]);
-    if (!threadBody) return sendResponse(res, 404, "Failed to fetch thread body");
+    if (!getThreadBody) return sendResponse(res, 404, "Failed to fetch thread body");
 
-    let currentBody = threadBody.rows[0].body;
-    if (!Array.isArray(currentBody)) {
-      currentBody = [];
-    };
+    let currentBody = getThreadBody.rows[0].body;
+    if (!Array.isArray(currentBody)) currentBody = [];
 
-    const newBody: Query[] = [...currentBody, {
-      requestId: request.rows[0].id,
-      responseId: response.rows[0].id
-    }];
+    const newBody: Query[] = [...currentBody, { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }];
 
-    /** Update thread body in the database (PostgresDB) */
-    const threadQueryText = `
-      UPDATE "Thread"
-      SET "body" = $1::jsonb
-      WHERE "id" = $2::uuid;
-    `;
-    const thread = await pool.query(threadQueryText, [
-      JSON.stringify(newBody),
-      threadId
+    const updateThread = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`, [
+      JSON.stringify(newBody), threadId
     ]);
-    if (!thread) return sendResponse(res, 503, "Failed to update thread");
+    if (!updateThread) return sendResponse(res, 503, "Failed to update thread");
 
     await pool.query("COMMIT");
 
-    /** On success send data (Client) */
     res.status(200).json({
       message: "Thread updated",
-      data: {
-        requestId: request.rows[0].id,
-        responseId: response.rows[0].id
-      }
+      data: { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }
     });
 
   } catch (error) {

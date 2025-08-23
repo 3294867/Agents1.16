@@ -11,58 +11,43 @@ const getThread = async (req: Request, res: Response) => {
   const { threadId } = req.body as Props;
 
   try {
-    const resultQueryText = `
-      SELECT 
-        t."id",
-        t."userId",
-        t."agentId",
-        t."title",
-        t."body" AS "body",
-        t."isBookmarked",
-        t."createdAt",
-        t."updatedAt"
-      FROM "Thread" t
-      WHERE t.id = $1::uuid;
-    `;
-    const result = await pool.query(resultQueryText, [threadId]);
-    if (!result.rows[0]) {
-      return sendResponse(res, 404, "Thread not found");
-    }
+    const getThread = await pool.query(`SELECT * FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
+    if (!getThread) return sendResponse(res, 404, "Thread not found");
 
-    const thread: Thread = {
-      id: result.rows[0].id,
-      userId: result.rows[0].userId,
-      agentId: result.rows[0].agentId,
-      title: result.rows[0].title,
-      body: result.rows[0].body.map((item: { requestId: string, responseId: string }) => ({
-        requestId: item.requestId,
-        responseId: item.responseId,
+    const adjustedThread: Thread = {
+      id: getThread.rows[0].id,
+      userId: getThread.rows[0].userId,
+      agentId: getThread.rows[0].agentId,
+      title: getThread.rows[0].title,
+      body: getThread.rows[0].body.map((i: { requestId: string, responseId: string }) => ({
+        requestId: i.requestId,
+        responseId: i.responseId,
         requestBody: null,
         responseBody: null
       })),
-      isBookmarked: result.rows[0].isBookmarked,
-      createdAt: result.rows[0].createdAt,
-      updatedAt: result.rows[0].updatedAt,
+      isBookmarked: getThread.rows[0].isBookmarked,
+      createdAt: getThread.rows[0].createdAt,
+      updatedAt: getThread.rows[0].updatedAt,
     };
 
     const bodyWithDetails = await Promise.all(
-      thread.body.map(async (query: Query) => {
-        const request = await pool.query('SELECT body FROM "Request" WHERE id = $1', [query.requestId]);
-        const response = await pool.query('SELECT body FROM "Response" WHERE id = $1', [query.responseId]);
+      adjustedThread.body.map(async (query: Query) => {
+        const request = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid`, [ query.requestId ]);
+        const response = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid`, [ query.responseId ]);
         return {
           requestId: query.requestId,
-          requestBody: request.rows[0]?.body || null,
+          requestBody: request.rows[0].body,
           responseId: query.responseId,
-          responseBody: response.rows[0]?.body || null,
+          responseBody: response.rows[0].body,
         };
       })
     );
 
-    thread.body = bodyWithDetails;
+    getThread.rows[0].body = bodyWithDetails;
 
     res.status(200).json({
       message: "Thread fetched",
-      data: thread
+      data: getThread.rows[0]
     });
   } catch (error) {
     console.error("Failed to fetch thread: ", error);

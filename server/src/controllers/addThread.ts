@@ -12,7 +12,7 @@ const addThread = async (req: Request, res: Response) => {
   const { id, userId, agentId }: Props = req.body;
 
   try {
-    const queryText = `
+    const addThread = await pool.query(`
       INSERT INTO "Thread" (
         "id",
         "userId",
@@ -25,17 +25,12 @@ const addThread = async (req: Request, res: Response) => {
         $3::uuid,
         '{}'::jsonb
       RETURNING *;
-    `;
-    const result = await pool.query(queryText, [
-      id,
-      userId,
-      agentId
-    ])
-    if (!result) return sendResponse(res, 503, "Failed to add thread");
+    `, [ id, userId, agentId ]);
+    if (!addThread) return sendResponse(res, 503, "Failed to add thread");
 
     res.status(200).json({
       message: "Thread added",
-      data: result.rows[0]
+      data: addThread.rows[0]
     });
 
   } catch (error) {

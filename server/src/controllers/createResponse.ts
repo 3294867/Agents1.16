@@ -13,17 +13,9 @@ const createResponse = async (req: Request, res: Response) => {
   const { agentId, agentModel, input }: Props = req.body;
 
   try {
-    /** Get instructions from the database (PostgresDB) */
-    const instructionsQueryText = `
-      SELECT "systemInstructions"
-      FROM "Agent"
-      WHERE "id" = $1::uuid;
-    `;
-    
-    const instructions = await pool.query(instructionsQueryText, [agentId]);
+    const instructions = await pool.query(`SELECT "systemInstructions" FROM "Agent" WHERE "id" = $1::uuid;`, [ agentId ]);
     if (!instructions) return sendResponse(res, 404, "Failed to get instructions");
 
-    /** Create response (OpenAI) */
     const apiResponse = await client.responses.create({
       model: agentModel,
       input,
@@ -31,7 +23,6 @@ const createResponse = async (req: Request, res: Response) => {
     });
     if (!apiResponse) return sendResponse(res, 503, "Failed to get response");
 
-    /** On success send data (Client) */
     res.status(200).json({
       message: "apiResponse created",
       data: apiResponse.output_text

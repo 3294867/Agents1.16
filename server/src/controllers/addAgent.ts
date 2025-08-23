@@ -11,7 +11,7 @@ const addAgent = async (req: Request, res: Response) => {
   const { agent }: Props = req.body;
 
   try {
-    const queryText = `
+    const addAgent = await pool.query(`
       INSERT INTO "Agent" (
         "id",
         "type",
@@ -36,8 +36,7 @@ const addAgent = async (req: Request, res: Response) => {
         $9::timestamp,
         $10::timestamp
       RETURNING *;
-    `;
-    const result = await pool.query(queryText, [
+    `, [
       agent.id,
       agent.type,
       agent.model,
@@ -48,12 +47,12 @@ const addAgent = async (req: Request, res: Response) => {
       agent.webSearch,
       agent.createdAt,
       agent.updatedAt
-    ])
-    if (!result) return sendResponse(res, 503, "Failed to add agent");
+    ]);
+    if (!addAgent) return sendResponse(res, 503, "Failed to add agent");
 
     res.status(200).json({
       message: "Agent added",
-      data: result.rows[0]
+      data: addAgent.rows[0]
     });
 
   } catch (error) {

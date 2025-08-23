@@ -11,20 +11,11 @@ const updateResponseBody = async (req: Request, res: Response) => {
   const { responseId, responseBody }: Props = req.body;
 
   try {
-    /** Update response body in the database (PostgresDB) */
-    const resultQueryText = `
-      UPDATE "Response"
-      SET "body" = $1::text
-      WHERE "id" = $2::uuid 
-    `;
-
-    const result = await pool.query(resultQueryText, [
-      responseBody,
-      responseId
+    const updateResponse = await pool.query(`UPDATE "Response" SET "body" = $1::text WHERE "id" = $2::uuid;`, [
+      responseBody, responseId
     ]);
-    if (!result) return sendResponse(res, 503, "Failed to update response body");
+    if (!updateResponse) return sendResponse(res, 503, "Failed to update response body");
 
-    /** On success send data (Client) */
     res.status(200).json({
       message: "Response body updated",
     });

@@ -22,46 +22,61 @@ const signUp = async (req: Request, res: Response) => {
   try {
     await pool.query("BEGIN"); 
 
-    const existingUserQueryText = `
-      SELECT * FROM "User"
-      WHERE "name" = $1::text;
-    `;
-    const existingUser = await pool.query(existingUserQueryText, [
+    const getExistingUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [
       name
     ]);
-    if (existingUser.rows.length > 0) return sendResponse(res, 409, "User exists");
+    if (getExistingUser.rows.length > 0) return sendResponse(res, 409, "User exists");
 
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    const newUserQueryText = `
-      INSERT INTO "User" ("name", "password", "apiKey")
-      VALUES ($1::text, $2::text, $3::text)
+    const addNewUser = await pool.query(`
+      INSERT INTO "User" (
+        "name",
+        "password",
+        "apiKey"
+      )
+      SELECT
+        $1::text,
+        $2::text,
+        $3::text
       RETURNING "id";
-    `;
-    const newUser = await pool.query(newUserQueryText, [
+    `, [
       name,
       hashedPassword,
       apiKey
     ]);
-    if (newUser.rows.length === 0) return sendResponse(res, 503,"Failed to add user");
-    const newUserId = newUser.rows[0].id;
+    if (addNewUser.rows.length === 0) return sendResponse(res, 503,"Failed to add user");
     
-    const newGeneralAgentTextQuery = `
-      INSERT INTO "Agent" ( "id", "type", "model", "userId", "name", "systemInstructions", "stack", "temperature", "webSearch", "createdAt", "updatedAt" )
-      VALUES ( gen_random_uuid(), 'general', 'gpt-3.5-turbo', $1::uuid, 'general', '', NULL, 0.5, TRUE, NOW(), NOW() );
-    `;
-    const newGeneralAgent = await pool.query(newGeneralAgentTextQuery, [newUserId])
-    if (!newGeneralAgent) return sendResponse(res, 503, "Failed to add general agent");
+    const addGeneralAgent = await pool.query(`
+      INSERT INTO "Agent" (
+        "id",
+        "type",
+        "model",
+        "userId",
+        "name",
+        "systemInstructions",
+        "stack"
+      )
+      SELECT
+        gen_random_uuid(),
+        'general',
+        'gpt-3.5-turbo',
+        $1::uuid,
+        'general',
+        '',
+        NULL
+    `, [ addNewUser.rows[0].id ]);
+    if (!addGeneralAgent) return sendResponse(res, 503, "Failed to add general agent");
     
     await pool.query("COMMIT");
 
-    req.session.userId = newUserId;
-    res.json({ success: true, userId: newUserId})
+    req.session.userId = addNewUser.rows[0].id;
+    res.json({ success: true, userId: addNewUser.rows[0].id })
 
   } catch (error) {
     try {
-      await pool.query("ROLLLBACK")
+      await pool.query("ROLLLBACK");
     } catch (error) {
       console.error("Rollback error: ", error);
     }

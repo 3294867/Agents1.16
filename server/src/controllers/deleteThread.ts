@@ -10,14 +10,9 @@ const deleteThread = async (req: Request, res: Response) => {
   const { threadId }: Props = req.body;
 
   try {
-    /** Delete thread from database (PostgresDB) */
-    const queryText = `
-      DELETE FROM "Thread" WHERE "id" = $1::uuid;
-    `;
-    const result = await pool.query(queryText, [ threadId ]);
+    const result = await pool.query(`DELETE FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
     if (!result) return sendResponse(res, 503, "Failed to delete thread");
 
-    /** On success send message (Client) */
     res.status(200).json({
       message: "Thread deleted",
     });

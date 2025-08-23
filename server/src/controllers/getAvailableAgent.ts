@@ -11,21 +11,21 @@ const getAvailableAgent = async (req: Request, res: Response) => {
   const { agentType }: Props = req.body;
 
   try {
-    const resultQueryText = `
-      SELECT * FROM "Agent"
-      WHERE "userId" = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid
-        AND "type" = $1::text;
-    `;
-    const result = await pool.query(resultQueryText, [agentType]);
-    if (!result) sendResponse(res, 404, "Failed to fetch available agent (PostgresDB)")
+    const getRootUserId = await pool.query(`SELECT "id" FROM "User" WHERE "name" = 'Root'::text;`);
+    if (!getRootUserId) sendResponse(res, 404, "Failed to get root user id");
+    
+    const getAgent = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid AND "type" = $2::text;`, [
+      getRootUserId.rows[0].id, agentType
+    ]);
+    if (!getAgent) sendResponse(res, 404, "Failed to fetch available agent");
 
     res.status(200).json({
       message: "Available agent fetched",
-      data: result.rows[0]
+      data: getAgent.rows[0]
     });
 
   } catch (error) {
-    console.error("Failed to fetch available agent (PostgresDB): ", error);
+    console.error("Failed to fetch available agent: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

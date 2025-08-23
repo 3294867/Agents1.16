@@ -20,26 +20,21 @@ const login = async (req: Request, res: Response) => {
   try {
     if (!name) return sendResponse(res, 400, "Name is required");
     
-    const resultQueryText = `
-      SELECT * FROM "User"
-      WHERE "name" = $1::text;
-    `;
-    const result = await pool.query(resultQueryText, [
+    const getUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [
       name,
     ]);
-    if (result.rows.length === 0) return sendResponse(res, 401,"Invalid name");
+    if (getUser.rows.length === 0) return sendResponse(res, 401,"Invalid name");
     
     if (!password) return sendResponse(res, 400, "Password is required");
 
-    const user = result.rows[0];
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, getUser.rows[0].password);
     if (!match) return sendResponse(res, 401, "Invalid password");
 
-    req.session.userId = user.id;
+    req.session.userId = getUser.rows[0].id;
     res.status(200).json({
       success: true,
-      userId: user.id
-    })
+      userId: getUser.rows[0].id
+    });
 
   } catch (error) {
     console.error("Failed to login: ", error);

@@ -11,18 +11,12 @@ const createThreadTitle = async (req: Request, res: Response) => {
   const { question, answer }: Props = req.body;
 
   try {
-    /** Create thread title (OpenAI) */
-    const instructions = `Generate title for a below conversation. Make it short. Return only title.
-      Question: ${question}
-      Answet: ${answer}
-    `;
     const apiResponse = await client.responses.create({
       model: 'gpt-4.1',
-      input: instructions,
+      input: `Return short title only for a following conversation: Question: ${question}; Answer: ${answer}.`,
     });
     if (!apiResponse) return sendResponse(res, 503, "Failed to create thread title");
 
-    /** On success send data (Client) */
     res.status(200).json({
       message: "Thread title updated",
       data: apiResponse.output_text

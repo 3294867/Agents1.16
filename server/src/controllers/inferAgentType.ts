@@ -11,14 +11,7 @@ const inferAgentType = async (req: Request, res: Response) => {
   const { agentId, input }: Props = req.body;
 
   try {
-    /** Get "type" property of the agent (PostgresDB) */
-    const resultQueryText = `
-      SELECT "type"
-      FROM "Agent"
-      WHERE "id" = $1::uuid;
-    `;
-    
-    const result = await pool.query(resultQueryText, [agentId]);
+    const result = await pool.query(`SELECT "type" FROM "Agent" WHERE "id" = $1::uuid;`, [ agentId ]);
     if (!result) return sendResponse(res, 404, "Failed to get 'type' property of the agent");
 
     const query = `
@@ -27,7 +20,6 @@ const inferAgentType = async (req: Request, res: Response) => {
       Return in lower case agent type only.
     `;
 
-    /** Create response (OpenAI) */
     const apiResponse = await client.responses.create({
       model: "gpt-3.5-turbo",
       input: query,
@@ -35,7 +27,6 @@ const inferAgentType = async (req: Request, res: Response) => {
     });
     if (!apiResponse) return sendResponse(res, 503, "Failed to get response");
 
-    /** On success send data (Client) */
     res.status(200).json({
       message: "apiResponse created",
       data: apiResponse.output_text

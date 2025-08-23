@@ -4,20 +4,21 @@ import { sendResponse } from "../utils/sendResponse";
 
 const getAvailableAgents = async (req: Request, res: Response) => {
   try {
-    const resultQueryText = `
-      SELECT * FROM "Agent"
-      WHERE "userId" = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid;
-    `;
-    const result = await pool.query(resultQueryText);
-    if (!result) sendResponse(res, 404, "Failed to fetch available agents (PostgresDB)")
+    const getRootUserId = await pool.query(`SELECT "id" FROM "User" WHERE "name" = 'Root'::text;`);
+    if (!getRootUserId) sendResponse(res, 404, "Failed to get root user id");
+    
+    const getAvailableAgents = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid;`, [
+      getRootUserId.rows[0].id
+    ]);
+    if (!getAvailableAgents) sendResponse(res, 404, "Failed to fetch available agents")
 
     res.status(200).json({
       message: "Available agents fetched",
-      data: result.rows
+      data: getAvailableAgents.rows
     });
 
   } catch (error) {
-    console.error("Failed to fetch available agents (PostgresDB): ", error);
+    console.error("Failed to fetch available agents: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
