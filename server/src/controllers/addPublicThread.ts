@@ -13,16 +13,19 @@ const addPublicThread = async (req: Request, res: Response) => {
     await pool.query("BEGIN");
 
     const getThread = await pool.query(`SELECT * FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
-    if (!getThread) sendResponse(res, 404, "Failed to get thread");
+    if (!getThread) return sendResponse(res, 404, "Failed to get thread");
+    
+    const getAgentType = await pool.query(`SELECT "type" FROM "Agent" WHERE "id" = $1::uuid;`, [ getThread.rows[0].agentId ]);
+    if (!getAgentType) return sendResponse(res, 404, "Failed to fetch agent type"); 
     
     const getRootUser = await pool.query(`SELECT "id" FROM "User" WHERE "name" = 'Root'::text;`);
-    if (!getRootUser) sendResponse(res, 404, "Failed to get root user");
+    if (!getRootUser) return sendResponse(res, 404, "Failed to get root user");
     
-    const getGeneralAgentId = await pool.query(`
+    const getAgentId = await pool.query(`
       SELECT "id" FROM "Agent" WHERE "userId" = $1::uuid
-        AND "type" = 'general'::text;
-    `, [ getRootUser.rows[0].id ]);
-    if (!getGeneralAgentId) sendResponse(res, 404, "Failed to get general agent id");
+        AND "type" = $2::text;
+    `, [ getRootUser.rows[0].id, getAgentType.rows[0].type ]);
+    if (!getAgentId) return sendResponse(res, 404, "Failed to get general agent id");
     
     const addPublicThread = await pool.query(`
       INSERT INTO "Thread" (
@@ -34,18 +37,18 @@ const addPublicThread = async (req: Request, res: Response) => {
         $1::uuid,
         $2::uuid,
         $3::text
-      RETURNING *;
+      RETURNING "id";
     `, [
       getRootUser.rows[0].id,
-      getGeneralAgentId.rows[0].id,
+      getAgentId.rows[0].id,
       getThread.rows[0].title,
     ]);
-    if (!addPublicThread) sendResponse(res, 503, "Failed to add public thread");
+    if (!addPublicThread) return sendResponse(res, 503, "Failed to add public thread");
     
     let threadBody = [];
     for (const query of getThread.rows[0].body) {
       const getRequestBody = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid;`, [ query.requestId ]);
-      if (!getRequestBody) sendResponse(res, 404, "Failed to get requestBody");
+      if (!getRequestBody) return sendResponse(res, 404, "Failed to get requestBody");
 
       const addRequest = await pool.query(`
         INSERT INTO "Request" (
@@ -55,10 +58,10 @@ const addPublicThread = async (req: Request, res: Response) => {
           $1::uuid, $2::text
         Returning *;
       `, [ addPublicThread.rows[0].id, getRequestBody.rows[0].body ]);
-      if (!addRequest) sendResponse(res, 503, "Failed to add request");
+      if (!addRequest) return sendResponse(res, 503, "Failed to add request");
 
       const getResponseBody = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid;`, [ query.responseId ]);
-      if (!getResponseBody) sendResponse(res, 404, "Failed to get responseBody");
+      if (!getResponseBody) return sendResponse(res, 404, "Failed to get responseBody");
 
       const addResponse = await pool.query(`
         INSERT INTO "Response" (
@@ -68,7 +71,7 @@ const addPublicThread = async (req: Request, res: Response) => {
           $1::uuid, $2::text
         Returning *;
       `, [ addPublicThread.rows[0].id, getResponseBody.rows[0].body ]);
-      if (!addResponse) sendResponse(res, 503, "Failed to add response");
+      if (!addResponse) return sendResponse(res, 503, "Failed to add response");
 
       threadBody.push({ requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id });
     }
@@ -76,13 +79,16 @@ const addPublicThread = async (req: Request, res: Response) => {
     const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`, [
       JSON.stringify(threadBody), addPublicThread.rows[0].id
     ]);
-    if (!updateThreadBody) sendResponse(res, 503, "Failed to update thread body");
+    if (!updateThreadBody) return sendResponse(res, 503, "Failed to update thread body");
     
     await pool.query("COMMIT");
 
     res.status(200).json({
       message: "Public thread added",
-      data: addPublicThread.rows[0].id
+      data: {
+        agentType: getAgentType.rows[0].type,
+        threadId: addPublicThread.rows[0].id
+      }
     });
 
   } catch (error) {

@@ -14,7 +14,6 @@ const Trigger: FC<Props> = ({ asChild, children }) => {
     ref: triggerRef,
     onClick: () => setIsOpen(true),
     onFocus: () => setIsOpen(true),
-    // onBlur: () => setIsOpen(false),
     'aria-describedby': undefined as string | undefined,
     tabIndex: 0,
   };

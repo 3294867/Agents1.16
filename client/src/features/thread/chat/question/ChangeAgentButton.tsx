@@ -92,7 +92,7 @@ const ChangeAgentButton = ({
     if (savedAgent) {
       newAgent = savedAgent;
     } else {
-      const availableAgentPostgres = await postgresDB.getAvailableAgent({ agentType: inferredAgentType })
+      const availableAgentPostgres = await postgresDB.getAvailableAgentByType({ agentType: inferredAgentType })
       const agent = {
         id: uuidV4(),
         type: availableAgentPostgres.type,

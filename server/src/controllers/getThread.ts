@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { pool } from "../index";
+import { client, pool } from "../index";
 import { sendResponse } from "../utils/sendResponse";
 import { Query, Thread } from '../types';
 
@@ -30,15 +30,37 @@ const getThread = async (req: Request, res: Response) => {
       updatedAt: getThread.rows[0].updatedAt,
     };
 
+    const getAgentType = await pool.query(`SELECT "type" FROM "Agent" WHERE "userId" = $1::uuid;`, [ getThread.rows[0].userId ]);
+    if (!getAgentType) return sendResponse(res, 404, "Failed to fetch agent type");
+
     const bodyWithDetails = await Promise.all(
       adjustedThread.body.map(async (query: Query) => {
         const request = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid`, [ query.requestId ]);
+        if (!request) return sendResponse(res, 404, "Failed to fetch Request");
+
+        const question = `
+          Choose the most appropriate agent type for the following question: ${request.rows[0].body}.
+          Available agent types: "general", "math", "geography", "literature".
+          Return in lower case agent type only.
+        `;
+
+        const apiResponse = await client.responses.create({
+          model: "gpt-3.5-turbo",
+          input: question,
+          instructions: getAgentType.rows[0].type
+        });
+        if (!apiResponse) return sendResponse(res, 503, "Failed to get response");
+
         const response = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid`, [ query.responseId ]);
+        if (!response) return sendResponse(res, 404, "Failed to fetch Response");
+        
         return {
           requestId: query.requestId,
           requestBody: request.rows[0].body,
           responseId: query.responseId,
           responseBody: response.rows[0].body,
+          isNew: false,
+          inferredAgentType: apiResponse.output_text
         };
       })
     );

@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef, useState } from 'react';
+import { FC, FocusEvent, ReactNode, useRef, useState } from 'react';
 import DropdownContext from './DropdownContext';
 import styles from './Dropdown.module.css';
 
@@ -10,8 +10,8 @@ const Root: FC<Props> = ({ children }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  const handleBlur = (event: React.FocusEvent<HTMLSpanElement>) => {
-    const relatedTarget = event.relatedTarget as HTMLElement | null;
+  const handleBlur = (e: FocusEvent<HTMLSpanElement>) => {
+    const relatedTarget = e.relatedTarget as HTMLElement | null;
     if (relatedTarget && dropdownRef.current?.contains(relatedTarget)) {
       return;
     }
@@ -29,7 +29,7 @@ const Root: FC<Props> = ({ children }: Props) => {
 
   return (
     <DropdownContext.Provider value={{ dropdownRef, isOpen, setIsOpen }}>
-      <span onBlur={(e: React.FocusEvent<HTMLSpanElement>) => handleBlur(e)} className={styles.dropdownContainer}>
+      <span onBlur={(e: FocusEvent<HTMLSpanElement>) => handleBlur(e)} className={styles.dropdownContainer}>
         {children}
       </span>
     </DropdownContext.Provider>

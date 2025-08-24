@@ -1,0 +1,17 @@
+.container {
+  width: 24rem;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  width: fit-content;
+  margin-left: 1rem;
+}
+
+.icon {
+  margin-left: -0.5rem;
+  margin-right: 0.5rem;
+}

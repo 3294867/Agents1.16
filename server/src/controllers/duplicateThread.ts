@@ -14,12 +14,12 @@ const duplicateThread = async (req: Request, res: Response) => {
 
   try {
     const getPublicThread = await pool.query(`SELECT * FROM "Thread" WHERE "id" = $1::uuid;`, [ publicThreadId ]);
-    if (!getPublicThread) sendResponse(res, 404, "Failed to get public thread");
+    if (!getPublicThread) return sendResponse(res, 404, "Failed to get public thread");
 
     let threadBody = [];
     for (const query of getPublicThread.rows[0].body) {
       const getRequestBody = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid;`, [ query.requestId ]);
-      if (!getRequestBody) sendResponse(res, 404, "Failed to get requestBody");
+      if (!getRequestBody) return sendResponse(res, 404, "Failed to get requestBody");
 
       const addRequest = await pool.query(`
         INSERT INTO "Request" (
@@ -31,10 +31,10 @@ const duplicateThread = async (req: Request, res: Response) => {
           $2::text
         Returning *;
       `, [ publicThreadId, getRequestBody.rows[0].body ]);
-      if (!addRequest) sendResponse(res, 503, "Failed to add request");
+      if (!addRequest) return sendResponse(res, 503, "Failed to add request");
 
       const getResponseBody = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid;`, [ query.responseId ]);
-      if (!getResponseBody) sendResponse(res, 404, "Failed to get responseBody");
+      if (!getResponseBody) return sendResponse(res, 404, "Failed to get responseBody");
 
       const addResponse = await pool.query(`
         INSERT INTO "Response" (
@@ -46,7 +46,7 @@ const duplicateThread = async (req: Request, res: Response) => {
           $2::text
         Returning *;
       `, [ publicThreadId, getResponseBody.rows[0].body ]);
-      if (!addResponse) sendResponse(res, 503, "Failed to add response");
+      if (!addResponse) return sendResponse(res, 503, "Failed to add response");
 
       threadBody.push({ requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id });
     }

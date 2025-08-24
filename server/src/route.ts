@@ -5,9 +5,10 @@ import logout from './controllers/logout';
 import getCurrentUser from './controllers/getCurrentUser';
 import getAgents from "./controllers/getAgents";
 import getAgentByName from './controllers/getAgentByName';
+import getAgentByType from './controllers/getAgentByType';
 import addAgent from './controllers/addAgent';
 import getAvailableAgents from './controllers/getAvailableAgents';
-import getAvailableAgent from './controllers/getAvailableAgent';
+import getAvailableAgentByType from './controllers/getAvailableAgentByType';
 import getThread from "./controllers/getThread";
 import addThread from './controllers/addThread';
 import addPublicThread from './controllers/addPublicThread';
@@ -34,9 +35,10 @@ router.post("/logout", logout);
 router.get("/get-current-user", getCurrentUser);
 router.post("/get-agents", getAgents);
 router.post("/get-agent-by-name", getAgentByName);
+router.post("/get-agent-by-type", getAgentByType);
 router.post("/add-agent", addAgent);
 router.get("/get-available-agents", getAvailableAgents);
-router.post("/get-available-agent", getAvailableAgent)
+router.post("/get-available-agent-by-type", getAvailableAgentByType)
 router.post("/get-thread", getThread);
 router.post("/add-thread", addThread);
 router.post("/add-public-thread", addPublicThread);

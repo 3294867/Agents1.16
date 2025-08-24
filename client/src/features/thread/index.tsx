@@ -34,6 +34,7 @@ const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) =>
   return (
     <main id='thread' className={styles.main}>
       <Header
+        userId={userId}
         threadId={threadId}
         threadTitle={threadTitle}
         isBookmarked={thread.isBookmarked}

@@ -1,9 +1,10 @@
 import { postgresDB as auth } from "src/storage/postgresDB/auth/index";
 import getAgents from 'src/storage/postgresDB/getAgents';
 import getAgentByName from 'src/storage/postgresDB/getAgentByName';
+import getAgentByType from 'src/storage/postgresDB//getAgentByType';
 import addAgent from 'src/storage/postgresDB/addAgent';
 import getAvailableAgents from 'src/storage/postgresDB/getAvailableAgents';
-import getAvailableAgent from 'src/storage/postgresDB//getAvailableAgent';
+import getAvailableAgentByType from 'src/storage/postgresDB/getAvailableAgentByType';
 import getThread from 'src/storage/postgresDB/getThread';
 import addThread from 'src/storage/postgresDB/addThread';
 import addPublicThread from 'src/storage/postgresDB/addPublicThread';
@@ -23,9 +24,10 @@ const postgresDB = {
   auth,
   getAgents,
   getAgentByName,
+  getAgentByType,
   addAgent,
   getAvailableAgents,
-  getAvailableAgent,
+  getAvailableAgentByType,
   getThread,
   addThread,
   addPublicThread,

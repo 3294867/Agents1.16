@@ -7,18 +7,19 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import ShareThreadButton from './ShareThreadButton';
 
 interface Props {
+  userId: string;
   threadId: string;
   currentIsBookmarked: boolean;
   agentName: string;
 }
 
-const Actions = ({ threadId, currentIsBookmarked, agentName }: Props) => {
+const Actions = ({ userId, threadId, currentIsBookmarked, agentName }: Props) => {
   const savedTabs = tabsStorage.load(agentName);
   if (!savedTabs) return;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '0.375rem', justifyContent: 'end', alignItems: 'start'}}>
-      <ShareThreadButton threadId={threadId} />
+      <ShareThreadButton userId={userId} threadId={threadId} />
       <Dropdown.Root>
         <Dropdown.Trigger asChild>
           <Button variant='outline' size='icon'>

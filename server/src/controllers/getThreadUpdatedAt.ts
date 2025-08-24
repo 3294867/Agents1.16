@@ -11,7 +11,7 @@ const getThreadUpdatedAt = async (req: Request, res: Response) => {
 
   try {
     const result = await pool.query(`SELECT "updatedAt" FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
-    if (!result) sendResponse(res, 404, "Failed to fetch 'updatedAt' property of the thread")
+    if (!result) return sendResponse(res, 404, "Failed to fetch 'updatedAt' property of the thread")
 
     res.status(200).json({
       message: "Thread fetched",

@@ -1,4 +1,4 @@
-import { FC, ReactNode, useRef, useState } from 'react';
+import { FC, FocusEvent, ReactNode, useRef, useState } from 'react';
 import PopoverContext from './PopoverContext';
 import styles from './Popover.module.css';
 
@@ -11,6 +11,23 @@ const Root: FC<Props> = ({ children }) => {
   const triggerRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
 
+  const handleBlur = (e: FocusEvent<HTMLSpanElement>) => {
+    const relatedTarget = e.relatedTarget as HTMLElement | null;
+    if (relatedTarget && contentRef.current?.contains(relatedTarget)) {
+      return;
+    }
+
+    if (relatedTarget) {
+      const isPreventClose = relatedTarget.hasAttribute('data-prevent-popover-close') ||
+        !!relatedTarget.closest('[data-prevent-popover-close]');
+      if (isPreventClose) return;
+    }
+
+    setTimeout(() => {
+      setIsOpen(false);
+    }, 100);
+  };
+
   return (
     <PopoverContext.Provider value={{
       triggerRef,
@@ -18,7 +35,12 @@ const Root: FC<Props> = ({ children }) => {
       isOpen,
       setIsOpen,
     }}>
-      <span className={styles.popoverContainer}>{children}</span>
+      <span
+        onBlur={(e: FocusEvent<HTMLSpanElement>) => handleBlur(e)}
+        className={styles.popoverContainer}
+      >
+        {children}
+      </span>
     </PopoverContext.Provider>
   );
 };

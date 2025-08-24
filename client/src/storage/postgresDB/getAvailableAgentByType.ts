@@ -4,9 +4,9 @@ interface Props {
   agentType: AgentType;
 }
 
-const getAvailableAgent = async ({ agentType }: Props): Promise<Agent> => {
+const getAvailableAgentByType = async ({ agentType }: Props): Promise<Agent> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-available-agent`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-available-agent-by-type`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ agentType })
@@ -26,4 +26,4 @@ const getAvailableAgent = async ({ agentType }: Props): Promise<Agent> => {
   }
 };
 
-export default getAvailableAgent;
+export default getAvailableAgentByType;

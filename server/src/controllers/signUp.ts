@@ -22,9 +22,7 @@ const signUp = async (req: Request, res: Response) => {
   try {
     await pool.query("BEGIN"); 
 
-    const getExistingUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [
-      name
-    ]);
+    const getExistingUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [ name ]);
     if (getExistingUser.rows.length > 0) return sendResponse(res, 409, "User exists");
 
     const saltRounds = 12;

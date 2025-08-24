@@ -4,6 +4,7 @@ import Close from './Close';
 import Pause from './Pause';
 import Run from './Run';
 import Edit from './Edit';
+import Copy from './Copy';
 import Move from './Move';
 import Share from './Share';
 import Delete from './Delete';
@@ -35,6 +36,7 @@ const Icons: IconComponents = {
   Pause,
   Run,
   Edit,
+  Copy,
   Move,
   Share,
   Delete,

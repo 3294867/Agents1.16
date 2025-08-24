@@ -13,7 +13,6 @@ interface Props {
   threadId: string | undefined;
 }
 
-/** Handles thread */
 const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
@@ -22,7 +21,7 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
   
-  /** Get thread (IndexedDB, PostgresDB) */
+  /** Redirect on shared thread or get thread (IndexedDB, PostgresDB) */
   useEffect(() => {
     if (!threadId) {
       setError('Missing thread id');

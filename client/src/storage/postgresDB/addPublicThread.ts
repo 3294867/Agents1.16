@@ -1,8 +1,10 @@
+import { AgentType } from 'src/types';
+
 interface Props {
   threadId: string;
 }
 
-const addPublicThread = async ({ threadId }: Props): Promise<string> => {
+const addPublicThread = async ({ threadId }: Props): Promise<{ agentType: AgentType, threadId: string }> => {
   const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/add-public-thread`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -16,9 +18,9 @@ const addPublicThread = async ({ threadId }: Props): Promise<string> => {
     throw new Error (`Failed to add public thread: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
-  const data: { message: string, data: string | null } = await response.json();
+  const data: { message: string, data: { agentType: AgentType, threadId: string } | null } = await response.json();
   if (!data.data) throw new Error('Failed to add public thread');
-  return data.data as string;
+  return data.data as { agentType: AgentType, threadId: string };
 };
 
 export default addPublicThread;
