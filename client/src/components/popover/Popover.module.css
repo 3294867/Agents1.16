@@ -4,6 +4,7 @@
 }
 
 .popoverContent {
+  min-width: 10rem;
   position: absolute;
   z-index: 1000;
   display: flex;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 import bcrypt from "bcrypt";
 
 declare module 'express-session' {
@@ -18,17 +18,17 @@ const login = async (req: Request, res: Response) => {
   const { name, password }: Props = req.body;
 
   try {
-    if (!name) return sendResponse(res, 400, "Name is required");
+    if (!name) return utils.controllers.sendResponse(res, 400, "Name is required");
     
     const getUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [
       name,
     ]);
-    if (getUser.rows.length === 0) return sendResponse(res, 401,"Invalid name");
+    if (getUser.rows.length === 0) return utils.controllers.sendResponse(res, 401,"Invalid name");
     
-    if (!password) return sendResponse(res, 400, "Password is required");
+    if (!password) return utils.controllers.sendResponse(res, 400, "Password is required");
 
     const match = await bcrypt.compare(password, getUser.rows[0].password);
-    if (!match) return sendResponse(res, 401, "Invalid password");
+    if (!match) return utils.controllers.sendResponse(res, 401, "Invalid password");
 
     req.session.userId = getUser.rows[0].id;
     res.status(200).json({

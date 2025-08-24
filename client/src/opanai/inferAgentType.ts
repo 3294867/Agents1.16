@@ -1,16 +1,14 @@
 import { AgentType } from 'src/types';
 
 interface Props {
-  agentId: string;
   input: string;
 }
 
-/** Infers agent type from the question */
-const inferAgentType = async ({ agentId, input }: Props): Promise<AgentType> => {
+const inferAgentType = async ({ input }: Props): Promise<AgentType> => {
   const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/infer-agent-type`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ agentId, input })
+    body: JSON.stringify({ input })
   });
   
   if (!response.ok) {
@@ -19,7 +17,7 @@ const inferAgentType = async ({ agentId, input }: Props): Promise<AgentType> => 
   }
   
   const data: { message: string, data: AgentType } = await response.json();
-  if (data.data === null) throw new Error(`Failed to evaluate agent: ${data.message}`);
+  if (data.data === null) throw new Error(`Failed to infer agent type: ${data.message}`);
   return data.data;
 };
 

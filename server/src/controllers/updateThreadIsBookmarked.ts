@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 
 interface Props {
   threadId: string;
@@ -14,7 +14,7 @@ const updateThreadIsBookmarked = async (req: Request, res: Response) => {
     const updateThread = await pool.query(`UPDATE "Thread" SET "isBookmarked" = $1::boolean WHERE "id" = $2::uuid;`, [
       isBookmarked, threadId
     ]);
-    if (!updateThread) return sendResponse(res, 503, "Failed to update 'isBookmarked' property")
+    if (!updateThread) return utils.controllers.sendResponse(res, 503, "Failed to update 'isBookmarked' property")
 
     res.status(200).json({
       message: "'isBookmarked' property of the thread updated"

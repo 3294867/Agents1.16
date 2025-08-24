@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 
 interface Props {
   userId: string;
@@ -10,14 +10,14 @@ const getAgents = async (req: Request, res: Response) => {
   const { userId }: Props = req.body;
 
   try {
-    const result = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid ORDER BY "createdAt";`, [
+    const getAgents = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid ORDER BY "createdAt";`, [
       userId
     ]);
-    if (!result) return sendResponse(res, 404, "Failed to fetch agents");
+    if (!getAgents) return utils.controllers.sendResponse(res, 404, "Failed to fetch agents");
     
     res.status(200).json({
       message: "Agents have been fetched",
-      data: result.rows
+      data: getAgents.rows
     });
 
   } catch (error) {

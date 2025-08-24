@@ -33,7 +33,7 @@
             });
           }
 
-          const agentsPostgresUpdatedAt = await postgresDB.getAgentsUpdatedAt({ userId });
+          const agentsPostgresUpdatedAt = await postgresDB.getAgentUpdatedAt({ userId });
           
           if (agentsIDB.length === 0 ||  JSON.stringify(agentsIDBUpdatedAt) !== JSON.stringify(agentsPostgresUpdatedAt)) {
             const agentsPostgres = await postgresDB.getAgents({ userId });

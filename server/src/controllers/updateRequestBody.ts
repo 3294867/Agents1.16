@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 
 interface Props {
   requestId: string;
@@ -14,7 +14,7 @@ const updateRequestBody = async (req: Request, res: Response) => {
     const updateRequest = await pool.query(`UPDATE "Request" SET "body" = $1::text WHERE "id" = $2::uuid;`, [
       requestBody, requestId
     ]);
-    if (!updateRequest) return sendResponse(res, 503, "Failed to update request body");
+    if (!updateRequest) return utils.controllers.sendResponse(res, 503, "Failed to update request body");
 
     res.status(200).json({
       message: "Request body updated",

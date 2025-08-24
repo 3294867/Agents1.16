@@ -1,5 +1,5 @@
 import crypto from "crypto";
-import constants from '../constants';
+import constants from '../../constants';
 
 const decrypt = (encryptedData: string): string => {
   const [ivHex, encryptedHex, authTagHex] = encryptedData.split(":");

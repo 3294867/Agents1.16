@@ -7,8 +7,6 @@ import Popover from 'src/components/popover';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Heading from 'src/components/heading';
-import Paragraph from 'src/components/paragraph';
-import styles from './ShareThreadButton.module.css';
 
 interface Props {
   userId: string;
@@ -78,20 +76,19 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
       </Popover.Trigger>
       <Popover.Content align='end'>
         <Heading variant='h6'>
-          Share conversation
+          Share chat
         </Heading>
-        <div className={styles.container}>
-          <Paragraph isMuted={true} >{isLoading ? 'Creating a public conversation...' : 'Public conversation created'}</Paragraph>
-          <Button
-            className={styles.button}
-            data-prevent-popover-close
-            disabled={isLoading}
-            onClick={copyLink}
-          >
-            <Icons.Copy className={styles.icon} />
-            Copy link
-          </Button>
-        </div>
+        <Button
+          data-prevent-popover-close
+          disabled={isLoading}
+          onClick={copyLink}
+        >
+          {isLoading
+            ? <Icons.Loader style={{ marginLeft: '-0.5rem', marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />
+            : <Icons.Copy style={{ marginLeft: '-0.5rem', marginRight: '0.5rem' }} />
+          }
+          Copy link
+        </Button>
       </Popover.Content>
     </Popover.Root>
   );

@@ -24,8 +24,8 @@ import updateThreadIsBookmarked from './controllers/updateThreadIsBookmarked';
 import createResponse from "./controllers/createResponse";
 import inferAgentType from './controllers/inferAgentType';
 import getThreadUpdatedAt from './controllers/getThreadUpdatedAt';
-import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
 import duplicateThread from './controllers/duplicateThread';
+import getAgentUpdatedAt from './controllers/getAgentsUpdatedAt';
 
 const router = express.Router();
 
@@ -55,6 +55,6 @@ router.post("/update-thread-is-bookmarked", updateThreadIsBookmarked);
 router.post("/create-response", createResponse);
 router.post("/infer-agent-type", inferAgentType);
 router.post("/get-thread-updated-at", getThreadUpdatedAt);
-router.post("/get-agents-updated-at", getAgentsUpdatedAt);
+router.post("/get-agent-updated-at", getAgentUpdatedAt);
 
 export default router;

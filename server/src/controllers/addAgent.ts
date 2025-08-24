@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from '..';
-import { sendResponse } from '../utils/sendResponse';
+import utils from '../utils';
 import { Agent } from '../types';
 
 interface Props {
@@ -48,7 +48,7 @@ const addAgent = async (req: Request, res: Response) => {
       agent.createdAt,
       agent.updatedAt
     ]);
-    if (!addAgent) return sendResponse(res, 503, "Failed to add agent");
+    if (!addAgent) return utils.controllers.sendResponse(res, 503, "Failed to add agent");
 
     res.status(200).json({
       message: "Agent added",

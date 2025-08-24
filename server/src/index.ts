@@ -7,7 +7,7 @@ import OpenAI from "openai";
 import Router from "./route";
 import { createPool } from "./db";
 import { CustomPGSessionStore } from './sessionStore';
-import updateSeedPasswords from './utils/updateSeedPasswords';
+import utils from './utils';
 
 dotenv.config();
 
@@ -50,4 +50,4 @@ app.listen(process.env.API_ROUTES_PORT, () => {
   }
 });
 
-updateSeedPasswords();
+utils.auth.updateSeedPasswords();

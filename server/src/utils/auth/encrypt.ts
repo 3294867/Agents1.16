@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import dotenv from "dotenv";
-import constants from '../constants';
+import constants from '../../constants';
 
 dotenv.config();
 

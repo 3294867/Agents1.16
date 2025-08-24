@@ -1,21 +1,21 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 
 interface Props {
   userId: string;
 }
 
-const getAgentsUpdatedAt = async (req: Request, res: Response) => {
+const getAgentUpdatedAt = async (req: Request, res: Response) => {
   const { userId } = req.body as Props;
 
   try {
-    const result = await pool.query(`SELECT "id", "updatedAt" FROM "Agent" WHERE "userId" = $1::uuid;`, [ userId ]);
-    if (!result) return sendResponse(res, 404, "Failed to get 'updatedAt' property for each agent")
+    const getAgentsUpdatedAt = await pool.query(`SELECT "id", "updatedAt" FROM "Agent" WHERE "userId" = $1::uuid;`, [ userId ]);
+    if (!getAgentsUpdatedAt) return utils.controllers.sendResponse(res, 404, "Failed to get 'updatedAt' property for each agent")
 
     res.status(200).json({
       message: "'updatedAt' property for each agent fetched",
-      data: result.rows
+      data: getAgentsUpdatedAt.rows
     });
 
   } catch (error) {
@@ -24,4 +24,4 @@ const getAgentsUpdatedAt = async (req: Request, res: Response) => {
   }
 }
 
-export default getAgentsUpdatedAt;
+export default getAgentUpdatedAt;

@@ -29,7 +29,7 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
     const responseBody = await openai.createResponse({ agentId, agentModel, input });
 
     /** Infer type of an agent (OpenAI) */
-    const inferredAgentType = await openai.inferAgentType({ agentId, input });
+    const inferredAgentType = await openai.inferAgentType({ input });
     
     /** Update thread body (PostgresDB) */
     const { requestId, responseId } = await postgresDB.addQuery({

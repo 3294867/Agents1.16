@@ -18,7 +18,7 @@ import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
-import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentsUpdatedAt';
+import getAgentUpdatedAt from 'src/storage/postgresDB/getAgentUpdatedAt';
 
 const postgresDB = {
   auth,
@@ -41,7 +41,7 @@ const postgresDB = {
   removeThreadTitle,
   updatedThreadIsBookmarked,
   getThreadUpdatedAt,
-  getAgentsUpdatedAt
+  getAgentUpdatedAt
 };
 
 export default postgresDB;

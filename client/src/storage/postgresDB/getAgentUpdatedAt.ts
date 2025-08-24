@@ -3,9 +3,9 @@ interface Props {
 }
 
 /** Fetches 'id' and 'updatedAt' properties for each agent (PostgresDB) */
-const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, updatedAt: Date }[]> => {
+const getAgentUpdatedAt = async ({ userId }: Props): Promise<{ id: string, updatedAt: Date }[]> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agents-updated-at`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agent-updated-at`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId })
@@ -25,4 +25,4 @@ const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, upda
   }
 };
 
-export default getAgentsUpdatedAt;
+export default getAgentUpdatedAt;

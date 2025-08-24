@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from '..';
-import { sendResponse } from '../utils/sendResponse';
+import utils from '../utils';
 
 interface Props {
   id: string;
@@ -26,7 +26,7 @@ const addThread = async (req: Request, res: Response) => {
         '{}'::jsonb
       RETURNING *;
     `, [ id, userId, agentId ]);
-    if (!addThread) return sendResponse(res, 503, "Failed to add thread");
+    if (!addThread) return utils.controllers.sendResponse(res, 503, "Failed to add thread");
 
     res.status(200).json({
       message: "Thread added",

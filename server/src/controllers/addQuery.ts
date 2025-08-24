@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
+import utils from '../utils';
 import { Query } from '../types';
 
 interface Props {
@@ -23,7 +23,7 @@ const addQuery = async (req: Request, res: Response) => {
         $1::uuid, $2::text
       RETURNING "id", "createdAt";
     `, [ threadId, requestBody ]);
-    if (!addRequest) return sendResponse(res, 503, "Failed to add request");
+    if (!addRequest) return utils.controllers.sendResponse(res, 503, "Failed to add request");
 
     const addResponse = await pool.query(`
       INSERT INTO "Response" (
@@ -33,12 +33,12 @@ const addQuery = async (req: Request, res: Response) => {
         $1::uuid, $2::text
       Returning "id", "createdAt";
     `, [ threadId, responseBody ]);
-    if (!addResponse) return sendResponse(res, 503, "Failed to add response");
+    if (!addResponse) return utils.controllers.sendResponse(res, 503, "Failed to add response");
     
     const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`,[
       threadId
     ]);
-    if (!getThreadBody) return sendResponse(res, 404, "Failed to fetch thread body");
+    if (!getThreadBody) return utils.controllers.sendResponse(res, 404, "Failed to fetch thread body");
 
     let currentBody = getThreadBody.rows[0].body;
     if (!Array.isArray(currentBody)) currentBody = [];
@@ -48,7 +48,7 @@ const addQuery = async (req: Request, res: Response) => {
     const updateThread = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`, [
       JSON.stringify(newBody), threadId
     ]);
-    if (!updateThread) return sendResponse(res, 503, "Failed to update thread");
+    if (!updateThread) return utils.controllers.sendResponse(res, 503, "Failed to update thread");
 
     await pool.query("COMMIT");
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import { sendResponse } from "../utils/sendResponse";
 import bcrypt from "bcrypt";
+import utils from '../utils';
 
 declare module 'express-session' {
   interface SessionData {
@@ -17,13 +17,13 @@ interface Props {
 
 const signUp = async (req: Request, res: Response) => {
   const { name, password, apiKey }: Props = req.body;
-  if (!name || !password) return sendResponse(res, 400, "All fields are required: name, password, apiKey");
+  if (!name || !password) return utils.controllers.sendResponse(res, 400, "All fields are required: name, password, apiKey");
 
   try {
     await pool.query("BEGIN"); 
 
     const getExistingUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [ name ]);
-    if (getExistingUser.rows.length > 0) return sendResponse(res, 409, "User exists");
+    if (getExistingUser.rows.length > 0) return utils.controllers.sendResponse(res, 409, "User exists");
 
     const saltRounds = 12;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -44,7 +44,7 @@ const signUp = async (req: Request, res: Response) => {
       hashedPassword,
       apiKey
     ]);
-    if (addNewUser.rows.length === 0) return sendResponse(res, 503,"Failed to add user");
+    if (addNewUser.rows.length === 0) return utils.controllers.sendResponse(res, 503,"Failed to add user");
     
     const addGeneralAgent = await pool.query(`
       INSERT INTO "Agent" (
@@ -65,7 +65,7 @@ const signUp = async (req: Request, res: Response) => {
         '',
         NULL
     `, [ addNewUser.rows[0].id ]);
-    if (!addGeneralAgent) return sendResponse(res, 503, "Failed to add general agent");
+    if (!addGeneralAgent) return utils.controllers.sendResponse(res, 503, "Failed to add general agent");
     
     await pool.query("COMMIT");
 
