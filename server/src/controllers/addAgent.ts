@@ -48,7 +48,7 @@ const addAgent = async (req: Request, res: Response) => {
       agent.createdAt,
       agent.updatedAt
     ]);
-    if (!addAgent) return utils.controllers.sendResponse(res, 503, "Failed to add agent");
+    if (addAgent.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add agent");
 
     res.status(200).json({
       message: "Agent added",

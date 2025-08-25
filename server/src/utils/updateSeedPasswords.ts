@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { pool } from "../../index";
+import { pool } from "../index";
 
 const updateSeedPasswords = async () => {
   const saltRounds = 12;

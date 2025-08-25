@@ -12,20 +12,19 @@ const addPublicThread = async (req: Request, res: Response) => {
   try {
     await pool.query("BEGIN");
 
-    const getThread = await utils.controllers.getThread(threadId);
-    if (!getThread) return utils.controllers.sendResponse(res, 404, "Failed to get thread");
+    const getThread = await utils.getThread(threadId);
+    if (getThread.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get thread");
     
     const getAgentType = await pool.query(`SELECT "type" FROM "Agent" WHERE "id" = $1::uuid;`, [ getThread.rows[0].agentId ]);
-    if (!getAgentType) return utils.controllers.sendResponse(res, 404, "Failed to fetch agent type"); 
+    if (getAgentType.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agent type"); 
     
-    const getRootUserId = await utils.controllers.getRootUserId();
-    if (!getRootUserId) return utils.controllers.sendResponse(res, 404, "Failed to get root user");
+    const getRootUserId = await utils.getRootUserId();
+    if (getRootUserId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get root user");
     
-    const getAgentId = await pool.query(`
-      SELECT "id" FROM "Agent" WHERE "userId" = $1::uuid
-        AND "type" = $2::text;
-    `, [ getRootUserId.rows[0].id, getAgentType.rows[0].type ]);
-    if (!getAgentId) return utils.controllers.sendResponse(res, 404, "Failed to get general agent id");
+    const getAgentId = await pool.query(`SELECT "id" FROM "Agent" WHERE "userId" = $1::uuid AND "type" = $2::text;`, [
+      getRootUserId.rows[0].id, getAgentType.rows[0].type
+    ]);
+    if (getAgentId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get general agent id");
     
     const addPublicThread = await pool.query(`
       INSERT INTO "Thread" (
@@ -43,12 +42,12 @@ const addPublicThread = async (req: Request, res: Response) => {
       getAgentId.rows[0].id,
       getThread.rows[0].title,
     ]);
-    if (!addPublicThread) return utils.controllers.sendResponse(res, 503, "Failed to add public thread");
+    if (addPublicThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add public thread");
     
     let threadBody = [];
     for (const query of getThread.rows[0].body) {
       const getRequestBody = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid;`, [ query.requestId ]);
-      if (!getRequestBody) return utils.controllers.sendResponse(res, 404, "Failed to get requestBody");
+      if (getRequestBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get requestBody");
 
       const addRequest = await pool.query(`
         INSERT INTO "Request" (
@@ -56,12 +55,12 @@ const addPublicThread = async (req: Request, res: Response) => {
         )
         SELECT
           $1::uuid, $2::text
-        Returning *;
+        RETURNING "id";
       `, [ addPublicThread.rows[0].id, getRequestBody.rows[0].body ]);
-      if (!addRequest) return utils.controllers.sendResponse(res, 503, "Failed to add request");
+      if (addRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
 
       const getResponseBody = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid;`, [ query.responseId ]);
-      if (!getResponseBody) return utils.controllers.sendResponse(res, 404, "Failed to get responseBody");
+      if (getResponseBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get responseBody");
 
       const addResponse = await pool.query(`
         INSERT INTO "Response" (
@@ -69,17 +68,17 @@ const addPublicThread = async (req: Request, res: Response) => {
         )
         SELECT
           $1::uuid, $2::text
-        Returning *;
+        RETURNING "id";
       `, [ addPublicThread.rows[0].id, getResponseBody.rows[0].body ]);
-      if (!addResponse) return utils.controllers.sendResponse(res, 503, "Failed to add response");
+      if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
 
       threadBody.push({ requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id });
     }
 
-    const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`, [
+    const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid RETURNING "id";`, [
       JSON.stringify(threadBody), addPublicThread.rows[0].id
     ]);
-    if (!updateThreadBody) return utils.controllers.sendResponse(res, 503, "Failed to update thread body");
+    if (updateThreadBody.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread body");
     
     await pool.query("COMMIT");
 

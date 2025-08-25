@@ -1,9 +1,19 @@
-import { utils as auth } from "./auth/index";
-import { utils as controllers } from "./controllers/index";
+import encrypt from './encrypt';
+import decrypt from './decrypt';
+import updateSeedPasswords from './updateSeedPasswords';
+import sendResponse from './sendResponse';
+import getRootUserId from './getRootUserId';
+import getThread from './getThread';
+import inferAgentType from './inferAgentType';
 
 const utils = {
-  auth,
-  controllers
+  encrypt,
+  decrypt,
+  updateSeedPasswords,
+  sendResponse,
+  getRootUserId,
+  getThread,
+  inferAgentType
 };
 
 export default utils;

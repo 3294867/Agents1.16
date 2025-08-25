@@ -26,7 +26,7 @@ const addThread = async (req: Request, res: Response) => {
         '{}'::jsonb
       RETURNING *;
     `, [ id, userId, agentId ]);
-    if (!addThread) return utils.controllers.sendResponse(res, 503, "Failed to add thread");
+    if (addThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add thread");
 
     res.status(200).json({
       message: "Thread added",

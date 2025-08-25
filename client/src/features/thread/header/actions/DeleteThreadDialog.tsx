@@ -7,7 +7,7 @@ import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import Heading from 'src/components/heading';
 import Paragraph from 'src/components/paragraph';
-import styles from './DeleteDialog.module.css';
+import styles from './DeleteThreadDialog.module.css';
 
 interface Props {
   threadId: string;
@@ -49,7 +49,9 @@ const DeleteThreadDialog = ({ threadId, agentName }: Props) => {
           </Paragraph>
           <div className={styles.actions}>
             <Dialog.CloseButton />
-            <Button onClick={handleClick}>Delete</Button>
+            <Button onClick={handleClick} style={{ width: 'fit-content' }}>
+              Delete
+            </Button>
           </div>
         </div>
       </Dialog.Content>

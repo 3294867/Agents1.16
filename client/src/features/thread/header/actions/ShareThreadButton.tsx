@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { v4 as uuidV4 } from 'uuid';
+import { toast } from 'sonner';
 import postgresDB from 'src/storage/postgresDB';
-import Icons from 'src/assets/icons';
-import Button from 'src/components/button';
-import Popover from 'src/components/popover';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
-import Heading from 'src/components/heading';
+import Icons from 'src/assets/icons';
+import Button from 'src/components/button';
 
 interface Props {
   userId: string;
@@ -16,9 +15,9 @@ interface Props {
 const ShareThreadButton = ({ userId, threadId }: Props) => {
   const [agentName, setAgentName] = useState<string | null>(null);
   const [sharedThreadId, setSharedThreadId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState(false);  
 
-  const createPublicLink = async () => {
+  const handleHover = async () => {
     setIsLoading(true);
     const { agentType: publicThreadAgentType, threadId: publicThreadId } = await postgresDB.addPublicThread({ threadId });
     setSharedThreadId(publicThreadId);
@@ -58,39 +57,22 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
     setAgentName(agentIDB.name);
     setIsLoading(false);
   };
-
-  const copyLink = () => {
+  
+  const handleClick = () => {
     navigator.clipboard.writeText(`${import.meta.env.VITE_CLIENT_URL}/${agentName}/${sharedThreadId}?share=true`);
-  }
+    toast('Link has been copied to clipboard.');
+  };
 
   return (
-    <Popover.Root>
-      <Popover.Trigger asChild>
-        <Button
-          onClick={createPublicLink}
-          variant='outline'
-          size='icon'
-        >
-          <Icons.Share />
-        </Button>
-      </Popover.Trigger>
-      <Popover.Content align='end'>
-        <Heading variant='h6'>
-          Share chat
-        </Heading>
-        <Button
-          data-prevent-popover-close
-          disabled={isLoading}
-          onClick={copyLink}
-        >
-          {isLoading
-            ? <Icons.Loader style={{ marginLeft: '-0.5rem', marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />
-            : <Icons.Copy style={{ marginLeft: '-0.5rem', marginRight: '0.5rem' }} />
-          }
-          Copy link
-        </Button>
-      </Popover.Content>
-    </Popover.Root>
+    <Button
+      onMouseEnter={handleHover}
+      onClick={handleClick}
+      disabled={isLoading}
+      variant='outline'
+      size='icon'
+      >
+      {isLoading ? <Icons.Loader style={{ animation: 'spin 1s linear infinite' }} /> : <Icons.Share />}
+    </Button>
   );
 };
 

@@ -1,6 +1,6 @@
 import { Store } from 'express-session';
 import { pool } from '.';
-import utils from './utils/index';
+import utils from './utils';
 
 export class CustomPGSessionStore extends Store {
   async get(sid: string, callback: (err: any, session?: any) => void) {
@@ -8,7 +8,7 @@ export class CustomPGSessionStore extends Store {
       const result = await pool.query('SELECT "data" FROM "Session" WHERE "sid" = $1 AND "expires" > NOW()', [sid]);
       if (result.rows.length === 0) return callback(null, null);
       const encryptedData = result.rows[0].data;
-      const decryptedData = JSON.parse(utils.auth.decrypt(encryptedData.encrypted));
+      const decryptedData = JSON.parse(utils.decrypt(encryptedData.encrypted));
       callback(null, decryptedData);
     } catch (err) {
       callback(err);
@@ -21,7 +21,7 @@ export class CustomPGSessionStore extends Store {
     if (!userId) return callback(new Error('No userId in session'));
 
     try {
-      const encryptedData = utils.auth.encrypt(JSON.stringify(session));
+      const encryptedData = utils.encrypt(JSON.stringify(session));
       await pool.query(
         `INSERT INTO "Session" ("sid", "userId", "data", "expires")
          VALUES ($1, $2, $3, $4)

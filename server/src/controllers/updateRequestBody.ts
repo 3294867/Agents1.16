@@ -11,10 +11,10 @@ const updateRequestBody = async (req: Request, res: Response) => {
   const { requestId, requestBody }: Props = req.body;
 
   try {
-    const updateRequest = await pool.query(`UPDATE "Request" SET "body" = $1::text WHERE "id" = $2::uuid;`, [
+    const updateRequest = await pool.query(`UPDATE "Request" SET "body" = $1::text WHERE "id" = $2::uuid RETURNING "id";`, [
       requestBody, requestId
     ]);
-    if (!updateRequest) return utils.controllers.sendResponse(res, 503, "Failed to update request body");
+    if (updateRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update request body");
 
     res.status(200).json({
       message: "Request body updated",

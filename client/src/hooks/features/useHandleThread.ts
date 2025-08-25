@@ -30,6 +30,7 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
     const isShared = searchParams.get('share');
     const addSharedThread = async () => {
       if (isShared === 'true') {
+        setIsLoading(true);        
         const id = uuidV4();
         const duplicatedThread = await postgresDB.duplicateThread({
           publicThreadId: threadId,

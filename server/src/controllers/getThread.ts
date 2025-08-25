@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { client, pool } from "../index";
+import { pool } from "../index";
 import utils from '../utils';
 import { Query, Thread } from '../types';
 
@@ -11,8 +11,8 @@ const getThread = async (req: Request, res: Response) => {
   const { threadId } = req.body as Props;
 
   try {
-    const getThread = await utils.controllers.getThread(threadId);
-    if (!getThread) return utils.controllers.sendResponse(res, 404, "Thread not found");
+    const getThread = await utils.getThread(threadId);
+    if (getThread.rows.length === 0) return utils.sendResponse(res, 404, "Thread not found");
 
     const adjustedThread: Thread = {
       id: getThread.rows[0].id,
@@ -31,18 +31,18 @@ const getThread = async (req: Request, res: Response) => {
     };
 
     const getAgentType = await pool.query(`SELECT "type" FROM "Agent" WHERE "userId" = $1::uuid;`, [ getThread.rows[0].userId ]);
-    if (!getAgentType) return utils.controllers.sendResponse(res, 404, "Failed to fetch agent type");
+    if (getAgentType.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agent type");
 
     const bodyWithDetails = await Promise.all(
       adjustedThread.body.map(async (query: Query) => {
         const getRequest = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid`, [ query.requestId ]);
-        if (!getRequest) return utils.controllers.sendResponse(res, 404, "Failed to fetch Request");
+        if (getRequest.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch Request");
 
-        const inferAgentType = await utils.controllers.inferAgentType(getRequest.rows[0].body);
-        if (!inferAgentType) return utils.controllers.sendResponse(res, 503, "Failed to get response");
+        const inferAgentType = await utils.inferAgentType(getRequest.rows[0].body);
+        if (!inferAgentType) return utils.sendResponse(res, 503, "Failed to get response");
 
         const getResponse = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid`, [ query.responseId ]);
-        if (!getResponse) return utils.controllers.sendResponse(res, 404, "Failed to fetch Response");
+        if (getResponse.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch Response");
         
         return {
           requestId: query.requestId,

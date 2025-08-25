@@ -11,10 +11,10 @@ const updateThreadIsBookmarked = async (req: Request, res: Response) => {
   const { threadId, isBookmarked }: Props = req.body;
 
   try {
-    const updateThread = await pool.query(`UPDATE "Thread" SET "isBookmarked" = $1::boolean WHERE "id" = $2::uuid;`, [
+    const updateThread = await pool.query(`UPDATE "Thread" SET "isBookmarked" = $1::boolean WHERE "id" = $2::uuid RETURNING "id";`, [
       isBookmarked, threadId
     ]);
-    if (!updateThread) return utils.controllers.sendResponse(res, 503, "Failed to update 'isBookmarked' property")
+    if (updateThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update 'isBookmarked' property")
 
     res.status(200).json({
       message: "'isBookmarked' property of the thread updated"

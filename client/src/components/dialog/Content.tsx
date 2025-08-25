@@ -29,6 +29,7 @@ const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isP
     <Fragment>
       <Overlay isNestedInDropdown={isNestedInDropdown} isPermanent={isPermanent} />
       <div 
+        data-prevent-dropdown-close
         ref={dialogRef}
         role="dialog"
         aria-modal="true"

@@ -1,4 +1,4 @@
-import { client } from "../../index";
+import { client } from "../index";
 
 const inferAgentType = async (question: string) => {
   const query = `

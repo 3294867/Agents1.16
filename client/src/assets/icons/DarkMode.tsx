@@ -1,10 +1,11 @@
 import { SVGProps } from 'react';
 import styles from './Icons.module.css';
+import utils from 'src/utils';
 
 const DarkMode = ({ className = styles.base, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      className={className}
+      className={utils.cn(styles.base, className)}
       {...props}
       xmlns='http://www.w3.org/2000/svg'
       width='24'

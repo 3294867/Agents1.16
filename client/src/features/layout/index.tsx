@@ -1,4 +1,5 @@
 import { Outlet } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
 import Sidebar from 'src/features/layout/sidebar';
@@ -24,6 +25,17 @@ const Layout = ({ userId }: Props) => {
         <Sidebar userId={userId} agents={agents} isMobile={isMobile} />
         <Outlet />
       </div>
+      <Toaster
+        position='top-center'
+        toastOptions={{
+          style: {
+            color: 'white',
+            border: '1px solid var(--border)',
+            outline: 'none',
+            background: 'black',
+          },
+        }}
+      />
     </div>
   );
 };

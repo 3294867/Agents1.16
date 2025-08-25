@@ -11,7 +11,7 @@ const getAgentUpdatedAt = async (req: Request, res: Response) => {
 
   try {
     const getAgentsUpdatedAt = await pool.query(`SELECT "id", "updatedAt" FROM "Agent" WHERE "userId" = $1::uuid;`, [ userId ]);
-    if (!getAgentsUpdatedAt) return utils.controllers.sendResponse(res, 404, "Failed to get 'updatedAt' property for each agent")
+    if (getAgentsUpdatedAt.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get 'updatedAt' property for each agent")
 
     res.status(200).json({
       message: "'updatedAt' property for each agent fetched",

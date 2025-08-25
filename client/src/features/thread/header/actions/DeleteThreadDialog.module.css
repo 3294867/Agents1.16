@@ -19,8 +19,8 @@
 .actions {
   width: 100%;
   display: flex;
-  gap: 0.5rem;
   justify-content: end;
+  gap: 0.5rem;
   margin-top: 2rem;
 }
 

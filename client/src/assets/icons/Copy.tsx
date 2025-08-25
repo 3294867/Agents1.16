@@ -1,11 +1,11 @@
 import { SVGProps } from 'react';
+import utils from 'src/utils';
 import styles from './Icons.module.css';
-import cn from 'src/utils/cn';
 
 const Copy = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      className={cn(styles.base, className)}
+      className={utils.cn(styles.base, className)}
       {...props}
       xmlns='http://www.w3.org/2000/svg'
       width='24'

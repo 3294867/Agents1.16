@@ -9,8 +9,8 @@ const inferAgentType = async (req: Request, res: Response) => {
   const { input }: Props = req.body;
 
   try {
-    const inferAgentType = await utils.controllers.inferAgentType(input);
-    if (!inferAgentType) return utils.controllers.sendResponse(res, 503, "Failed to get response");
+    const inferAgentType = await utils.inferAgentType(input);
+    if (!inferAgentType) return utils.sendResponse(res, 503, "Failed to get response");
 
     res.status(200).json({
       message: "apiResponse created",

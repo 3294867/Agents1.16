@@ -13,13 +13,13 @@ const duplicateThread = async (req: Request, res: Response) => {
   const { publicThreadId, newThreadId, userId, agentId }: Props = req.body;
 
   try {
-    const getPublicThread = await utils.controllers.getThread(publicThreadId);
-    if (!getPublicThread) return utils.controllers.sendResponse(res, 404, "Failed to get public thread");
+    const getPublicThread = await utils.getThread(publicThreadId);
+    if (getPublicThread.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get public thread");
 
     let threadBody = [];
     for (const query of getPublicThread.rows[0].body) {
       const getRequestBody = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid;`, [ query.requestId ]);
-      if (!getRequestBody) return utils.controllers.sendResponse(res, 404, "Failed to get requestBody");
+      if (getRequestBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get requestBody");
 
       const addRequest = await pool.query(`
         INSERT INTO "Request" (
@@ -31,10 +31,10 @@ const duplicateThread = async (req: Request, res: Response) => {
           $2::text
         Returning *;
       `, [ publicThreadId, getRequestBody.rows[0].body ]);
-      if (!addRequest) return utils.controllers.sendResponse(res, 503, "Failed to add request");
+      if (addRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
 
       const getResponseBody = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid;`, [ query.responseId ]);
-      if (!getResponseBody) return utils.controllers.sendResponse(res, 404, "Failed to get responseBody");
+      if (getResponseBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get responseBody");
 
       const addResponse = await pool.query(`
         INSERT INTO "Response" (
@@ -46,7 +46,7 @@ const duplicateThread = async (req: Request, res: Response) => {
           $2::text
         Returning *;
       `, [ publicThreadId, getResponseBody.rows[0].body ]);
-      if (!addResponse) return utils.controllers.sendResponse(res, 503, "Failed to add response");
+      if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
 
       threadBody.push({ requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id });
     }
@@ -73,7 +73,7 @@ const duplicateThread = async (req: Request, res: Response) => {
       getPublicThread.rows[0].title,
       JSON.stringify(threadBody)
     ]);
-    if (!duplicateThread) return utils.controllers.sendResponse(res, 503, "Failed to duplicate thread");
+    if (duplicateThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to duplicate thread");
 
     res.status(200).json({
       message: "Thread duplicated",

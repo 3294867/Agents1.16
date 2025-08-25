@@ -15,21 +15,21 @@ const deleteQuery = async (req: Request, res: Response) => {
   try {
     await pool.query("BEGIN");
 
-    const deleteRequest = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid;`, [ requestId ]);
-    if (!deleteRequest) return utils.controllers.sendResponse(res, 503, "Failed to delete request");
+    const deleteRequest = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid RETURNING "id";`, [ requestId ]);
+    if (deleteRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to delete request");
   
-    const deleteResponse = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid;`, [ responseId ]);
-    if (!deleteResponse) return utils.controllers.sendResponse(res, 503, "Failed to delete response");
+    const deleteResponse = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid RETURNING "id";`, [ responseId ]);
+    if (deleteResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to delete response");
 
     const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
-    if (!getThreadBody) return utils.controllers.sendResponse(res, 404, "Failed to fetch thread body");
+    if (getThreadBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread body");
     
     const updatedThreadBody: Query[] = getThreadBody.rows[0].body.filter((q: Query) => q.requestId !== requestId);
 
-    const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`,[
+    const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid RETURNING "id";`,[
       JSON.stringify(updatedThreadBody), threadId
     ]);
-    if (!updateThreadBody) return utils.controllers.sendResponse(res, 503, "Failed to update thread body");
+    if (updateThreadBody.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread body");
 
     await pool.query("COMMIT");
 

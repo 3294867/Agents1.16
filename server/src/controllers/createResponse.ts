@@ -14,14 +14,14 @@ const createResponse = async (req: Request, res: Response) => {
 
   try {
     const instructions = await pool.query(`SELECT "systemInstructions" FROM "Agent" WHERE "id" = $1::uuid;`, [ agentId ]);
-    if (!instructions) return utils.controllers.sendResponse(res, 404, "Failed to get instructions");
+    if (instructions.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get instructions");
 
     const apiResponse = await client.responses.create({
       model: agentModel,
       input,
       instructions: instructions.rows[0].systemInstructions
     });
-    if (!apiResponse) return utils.controllers.sendResponse(res, 503, "Failed to get response");
+    if (!apiResponse) return utils.sendResponse(res, 503, "Failed to get response");
 
     res.status(200).json({
       message: "apiResponse created",

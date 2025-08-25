@@ -11,10 +11,10 @@ const updateThreadTitle = async (req: Request, res: Response) => {
   const { threadId, threadTitle }: Props = req.body;
 
   try {
-    const updateThreadTitle = await pool.query(`UPDATE "Thread" SET "title" = $1::text WHERE "id" = $2::uuid;`, [
+    const updateThreadTitle = await pool.query(`UPDATE "Thread" SET "title" = $1::text WHERE "id" = $2::uuid RETURNING "id";`, [
       threadTitle, threadId
     ]);
-    if (!updateThreadTitle) return utils.controllers.sendResponse(res, 503, "Failed to update thread title");
+    if (updateThreadTitle.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread title");
 
     res.status(200).json({
       message: "Thread title updated"

@@ -1,10 +1,11 @@
 import { SVGProps  } from 'react';
+import utils from 'src/utils';
 import styles from './Icons.module.css';
 
 const Add = ({ className = styles.base, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
-      className={className}
+      className={utils.cn(styles.base, className)}
       {...props}
       xmlns='http://www.w3.org/2000/svg'
       fill='none'

@@ -13,7 +13,7 @@ const getAgents = async (req: Request, res: Response) => {
     const getAgents = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid ORDER BY "createdAt";`, [
       userId
     ]);
-    if (!getAgents) return utils.controllers.sendResponse(res, 404, "Failed to fetch agents");
+    if (getAgents.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agents");
     
     res.status(200).json({
       message: "Agents have been fetched",

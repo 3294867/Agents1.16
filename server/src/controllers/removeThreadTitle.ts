@@ -10,10 +10,10 @@ const removeThreadTitle = async (req: Request, res: Response) => {
   const { threadId }: Props = req.body;
 
   try {
-    const removeThreadTitle = await pool.query(`UPDATE "Thread" SET "title" = NULL WHERE "id" = $1::uuid;`, [
+    const removeThreadTitle = await pool.query(`UPDATE "Thread" SET "title" = NULL WHERE "id" = $1::uuid RETURNING "id";`, [
       threadId
     ]);
-    if (!removeThreadTitle) return utils.controllers.sendResponse(res, 503, "Failed to remove thread title");
+    if (removeThreadTitle.rows.length === 0) return utils.sendResponse(res, 503, "Failed to remove thread title");
 
     res.status(200).json({
       message: "Thread title removed"

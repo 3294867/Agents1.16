@@ -50,4 +50,4 @@ app.listen(process.env.API_ROUTES_PORT, () => {
   }
 });
 
-utils.auth.updateSeedPasswords();
+utils.updateSeedPasswords();

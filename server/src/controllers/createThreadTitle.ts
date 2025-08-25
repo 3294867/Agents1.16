@@ -15,7 +15,7 @@ const createThreadTitle = async (req: Request, res: Response) => {
       model: 'gpt-4.1',
       input: `Return short title only for a following conversation: Question: ${question}; Answer: ${answer}.`,
     });
-    if (!apiResponse) return utils.controllers.sendResponse(res, 503, "Failed to create thread title");
+    if (!apiResponse) return utils.sendResponse(res, 503, "Failed to create thread title");
 
     res.status(200).json({
       message: "Thread title updated",

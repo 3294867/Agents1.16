@@ -23,7 +23,7 @@ const addQuery = async (req: Request, res: Response) => {
         $1::uuid, $2::text
       RETURNING "id", "createdAt";
     `, [ threadId, requestBody ]);
-    if (!addRequest) return utils.controllers.sendResponse(res, 503, "Failed to add request");
+    if (addRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
 
     const addResponse = await pool.query(`
       INSERT INTO "Response" (
@@ -33,22 +33,22 @@ const addQuery = async (req: Request, res: Response) => {
         $1::uuid, $2::text
       Returning "id", "createdAt";
     `, [ threadId, responseBody ]);
-    if (!addResponse) return utils.controllers.sendResponse(res, 503, "Failed to add response");
-    
+    if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
+
     const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`,[
       threadId
     ]);
-    if (!getThreadBody) return utils.controllers.sendResponse(res, 404, "Failed to fetch thread body");
+    if (getThreadBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread body");
 
     let currentBody = getThreadBody.rows[0].body;
     if (!Array.isArray(currentBody)) currentBody = [];
 
     const newBody: Query[] = [...currentBody, { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }];
 
-    const updateThread = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid;`, [
+    const updateThread = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid RETURNING "id";`, [
       JSON.stringify(newBody), threadId
     ]);
-    if (!updateThread) return utils.controllers.sendResponse(res, 503, "Failed to update thread");
+    if (updateThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread");
 
     await pool.query("COMMIT");
 
