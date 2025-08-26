@@ -3,9 +3,9 @@ interface Props {
 }
 
 /** Fetches 'id' and 'updatedAt' properties for each agent (PostgresDB) */
-const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, updatedAt: Date }[]> => {
+const getTeamsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, updatedAt: Date }[]> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agents-updated-at`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-teams-updated-at`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId })
@@ -13,7 +13,7 @@ const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, upda
     
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(`Failed to get 'updatedAt' property for each team (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
     const data: { message: string, data: { id: string, updatedAt: Date }[] | null } = await response.json();
@@ -21,8 +21,8 @@ const getAgentsUpdatedAt = async ({ userId }: Props): Promise<{ id: string, upda
     return data.data as { id: string, updatedAt: Date }[];
 
   } catch (error) {
-    throw new Error(`Failed to get 'updatedAt' property for each agent (PostgresDB): ${error}`);
+    throw new Error(`Failed to get 'updatedAt' property for each team (PostgresDB): ${error}`);
   }
 };
 
-export default getAgentsUpdatedAt;
+export default getTeamsUpdatedAt;

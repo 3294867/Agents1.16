@@ -28,23 +28,50 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
       return;
     }
     const isShared = searchParams.get('share');
+    if (!isShared) {
+      const getThread = async () => {
+        try {
+          setIsLoading(true);
+          setError(null);
+    
+          const getThreadIDB = await indexedDB.getThread({ threadId });
+          const getThreadPGDBUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
+    
+          if (!getThreadIDB || new Date(getThreadIDB.updatedAt).getTime() !== new Date(getThreadPGDBUpdatedAt).getTime()) {
+            const getThreadPGDB = await postgresDB.getThread({ threadId });
+            await indexedDB.updateThread({ thread: getThreadPGDB });
+            setThread(getThreadPGDB);
+            setIsLoading(false);
+            return;
+          }
+          
+          setThread(getThreadIDB);
+          setIsLoading(false);
+        } catch (error) {
+          throw new Error(`Failed to get thread: ${error}`);
+        }
+      };
+      getThread();
+      return;
+    }
+
     const addSharedThread = async () => {
       if (isShared === 'true') {
         setIsLoading(true);        
         const id = uuidV4();
-        const duplicatedThread = await postgresDB.duplicateThread({
+        const duplicateThreadPGDB = await postgresDB.duplicateThread({
           publicThreadId: threadId,
           newThreadId: id,
           userId,
           agentId
         });
         
-        const newThreadPostgres = await postgresDB.getThread({ threadId: duplicatedThread.id });
-        await indexedDB.addThread({ thread: newThreadPostgres }).then(() => {
+        const getThreadPGDB = await postgresDB.getThread({ threadId: duplicateThreadPGDB.id });
+        await indexedDB.addThread({ thread: getThreadPGDB }).then(() => {
           const tab = {
-            id: newThreadPostgres.id,
-            agentId: newThreadPostgres.agentId,
-            title: newThreadPostgres.title,
+            id: getThreadPGDB.id,
+            agentId: getThreadPGDB.agentId,
+            title: getThreadPGDB.title,
             isActive: true
           };
           tabsStorage.addTab(agentName, tab);
@@ -52,34 +79,7 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         });
       }
     };
-    const getThread = async () => {
-      try {
-        setIsLoading(true);
-        setError(null);
-  
-        const threadIDB = await indexedDB.getThread({ threadId });
-        const threadPostgresUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
-  
-        if (!threadIDB || new Date(threadIDB.updatedAt).getTime() !== new Date(threadPostgresUpdatedAt).getTime()) {
-          const threadPostgres = await postgresDB.getThread({ threadId });
-          await indexedDB.updateThread({ thread: threadPostgres });
-          setThread(threadPostgres);
-          setIsLoading(false);
-          return;
-        }
-        
-        setThread(threadIDB);
-        setIsLoading(false);
-      } catch (error) {
-        throw new Error(`Failed to get thread: ${error}`);
-      }
-    };
-
-    if (!isShared) {
-      getThread();
-    } else {
-      addSharedThread();
-    }
+    addSharedThread();
   },[userId, agentId, agentName, threadId, searchParams]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */
@@ -94,7 +94,7 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
   
   /** Update thread on queryAdded event (UI) */
   useEffect(() => {
-    const handleAddQuery = (event: CustomEvent) => {
+    const handleQueryAdded = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
           if (!prevThread) return null;
@@ -108,14 +108,14 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         setNewRequestId(event.detail.query.requestId);
       }
     };
-    window.addEventListener('queryAdded', handleAddQuery as EventListener);
+    window.addEventListener('queryAdded', handleQueryAdded as EventListener);
 
-    return () => window.removeEventListener('queryAdded', handleAddQuery as EventListener);
+    return () => window.removeEventListener('queryAdded', handleQueryAdded as EventListener);
   },[threadId]);
 
   /** Update thread on queryDeleted event (UI) */
   useEffect(() => {
-    const handleDeleteQuery = (event: CustomEvent) => {
+    const handleQueryDeleted = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
           if (!prevThread) return null;
@@ -128,19 +128,18 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         });
       }
     };
-    window.addEventListener('queryDeleted', handleDeleteQuery as EventListener);
+    window.addEventListener('queryDeleted', handleQueryDeleted as EventListener);
 
-    return () => window.removeEventListener('queryDeleted', handleDeleteQuery as EventListener);
+    return () => window.removeEventListener('queryDeleted', handleQueryDeleted as EventListener);
   },[threadId]);
 
   /** Update thread on queryUpdated event (UI) */
   useEffect(() => {
-    const handleUpdateQuery = (event: CustomEvent) => {
+    const handleQueryUpdated = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId ) {
         setThread(prevThread => {
           if (!prevThread) return null;
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
-          /** Create a new array with the updated query, preserving order */
           const queryIndex = prevBody.findIndex(q => q.requestId === event.detail.query.requestId);
           const updatedBody: Query[] = prevBody.map((q, idx) =>
             idx === queryIndex ? event.detail.query : q
@@ -154,9 +153,9 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         setNewRequestId(event.detail.query.requestId);
       }
     };
-    window.addEventListener('queryUpdated', handleUpdateQuery as EventListener);
+    window.addEventListener('queryUpdated', handleQueryUpdated as EventListener);
     
-    return () => window.removeEventListener('queryUpdated', handleUpdateQuery as EventListener);
+    return () => window.removeEventListener('queryUpdated', handleQueryUpdated as EventListener);
   },[threadId]);
   
 
@@ -179,7 +178,7 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
 
   /** Update thread on queryIsNewUpdated event (UI) */
   useEffect(() => {
-    const handleUpdateQueryIsNewProperty = (event: CustomEvent) => {
+    const handleQueryIsNewUpdated = (event: CustomEvent) => {
       if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
         const threadBody = Array.isArray(thread.body) ? thread.body : [];
@@ -200,14 +199,14 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         });
       }
     };
-    window.addEventListener('queryIsNewUpdated', handleUpdateQueryIsNewProperty as EventListener);
+    window.addEventListener('queryIsNewUpdated', handleQueryIsNewUpdated as EventListener);
 
-    return () => window.removeEventListener('queryIsNewUpdated', handleUpdateQueryIsNewProperty as EventListener);
+    return () => window.removeEventListener('queryIsNewUpdated', handleQueryIsNewUpdated as EventListener);
   },[thread, threadId]);
 
   /** Update thread on threadTitleUpdated event (UI) */
   useEffect(() => {
-    const handleUpdateThreadTitle = (event: CustomEvent) => {
+    const handleThreadTitleUpdated = (event: CustomEvent) => {
       if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
@@ -219,9 +218,9 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         });
       }
     };
-    window.addEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
+    window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
 
-    return () => window.removeEventListener('threadTitleUpdated', handleUpdateThreadTitle as EventListener);
+    return () => window.removeEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
   },[thread, threadId]);
 
   /** Update thread on threadIsBookmarkedUpdated event (UI)*/

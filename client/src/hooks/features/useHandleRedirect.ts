@@ -4,6 +4,7 @@ import { v4 as uuidV4 } from 'uuid';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import { Agent, Team } from 'src/types';
 
 interface Props {
   userId: string;
@@ -11,37 +12,43 @@ interface Props {
 
 const useHandleRedirect = ({ userId }: Props): void => {
   const navigate = useNavigate();
-  const { agentName } = useParams();
+  const { teamName, agentName } = useParams();
 
   useEffect(() => {
-    if (!agentName) return;
+    if (!teamName || !agentName) return;
 
     try {
       const redirect = async () => {
-        let agent = await indexedDB.getAgentByName({ userId, agentName });
-        if (!agent) agent = await postgresDB.getAgentByName({ userId, agentName });
+        let team: Team | undefined;
+        team = await indexedDB.getTeamByName({ userId, teamName });
+        if (!team) team = await postgresDB.getTeamByName({ userId, teamName });
+        
+        let agent: Agent | undefined;
+        agent = await indexedDB.getAgentByName({ userId, teamName, agentName });
+        if (!agent) agent = await postgresDB.getAgentByName({ userId, teamName, agentName });
   
-        const savedTabs = tabsStorage.load(agentName);
-        if (!savedTabs || savedTabs.length === 0) {
+        const loadSavedTabs = tabsStorage.load(teamName, agentName);
+        if (!loadSavedTabs || loadSavedTabs.length === 0) {
           const id = uuidV4();
-          const addedThread = await postgresDB.addThread({
+          const addThreadPGDB = await postgresDB.addThread({
             id,
             userId,
             agentId: agent.id,
           });
-          if (!addedThread) return;
-          await indexedDB.addThread({ thread: addedThread }).then(() => {
+          if (!addThreadPGDB) return;
+          await indexedDB.addThread({ thread: addThreadPGDB }).then(() => {
             const tab = {
-              id: addedThread.id,
-              agentId: addedThread.agentId,
-              title: addedThread.title,
+              id: addThreadPGDB.id,
+              teamId: team.id,
+              agentId: agent.id,
+              title: addThreadPGDB.title,
               isActive: true
             };
-            tabsStorage.addTab(agentName, tab);
-            navigate(`/${agentName}/${id}`);
+            tabsStorage.addTab(teamName, agentName, tab);
+            navigate(`/${teamName}/${agentName}/${id}`);
           });
         } else {
-          navigate(`/${agentName}/${savedTabs[0].id}`, { replace: true });
+          navigate(`${teamName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
         }
       };
       redirect();

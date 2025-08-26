@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any*/
-import { FC, HTMLAttributes, ReactNode } from 'react';
+import { CSSProperties, FC, HTMLAttributes, memo, ReactNode } from 'react';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
 import styles from './Dropdown.module.css';
@@ -11,7 +10,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const Content: FC<Props> = ({ side = 'bottom', sideOffset = 4, align = 'start', style, children, ...props }) => {
+const Content: FC<Props> = memo(({ side = 'bottom', sideOffset = 4, align = 'start', children, ...props }) => {
   const { dropdownRef, isOpen, setIsOpen } = hooks.components.useDropdownContext();
   hooks.components.useHandleDropdownFocusOnOpen({ dropdownRef, isOpen });
   hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
@@ -41,12 +40,12 @@ const Content: FC<Props> = ({ side = 'bottom', sideOffset = 4, align = 'start', 
         alignClass,
         styles.dropdownContentVisible
       )}
-      style={{ ...style, ['--side-offset' as any]: `${sideOffset}px` }}
+      style={{ '--side-offset': `${sideOffset}px` } as CSSProperties}
       {...props}
     >
       {children}
     </div>
   );
-};
+});
 
 export default Content;

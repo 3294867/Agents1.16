@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 
-/** Handles theme (UI) */
 const useHandleTheme = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 

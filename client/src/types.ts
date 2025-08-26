@@ -1,3 +1,13 @@
+interface Team {
+  id: string;
+  name: string;
+  description: string;
+  userIds: string[];  
+  agentIds: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 type AgentType = 'general' | 'math' | 'geography' | 'literature'
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
@@ -6,6 +16,8 @@ interface Agent {
   type: AgentType;
   model: AgentModel;
   userId: string;
+  teamId: string;
+  teamName: string;
   name: string;
   systemInstructions: string;
   stack: string[] | null;
@@ -44,6 +56,7 @@ interface Thread {
 
 interface Tab {
   id: string;
+  teamId: string;
   agentId: string;
   title: string | null;
   isActive: boolean;
@@ -55,6 +68,7 @@ interface NormalizedThreads {
 }
 
 export type {
+  Team,
   AgentType,
   AgentModel,
   Agent,

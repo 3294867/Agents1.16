@@ -1,4 +1,4 @@
-import { cloneElement, FC, isValidElement, ReactElement } from 'react';
+import { cloneElement, FC, isValidElement, memo, ReactElement } from 'react';
 import hooks from 'src/hooks';
 
 interface Props {
@@ -6,7 +6,7 @@ interface Props {
   children: ReactElement;
 }
 
-const Trigger: FC<Props> = ({ asChild, children }) => {
+const Trigger: FC<Props> = memo(({ asChild, children }) => {
   const { setIsOpen } = hooks.components.useDialogContext();
 
   const props = {
@@ -20,6 +20,6 @@ const Trigger: FC<Props> = ({ asChild, children }) => {
   }
 
   return <span {...props}>{children}</span>;
-};
+});
 
 export default Trigger;

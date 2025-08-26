@@ -1,7 +1,10 @@
 import Dexie, { type  EntityTable } from 'dexie';
 import initialize from 'src/storage/indexedDB/initialize';
-import storeAgents from 'src/storage/indexedDB/storeAgents';
+import getTeams from 'src/storage/indexedDB/getTeams';
+import addTeams from 'src/storage/indexedDB/addTeams';
+import addAgents from 'src/storage/indexedDB/storeAgents';
 import getAgents from 'src/storage/indexedDB/getAgents';
+import getTeamByName from 'src/storage/indexedDB/getTeamByName';
 import getAgentByName from 'src/storage/indexedDB/getAgentByName';
 import getAgentByType from 'src/storage/indexedDB/getAgentByType';
 import addAgent from 'src/storage/indexedDB/addAgent';
@@ -19,17 +22,21 @@ import updateThreadIsBookmarked from 'src/storage/indexedDB/updateThreadIsBookma
 import pauseResponse from 'src/storage/indexedDB/pauseResponse';
 import getFirstQuery from 'src/storage/indexedDB/getFirstQuery';
 import updateThread from 'src/storage/indexedDB/updateThread';
-import { Agent, Thread } from 'src/types';
+import { Agent, Team, Thread } from 'src/types';
 
 const db = new Dexie('Agents') as Dexie & {
+  teams: EntityTable<Team, 'id'>,
   agents: EntityTable<Agent, 'id'>,
   threads: EntityTable<Thread, 'id'>
 };
 
 const indexedDB = {
   initialize,
-  storeAgents,
+  getTeams,
   getAgents,
+  addTeams,
+  addAgents,
+  getTeamByName,
   getAgentByName,
   getAgentByType,
   addAgent,

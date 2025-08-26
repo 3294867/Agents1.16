@@ -11,7 +11,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
   children?: ReactNode;
 }
 
-const Button = forwardRef<HTMLButtonElement, Props>(
+const Button = memo(forwardRef<HTMLButtonElement, Props>(
   ({ variant = 'default', size = 'default', isPressed = false, className, asChild, children, ...props }, ref) => {
     
     const variantClass =
@@ -53,7 +53,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
       </button>
     );
   }
-);
+));
 Button.displayName = 'Button';
 
-export default memo(Button);
+export default Button;

@@ -2,16 +2,17 @@ import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Tab from './Tab';
 import AddTab from './AddTab';
-import { Agent } from 'src/types';
+import { Agent, Team } from 'src/types';
 
 interface Props {
   userId: string;
+  team: Team;
   agent: Agent;
 }
 
-const Tabs = ({ userId, agent }: Props) => {
+const Tabs = ({ userId, team, agent }: Props) => {
   const { threadId: currentThreadId } = useParams();
-  const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ agentName: agent.name });
+  const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ teamName: team.name, agentName: agent.name });
   if (!tabs || !currentThreadId) return null;
 
   return (

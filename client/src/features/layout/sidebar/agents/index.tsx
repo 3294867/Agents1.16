@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
@@ -10,7 +11,7 @@ interface Props {
   agents: Agent[];
 }
 
-const Agents = ({ userId, agents }: Props) => {
+const Agents = memo(({ userId, agents }: Props) => {
   const { agentName } = useParams();
 
   return (
@@ -36,6 +37,6 @@ const Agents = ({ userId, agents }: Props) => {
       <AddAgentDialog userId={userId} addedAgents={agents} />
     </div>
   );
-};
+});
 
 export default Agents;

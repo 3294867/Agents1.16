@@ -1,4 +1,6 @@
 import { postgresDB as auth } from "src/storage/postgresDB/auth/index";
+import getTeams from 'src/storage/postgresDB/getTeams';
+import getTeamByName from 'src/storage/postgresDB/getTeamByName';
 import getAgents from 'src/storage/postgresDB/getAgents';
 import getAgentByName from 'src/storage/postgresDB/getAgentByName';
 import getAgentByType from 'src/storage/postgresDB//getAgentByType';
@@ -18,10 +20,13 @@ import updateThreadTitle from 'src/storage/postgresDB/updateThreadTitle';
 import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
-import getAgentUpdatedAt from 'src/storage/postgresDB/getAgentUpdatedAt';
+import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentUpdatedAt';
+import getTeamsUpdatedAt from 'src/storage/postgresDB/getTeamsUpdatedAt';
 
 const postgresDB = {
   auth,
+  getTeams,
+  getTeamByName,
   getAgents,
   getAgentByName,
   getAgentByType,
@@ -41,7 +46,8 @@ const postgresDB = {
   removeThreadTitle,
   updatedThreadIsBookmarked,
   getThreadUpdatedAt,
-  getAgentUpdatedAt
+  getAgentsUpdatedAt,
+  getTeamsUpdatedAt
 };
 
 export default postgresDB;

@@ -1,4 +1,4 @@
-import { CSSProperties, FC, HTMLAttributes, ReactNode } from 'react';
+import { CSSProperties, FC, HTMLAttributes, memo, ReactNode } from 'react';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
 import styles from './Tooltip.module.css';
@@ -12,7 +12,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
 }
 
-const Content: FC<Props> = ({
+const Content: FC<Props> = memo(({
   side = 'bottom',
   sideOffset = 4,
   align = 'center',
@@ -23,7 +23,7 @@ const Content: FC<Props> = ({
 }) => {
   const { contentRef, triggerRef, isOpen, } = hooks.components.useTooltipContext();
   const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
-  const { triggerHeight, triggerWidth } = hooks.components.useGetTriggerSize({ triggerRef });
+  const { triggerHeight, triggerWidth } = hooks.components.useHandleTriggerSize({ triggerRef });
   const positioningClass = utils.components.getContentPositioningClass(side, align);
   
   if (!mounted) return;  
@@ -48,6 +48,6 @@ const Content: FC<Props> = ({
       {children}
     </div>
   );
-};
+});
 
 export default Content;

@@ -1,10 +1,11 @@
 import { db } from 'src/storage/indexedDB';
 
-/** Initializes IndexedDB with agents and threads object stores. */
+/** Initializes IndexedDB with teams, agents and threads object stores. */
 const initialize = () => {
   try {
-    db.version(4).stores({
-      agents: 'id, userId, name, [userId+name], [userId+type]',
+    db.version(5).stores({
+      teams: 'id, name, [userId+name]',
+      agents: 'id, userId, name, [userId+name], [userId+type], [userId+teamName+name]',
       threads: 'id, userId, agentId, title, positionY'
     });
     

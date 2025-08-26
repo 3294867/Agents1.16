@@ -13,17 +13,17 @@ interface Props {
 }
 
 const Agent = ({ userId }: Props) => {
-  const { agentName } = useParams();
-  const { agent, error, isLoading } = hooks.features.useGetAgent({ userId, agentName });
+  const { teamName, agentName } = useParams();
+  const { team, agent, error, isLoading } = hooks.features.useHandleAgent({ userId, teamName, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
+  if (!teamName || !team || !agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <Tabs userId={userId} agent={agent} />
+        <Tabs userId={userId} team={team} agent={agent} />
         <Actions userId={userId} agentId={agent.id} />
       </header>
       <Thread

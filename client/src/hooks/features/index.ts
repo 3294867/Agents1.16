@@ -1,7 +1,7 @@
-import useGetAgent from './useGetAgent';
-import useGetAvailableAgents from './useGetAvailableAgents';
+import useHandleAgent from './useHandleAgent';
+import useHandleAvailableAgents from './useHandleAvailableAgents';
 import useHandleAgentLayout from './useHandleAgentLayout';
-import useHandleAgents from './useHandleAgents';
+import useHandleLayoutData from './useHandleLayoutData';
 import useHandleAnimatedParagraph from './useHandleAnimatedParagraph';
 import useHandleBreakpoint from './useHandleBreakpoint';
 import useHandleQuestion from './useHandleQuestion';
@@ -14,9 +14,9 @@ import useHandleThreadPostionY from './useHandleThreadPostionY';
 
 export const hooks = {
   useHandleRedirect,
-  useHandleAgents,
-  useGetAgent,
-  useGetAvailableAgents,
+  useHandleLayoutData,
+  useHandleAgent,
+  useHandleAvailableAgents,
   useHandleThread,
   useHandleTabs,
   useHandleBreakpoint,

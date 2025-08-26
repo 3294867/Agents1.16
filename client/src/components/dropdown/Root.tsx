@@ -1,4 +1,4 @@
-import { FC, FocusEvent, ReactNode, useRef, useState } from 'react';
+import { FC, FocusEvent, memo, ReactNode, useRef, useState } from 'react';
 import DropdownContext from './DropdownContext';
 import styles from './Dropdown.module.css';
 
@@ -6,7 +6,7 @@ interface Props {
   children: ReactNode;
 }
 
-const Root: FC<Props> = ({ children }: Props) => {
+const Root: FC<Props> = memo(({ children }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -34,6 +34,6 @@ const Root: FC<Props> = ({ children }: Props) => {
       </span>
     </DropdownContext.Provider>
   );
-};
+});
 
 export default Root;

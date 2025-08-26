@@ -3,50 +3,54 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import { Tab } from 'src/types';
 
 interface Props {
+  teamName: string;
   agentName: string;
 }
 
-/** Handles tabs */
-const useHandleTabs = ({ agentName }: Props): { tabs: Tab[] | null, currentThreadPositionY: number } => {
+const useHandleTabs = ({ teamName, agentName }: Props): { tabs: Tab[] | null, currentThreadPositionY: number } => {
   const [tabs, setTabs] = useState<Tab[] | null>(null);
   const [currentThreadPositionY, setCurrentThreadPositionY] = useState<number>(0);
 
   /** Fetch tabs (localStorage) */
   useEffect(() => {
-    if (!agentName) return;
+    if (!teamName || !agentName) return;
 
     try {
-      const savedTabs = tabsStorage.load(agentName);
-      if (savedTabs !== null) setTabs(savedTabs);
+      const loadSavedTabs = tabsStorage.load(teamName, agentName);
+      if (loadSavedTabs !== null) setTabs(loadSavedTabs);
 
     } catch (error) {
       throw new Error(`Failed to fetch tabs: ${error}`);
     }
-  },[agentName]);
+  },[teamName, agentName]);
 
   /** Update tabs on: seleted tab, removed tab, or added tab (localStorage) */
   useEffect(() => {
-    const handleTabsUpdate = (event: CustomEvent) => {
+    if (!teamName || !agentName) return;
+    
+    const handleTabsUpdated = (event: CustomEvent) => {
       if (event.detail.agentName === agentName) {
-        const savedTabs = tabsStorage.load(agentName);
-        if (savedTabs !== null) setTabs(savedTabs);
+        const loadSavedTabs = tabsStorage.load(teamName, agentName);
+        if (loadSavedTabs !== null) setTabs(loadSavedTabs);
       }
     };
-    window.addEventListener('tabsUpdated', handleTabsUpdate as EventListener);
+    window.addEventListener('tabsUpdated', handleTabsUpdated as EventListener);
   
-    return () => window.removeEventListener('tabsUpdated', handleTabsUpdate as EventListener);
-  },[agentName]);
+    return () => window.removeEventListener('tabsUpdated', handleTabsUpdated as EventListener);
+  },[teamName, agentName]);
 
   /** Update tabs on threadTitleUpdated event (Events) */
   useEffect(() => {
+    if (!teamName || !agentName) return;
+    
     const handleThreadTitleUpdated = () => {
-      const savedTabs = tabsStorage.load(agentName);
-      if (savedTabs) setTabs(savedTabs);
+      const loadSavedTabs = tabsStorage.load(teamName, agentName);
+      if (loadSavedTabs) setTabs(loadSavedTabs);
     };
 
     window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
     return () => window.removeEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
-  },[agentName]);
+  },[teamName, agentName]);
 
   /** Set 'positionY' property of the current thread (UI) */
   useEffect(() => {

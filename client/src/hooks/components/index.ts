@@ -11,7 +11,7 @@ import useHandleDialogAriaAttributes from './useHandleAriaAttributes';
 import useHandleDropdownEnterKey from './useHandleDropdownEnterKey';
 import useHandleDropdownFocusOnOpen from './useHandleDropdownFocusOnOpen';
 import useHandleDropdownTabKey from './useHandleDropdownTabKey';
-import useGetTriggerSize from './useGetTriggerSize';
+import useHandleTriggerSize from './useHandleTriggerSize';
 
 export const hooks = {
   useAuthContext,
@@ -27,5 +27,5 @@ export const hooks = {
   useHandleDropdownEnterKey,
   useHandleDropdownFocusOnOpen,
   useHandleDropdownTabKey,
-  useGetTriggerSize,
+  useHandleTriggerSize,
 };

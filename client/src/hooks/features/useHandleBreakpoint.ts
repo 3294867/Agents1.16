@@ -4,7 +4,6 @@ interface Props {
   windowInnerWidth: number;
 }
 
-/** Handles breakpoint (UI) */
 const useHandleBreakpoint = ({ windowInnerWidth }: Props): boolean => {
   const [ isBreakpoint, setIsBreakpoint ] = useState<boolean>(false);
 

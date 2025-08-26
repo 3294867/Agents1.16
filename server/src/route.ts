@@ -3,6 +3,8 @@ import signUp from './controllers/signUp';
 import login from './controllers/login';
 import logout from './controllers/logout';
 import getCurrentUser from './controllers/getCurrentUser';
+import getTeams from './controllers/getTeams';
+import getTeamByName from './controllers/getTeamByName';
 import getAgents from "./controllers/getAgents";
 import getAgentByName from './controllers/getAgentByName';
 import getAgentByType from './controllers/getAgentByType';
@@ -25,7 +27,8 @@ import createResponse from "./controllers/createResponse";
 import inferAgentType from './controllers/inferAgentType';
 import getThreadUpdatedAt from './controllers/getThreadUpdatedAt';
 import duplicateThread from './controllers/duplicateThread';
-import getAgentUpdatedAt from './controllers/getAgentsUpdatedAt';
+import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
+import getTeamsUpdatedAt from './controllers/getTeamsUpdatedAt';
 
 const router = express.Router();
 
@@ -33,6 +36,8 @@ router.post("/sign-up", signUp);
 router.post("/log-in", login);
 router.post("/logout", logout);
 router.get("/get-current-user", getCurrentUser);
+router.post("/get-teams", getTeams),
+router.post("/get-team-by-name", getTeamByName)
 router.post("/get-agents", getAgents);
 router.post("/get-agent-by-name", getAgentByName);
 router.post("/get-agent-by-type", getAgentByType);
@@ -55,6 +60,7 @@ router.post("/update-thread-is-bookmarked", updateThreadIsBookmarked);
 router.post("/create-response", createResponse);
 router.post("/infer-agent-type", inferAgentType);
 router.post("/get-thread-updated-at", getThreadUpdatedAt);
-router.post("/get-agent-updated-at", getAgentUpdatedAt);
+router.post("/get-agents-updated-at", getAgentsUpdatedAt);
+router.post("/get-teams-updated-at", getTeamsUpdatedAt);
 
 export default router;

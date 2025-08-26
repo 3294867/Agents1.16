@@ -6,6 +6,7 @@ import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
+import Tooltip from 'src/components/tooltip';
 
 interface Props {
   userId: string;
@@ -15,10 +16,10 @@ interface Props {
 const ShareThreadButton = ({ userId, threadId }: Props) => {
   const [agentName, setAgentName] = useState<string | null>(null);
   const [sharedThreadId, setSharedThreadId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);  
+  const [isLinkCreated, setIsLinkCreated] = useState(false);
 
-  const handleHover = async () => {
-    setIsLoading(true);
+  const handleMouseEnter = async () => {
+    if (isLinkCreated) return;
     const { agentType: publicThreadAgentType, threadId: publicThreadId } = await postgresDB.addPublicThread({ threadId });
     setSharedThreadId(publicThreadId);
     
@@ -55,24 +56,32 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
     }
     
     setAgentName(agentIDB.name);
-    setIsLoading(false);
+    setIsLinkCreated(true);
   };
   
   const handleClick = () => {
-    navigator.clipboard.writeText(`${import.meta.env.VITE_CLIENT_URL}/${agentName}/${sharedThreadId}?share=true`);
-    toast('Link has been copied to clipboard.');
+    setTimeout(() => {
+      navigator.clipboard.writeText(`${import.meta.env.VITE_CLIENT_URL}/${agentName}/${sharedThreadId}?share=true`);
+      toast('Link has been copied to clipboard.');
+    },100);
   };
 
   return (
-    <Button
-      onMouseEnter={handleHover}
-      onClick={handleClick}
-      disabled={isLoading}
-      variant='outline'
-      size='icon'
-      >
-      {isLoading ? <Icons.Loader style={{ animation: 'spin 1s linear infinite' }} /> : <Icons.Share />}
-    </Button>
+    <Tooltip.Root>
+      <Tooltip.Trigger>
+        <Button
+          onMouseEnter={handleMouseEnter}
+          onClick={handleClick}
+          variant='outline'
+          size='icon'
+          >
+          <Icons.Share />
+        </Button>
+      </Tooltip.Trigger>
+      <Tooltip.Content>
+        Share chat
+      </Tooltip.Content>
+    </Tooltip.Root>
   );
 };
 

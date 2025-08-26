@@ -1,3 +1,13 @@
+interface Team {
+  id: string;
+  name: string;
+  description: string;
+  userIds: string[];  
+  agentIds: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 type AgentType = 'general' | 'math' | 'geography' | 'literature'
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
@@ -44,6 +54,7 @@ interface NormalizedThreads {
 }
 
 export {
+  Team,
   AgentType,
   AgentModel,
   Agent,

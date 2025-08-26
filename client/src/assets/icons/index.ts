@@ -23,6 +23,7 @@ import Logout from './Logout';
 import EyeClosed from './EyeClosed';
 import EyeOpened from './EyeOpened';
 import CircleAlert from './CircleAlert';
+import Notifications from './Notifications';
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -54,7 +55,8 @@ const Icons: IconComponents = {
   Logout,
   EyeClosed,
   EyeOpened,
-  CircleAlert
+  CircleAlert,
+  Notifications
 };
 
 export default Icons;

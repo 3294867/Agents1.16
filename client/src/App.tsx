@@ -19,11 +19,11 @@ const ProtectedApp = () => {
       path: '/',
       element: <Layout userId={userId} />,
       children: [
-        { path: '/', element: <Navigate to='/general'/> },
-        { path: '/sign-up', element: <Navigate to='/general' /> },
-        { path: '/login', element: <Navigate to='/general' /> },
-        { path: '/:agentName', element: <Redirect userId={userId} /> },
-        { path: '/:agentName/:threadId', element: <Agent userId={userId} /> }
+        { path: '/', element: <Navigate to='/personal/general'/> },
+        { path: '/sign-up', element: <Navigate to='/personal/general' /> },
+        { path: '/login', element: <Navigate to='/personal/general' /> },
+        { path: '/:teamName/:agentName', element: <Redirect userId={userId} /> },
+        { path: '/:teamName/:agentName/:threadId', element: <Agent userId={userId} /> }
       ]
     } : {
       path: '/*',

@@ -1,4 +1,4 @@
-import { FC, Fragment, ReactNode } from 'react';
+import { FC, Fragment, memo, ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
@@ -14,7 +14,7 @@ interface Props {
   isPermanent?: boolean;
 }
 
-const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
+const Content: FC<Props> = memo(({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
   const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId }
     = hooks.components.useDialogContext();
   const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
@@ -53,6 +53,6 @@ const Content: FC<Props> = ({ children, open, className, isNestedInDropdown, isP
     </Fragment>,
     document.body
   );
-};
+});
 
 export default Content;

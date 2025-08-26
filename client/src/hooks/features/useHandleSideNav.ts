@@ -5,7 +5,6 @@ interface Props {
   threadBodyLength: number;
 }
 
-/** Handles SideNav (UI) */
 const useHandleSideNav = ({ threadBodyLength }: Props): { isVisible: boolean, chatWidth: number } => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [chatWidth, setChatWidth] = useState<number>(0);

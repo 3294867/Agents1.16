@@ -5,13 +5,12 @@ interface Props {
   agents: Agent[];
 }
 
-/** Saves fetched agents from postgresDB in the indexedDB */
-const storeAgents = async ({ agents }: Props): Promise<void> => {
+const addAgents = async ({ agents }: Props): Promise<void> => {
   try {
     await db.agents.bulkPut(agents);
   } catch (error) {
-    console.error('Failed to save agents (IndexedDB): ', error);
+    console.error('Failed to add agents (IndexedDB): ', error);
   }
 };
 
-export default storeAgents;
+export default addAgents;

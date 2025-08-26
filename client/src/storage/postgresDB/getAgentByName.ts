@@ -2,15 +2,16 @@ import { Agent } from 'src/types';
 
 interface Props {
   userId: string;
+  teamName: string;
   agentName: string;
 }
 
-const getAgentByName = async ({ userId, agentName }: Props): Promise<Agent> => {
+const getAgentByName = async ({ userId, teamName, agentName }: Props): Promise<Agent> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agent-by-name`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId, agentName })
+      body: JSON.stringify({ userId, teamName, agentName })
     });
     
     if (!response.ok) {
