@@ -1,6 +1,6 @@
-const responsePaused = (requestId: string) => {
+const responsePaused = (requestId: string, responseId: string) => {
   const event = new CustomEvent('responsePaused', {
-    detail: { requestId }
+    detail: { requestId, responseId }
   })
   window.dispatchEvent(event);
 };

@@ -9,6 +9,8 @@ import styles from './PauseRunButton.module.css';
 import Button from 'src/components/button';
 
 interface Props {
+  teamId: string;
+  teamName: string;
   threadId: string;
   agentId: string;
   agentName: string;
@@ -23,6 +25,8 @@ interface Props {
 }
 
 const PauseRunButton = ({
+  teamId,
+  teamName,
   threadId,
   agentId,
   agentName,
@@ -61,7 +65,7 @@ const PauseRunButton = ({
       const newThreadTitle = await openai.createThreadTitle({ question: input, answer: response});
       await postgresDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
       await indexedDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
-      tabsStorage.update(agentName, agentId, threadId, newThreadTitle);
+      tabsStorage.update(teamId, teamName, agentName, agentId, threadId, newThreadTitle);
       dispatchEvent.threadTitleUpdated(threadId, newThreadTitle);
     }
   };

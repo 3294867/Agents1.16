@@ -6,6 +6,8 @@ import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
 interface Props {
+  teamId: string;
+  teamName: string;
   threadId: string;
   requestId: string;
   responseId: string;
@@ -15,6 +17,8 @@ interface Props {
 }
 
 const DeleteButton = ({
+  teamId,
+  teamName,
   threadId,
   requestId,
   responseId,
@@ -31,9 +35,7 @@ const DeleteButton = ({
       /** Remove thread title (IndexedDB, PostgresDB, localStorage) */
       await indexedDB.removeThreadTitle({ threadId });
       await postgresDB.removeThreadTitle({ threadId });
-      tabsStorage.update(agentName, agentId, threadId, null);
-
-      /** Dispatch threadTitleUpdated event (Events) */
+      tabsStorage.update(teamId, teamName, agentName, agentId, threadId, null);
       dispatchEvent.threadTitleUpdated(threadId, null);
     }
   };

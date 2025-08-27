@@ -41,8 +41,10 @@ const Question = ({
   return (
     <div className={styles.container}>
       <div className={styles.actionButtons}>
-        <EditButton requestId={requestId} setIsEditing={setIsEditing} />
+        <EditButton requestId={requestId} responseId={responseId} setIsEditing={setIsEditing} />
         <DeleteButton
+          teamId={teamId}
+          teamName={teamName}
           threadId={threadId}
           requestId={requestId}
           responseId={responseId}
@@ -95,6 +97,8 @@ const Question = ({
               isNew={isNew}
             />
             <PauseRunButton
+              teamId={teamId}
+              teamName={teamName}
               threadId={threadId}
               agentId={agentId}
               agentName={agentName}

@@ -39,13 +39,8 @@ interface BookmarkButtonProps {
 
 const BookmarkButton = ({ threadId, currentIsBookmarked }: BookmarkButtonProps) => {
   const handleClick = async () => {
-    /** Update 'isBookmarked' property (PostgresDB) */
     await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    
-    /** Update 'isBookmarked' property (IndexedDB) */
     await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-
-    /** Dispatch isBookmarkedUpdated event (Events) */
     dispatchEvent.threadIsBookmarkedUpdated(threadId, !currentIsBookmarked);
   };
   

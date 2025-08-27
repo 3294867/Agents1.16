@@ -1,17 +1,19 @@
+import { Dispatch, SetStateAction } from 'react';
 import Button from 'src/components/button';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 
 interface Props {
   requestId: string;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  responseId: string;
+  setIsEditing: Dispatch<SetStateAction<boolean>>;
 }
 
-const EditButton = ({ requestId, setIsEditing }: Props) => {
+const EditButton = ({ requestId, responseId, setIsEditing }: Props) => {
   const handleClick = () => {
     const update = () => {
       return new Promise<void>((resolve) => {
-        dispatchEvent.responsePaused(requestId);
+        dispatchEvent.responsePaused(requestId, responseId);
         setIsEditing(true);
         resolve();
       });

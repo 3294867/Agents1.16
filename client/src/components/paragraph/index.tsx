@@ -12,7 +12,6 @@ interface Props extends HTMLAttributes<HTMLParagraphElement> {
 const Paragraph = forwardRef<HTMLParagraphElement, Props>(
   ({ className, variant = 'thin', size = 'sm', isMuted = false, ...props }, ref) => {
     const isMutedClass = isMuted ? styles.isMuted : '';
-    
     return (
       <p
         ref={ref}
