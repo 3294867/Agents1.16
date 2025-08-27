@@ -20,12 +20,12 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
     dispatchEvent.threadIsBookmarkedUpdated(threadId, !isBookmarked);
   };
 
-  const handleDeleteThread = async ({ threadId, agentName }: { threadId: string, agentName: string}) => {
+  const handleDeleteThread = async ({ threadId, teamName, agentName }: { threadId: string, teamName: string, agentName: string}) => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(agentName, threadId);
+    tabsStorage.deleteTab(teamName, agentName, threadId);
     
-    navigate(`/${agentName}`);
+    navigate(`/${teamName}/${agentName}`);
   };
   
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -48,8 +48,9 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
           const button = focusedElement.closest<HTMLButtonElement>('button[id^="delete_thread_button"]');
           if (button) {
             const threadId = button.dataset.threadId || '';
+            const teamName = button.dataset.teamName || '';
             const agentName = button.dataset.agentName || '';
-            handleDeleteThread({threadId, agentName});
+            handleDeleteThread({threadId, teamName, agentName});
           }
         }
       }

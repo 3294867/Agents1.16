@@ -2,7 +2,7 @@ import { SVGProps } from 'react';
 import styles from './Icons.module.css';
 import utils from 'src/utils';
 
-const DarkMode = ({ className = styles.base, ...props }: SVGProps<SVGSVGElement>) => {
+const DarkMode = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       className={utils.cn(styles.base, className)}

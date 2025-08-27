@@ -18,6 +18,18 @@
   background-color: var(--background);
 }
 
+.wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.separator {
+  width: 1px;
+  height: 2rem;
+  background-color: var(--border);
+  margin: 0 0.75rem;
+}
+
 .loadingContainer {
   margin-left: 52px;
   min-height: 100vh;

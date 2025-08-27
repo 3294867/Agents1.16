@@ -11,6 +11,8 @@ import Icons from 'src/assets/icons';
 import styles from './Form.module.css';
 
 interface Props {
+  teamId: string;
+  teamName: string;
   threadId: string;
   agentId: string;
   agentName: string;
@@ -18,7 +20,7 @@ interface Props {
   threadBodyLength: number;
 }
 
-const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, threadBodyLength }: Props) => {
+const Form = ({ teamId, teamName, threadId, agentId, agentName, agentModel: initialAgentModel, threadBodyLength }: Props) => {
   const [input, setInput] = useState<string>('');
   const [agentModel, setAgentModel] = useState<AgentModel>(initialAgentModel);
 
@@ -50,7 +52,7 @@ const Form = ({ threadId, agentId, agentName, agentModel: initialAgentModel, thr
       await indexedDB.updateThreadTitle({ threadId, threadTitle });
 
       /** Update tabs (localStorage) */
-      tabsStorage.update(agentName, agentId, threadId, threadTitle);
+      tabsStorage.update(teamName, teamId, agentName, agentId, threadId, threadTitle);
     }
 
     /** Update thread body (IndexedDB) */

@@ -13,11 +13,11 @@ interface Props {
 
 const Layout = ({ userId }: Props) => {
   const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });
-  const { teams, agents, error, isLoading } = hooks.features.useHandleLayoutData({ userId });
+  const { teams, error, isLoading } = hooks.features.useHandleTeams({ userId });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!teams || !agents) return <Error error='Something went wrong. Try again later.' />;
+  if (!teams) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className={styles.layoutWrapper}>
@@ -25,7 +25,6 @@ const Layout = ({ userId }: Props) => {
         <Sidebar
           userId={userId}
           teams={teams}
-          agents={agents}
           isMobile={isMobile}
         />
         <Outlet />

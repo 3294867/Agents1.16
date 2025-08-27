@@ -8,12 +8,14 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   agentId: string;
   agentName: string;
   threadId: string | undefined;
 }
 
-const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
+const useHandleThread = ({ userId, teamId, teamName, agentId, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
   const [ thread, setThread ] = useState<Thread | null>(null);
@@ -70,17 +72,18 @@ const useHandleThread = ({ userId, agentId, agentName, threadId }: Props): { thr
         await indexedDB.addThread({ thread: getThreadPGDB }).then(() => {
           const tab = {
             id: getThreadPGDB.id,
-            agentId: getThreadPGDB.agentId,
+            teamId,
+            agentId,
             title: getThreadPGDB.title,
             isActive: true
           };
-          tabsStorage.addTab(agentName, tab);
-          navigate(`/${agentName}/${id}`);
+          tabsStorage.addTab(teamName, agentName, tab);
+          navigate(`/${teamName}/${agentName}/${id}`);
         });
       }
     };
     addSharedThread();
-  },[userId, agentId, agentName, threadId, searchParams]);
+  },[userId, teamId, teamName, agentId, agentName, threadId, searchParams]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */
   useEffect(() => {

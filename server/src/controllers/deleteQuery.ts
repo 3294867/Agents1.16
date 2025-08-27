@@ -18,7 +18,7 @@ const deleteQuery = async (req: Request, res: Response) => {
     const deleteRequest = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid RETURNING "id";`, [ requestId ]);
     if (deleteRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to delete request");
   
-    const deleteResponse = await pool.query(`DELETE FROM "Request" WHERE "id" = $1::uuid RETURNING "id";`, [ responseId ]);
+    const deleteResponse = await pool.query(`DELETE FROM "Response" WHERE "id" = $1::uuid RETURNING "id";`, [ responseId ]);
     if (deleteResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to delete response");
 
     const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
@@ -43,7 +43,7 @@ const deleteQuery = async (req: Request, res: Response) => {
     } catch (rollbackError) {
       console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to update thread: ", error);
+    console.error("Failed to delete query: ", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

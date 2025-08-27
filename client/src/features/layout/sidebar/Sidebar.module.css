@@ -9,12 +9,6 @@
   border-right: 1px solid var(--border);
 }
 
-.topSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10rem; 
-}
-
 .bottomSection {
   display: flex;
   flex-direction: column;

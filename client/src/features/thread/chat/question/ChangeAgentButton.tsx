@@ -12,6 +12,8 @@ import { Agent, AgentType } from 'src/types';
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   currentAgentId: string;
   currentAgentType: AgentType;
   inferredAgentType: AgentType;
@@ -27,6 +29,8 @@ interface Props {
 
 const ChangeAgentButton = ({
   userId,
+  teamId,
+  teamName,
   currentAgentId,
   currentAgentType,
   inferredAgentType,
@@ -55,29 +59,13 @@ const ChangeAgentButton = ({
         answer: firstQuery.responseBody
       });
 
-      await postgresDB.updateThreadTitle({
-        threadId, threadTitle
-      });
-      
-      await indexedDB.updateThreadTitle({
-        threadId, threadTitle
-      });      
-
-      tabsStorage.update(
-        currentAgentName, currentAgentId, threadId, threadTitle
-      );
+      await postgresDB.updateThreadTitle({ threadId, threadTitle });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle });
+      tabsStorage.update( teamName, teamId, currentAgentName, currentAgentId, threadId, threadTitle );
     } else {
-      await postgresDB.updateThreadTitle({
-        threadId, threadTitle: null
-      });
-
-      await indexedDB.updateThreadTitle({
-        threadId, threadTitle: null
-      });
-
-      tabsStorage.update(
-        currentAgentName, currentAgentId, threadId, null
-      );
+      await postgresDB.updateThreadTitle({ threadId, threadTitle: null });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle: null });
+      tabsStorage.update( teamName, teamId, currentAgentName, currentAgentId, threadId, null );
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
@@ -98,6 +86,8 @@ const ChangeAgentButton = ({
         type: availableAgentPostgres.type,
         model: availableAgentPostgres.model,
         userId,
+        teamId,
+        teamName,
         name: availableAgentPostgres.name,
         systemInstructions: availableAgentPostgres.systemInstructions,
         stack: availableAgentPostgres.stack,
@@ -154,11 +144,11 @@ const ChangeAgentButton = ({
     });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.addTab(newAgent.name, {
-      id: newThreadId, agentId: newAgent.id, title: newThreadTitle, isActive: true
+    tabsStorage.addTab(teamName, newAgent.name, {
+      id: newThreadId, teamId, agentId: newAgent.id, title: newThreadTitle, isActive: true
     });
     
-    navigate(`/${newAgent.name}/${newThreadId}`);
+    navigate(`/${teamName}/${newAgent.name}/${newThreadId}`);
   };
   
   const buttonVariant = isEditing ? 'ghost' : isNew ? 'ghost' : 'outline';

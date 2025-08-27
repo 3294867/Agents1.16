@@ -11,18 +11,19 @@ import styles from './DeleteThreadDialog.module.css';
 
 interface Props {
   threadId: string;
+  teamName: string;
   agentName: string;
 }
 
-const DeleteThreadDialog = ({ threadId, agentName }: Props) => {
+const DeleteThreadDialog = ({ threadId, teamName, agentName }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(agentName, threadId);
+    tabsStorage.deleteTab(teamName, agentName, threadId);
     
-    navigate(`/${agentName}`);
+    navigate(`/${teamName}/${agentName}`);
   };
 
   return (
@@ -36,6 +37,7 @@ const DeleteThreadDialog = ({ threadId, agentName }: Props) => {
           data-prevent-dropdown-close
           data-thread-id={threadId}
           data-agent-name={agentName}
+          data-team-name={teamName}
         >
           <Icons.Delete style={{ marginRight: '0.5rem' }}/>
           Delete

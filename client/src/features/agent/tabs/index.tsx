@@ -16,10 +16,11 @@ const Tabs = ({ userId, team, agent }: Props) => {
   if (!tabs || !currentThreadId) return null;
 
   return (
-    <div style={{ maxWidth: '88%', display: 'flex', gap: '8px' }}>
+    <div style={{ maxWidth: '72%', display: 'flex', gap: '0.5rem' }}>
       {tabs.map(t => (
         <Tab
           key={t.id}
+          team={team}
           agent={agent}
           tab={t}
           tabs={tabs}
@@ -29,6 +30,7 @@ const Tabs = ({ userId, team, agent }: Props) => {
       ))}
       <AddTab
         userId={userId}
+        team={team}
         agent={agent}
         tabs={tabs}
         currentThreadId={currentThreadId}

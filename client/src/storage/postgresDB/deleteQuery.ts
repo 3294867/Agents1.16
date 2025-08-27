@@ -4,7 +4,6 @@ interface Props {
   responseId: string;
 }
 
-/** Deletes query from the thread body (PostgresDB) */
 const deleteQuery = async ({ threadId, requestId, responseId }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/delete-query`, {

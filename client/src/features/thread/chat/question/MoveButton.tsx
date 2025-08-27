@@ -11,6 +11,8 @@ import { AgentType } from 'src/types';
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   agentId: string;
   agentName: string;
   threadId: string;
@@ -24,6 +26,8 @@ interface Props {
 
 const MoveButton = ({
   userId,
+  teamId,
+  teamName,
   agentId,
   agentName,
   threadId,
@@ -49,43 +53,21 @@ const MoveButton = ({
         question: firstQuery.requestBody,
         answer: firstQuery.responseBody
       });
-
-      await postgresDB.updateThreadTitle({
-        threadId, threadTitle
-      });
-      
-      await indexedDB.updateThreadTitle({
-        threadId, threadTitle
-      });      
-
-      tabsStorage.update(
-        agentName, agentId, threadId, threadTitle
-      );
+      await postgresDB.updateThreadTitle({ threadId, threadTitle });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle });
+      tabsStorage.update( teamName, teamId, agentName, agentId, threadId, threadTitle );
     } else {
-      await postgresDB.updateThreadTitle({
-        threadId, threadTitle: null
-      });
-
-      await indexedDB.updateThreadTitle({
-        threadId, threadTitle: null
-      });  
-
-      tabsStorage.update(
-        agentName, agentId, threadId, null
-      );
+      await postgresDB.updateThreadTitle({ threadId, threadTitle: null });
+      await indexedDB.updateThreadTitle({ threadId, threadTitle: null });  
+      tabsStorage.update( teamId, teamName, agentName, agentId, threadId, null );
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
-    await indexedDB.updateThreadPositionY({
-      threadId,
-      positionY: currentThreadPositionY
-    });
+    await indexedDB.updateThreadPositionY({ threadId, positionY: currentThreadPositionY });
 
     /** Create new thread (PostgresDB) */
     const newThreadId = uuidV4();
-    const newThread = await postgresDB.addThread({
-      id: newThreadId, userId, agentId
-    });
+    const newThread = await postgresDB.addThread({ id: newThreadId, userId, agentId });
     if (!newThread) return;
 
     /** Add new thread (IndexedDB) */
@@ -107,25 +89,16 @@ const MoveButton = ({
     await indexedDB.addQuery({ threadId: newThreadId, query });
 
     /** Create and update 'title' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
-    const newThreadTitle = await openai.createThreadTitle({
-      question: requestBody,
-      answer: responseBody
-    });
-    await postgresDB.updateThreadTitle({
-      threadId: newThreadId,
-      threadTitle: newThreadTitle
-    });
-    await indexedDB.updateThreadTitle({
-      threadId: newThreadId,
-      threadTitle: newThreadTitle
-    });
+    const newThreadTitle = await openai.createThreadTitle({ question: requestBody, answer: responseBody });
+    await postgresDB.updateThreadTitle({ threadId: newThreadId, threadTitle: newThreadTitle });
+    await indexedDB.updateThreadTitle({ threadId: newThreadId, threadTitle: newThreadTitle });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.addTab(agentName, {
-      id: newThreadId, agentId, title: newThreadTitle, isActive: true
+    tabsStorage.addTab(teamName, agentName, {
+      id: newThreadId, teamId, agentId, title: newThreadTitle, isActive: true
     });
     
-    navigate(`/${agentName}/${newThreadId}`);
+    navigate(`/${teamName}/${agentName}/${newThreadId}`);
   };
   
   return threadBodyLength > 1 && (

@@ -15,14 +15,21 @@ const useHandleRedirect = ({ userId }: Props): void => {
   const { teamName, agentName } = useParams();
 
   useEffect(() => {
-    if (!teamName || !agentName) return;
-
+    if (!teamName) return;
+    
     try {
       const redirect = async () => {
         let team: Team | undefined;
         team = await indexedDB.getTeamByName({ userId, teamName });
         if (!team) team = await postgresDB.getTeamByName({ userId, teamName });
+
+        /** Redirect from  /:teamName */
+        if (!agentName) {
+          navigate(`/${team.name}/general`);
+          return;
+        }
         
+        /** Redirect from  /:teamName/:agentName */
         let agent: Agent | undefined;
         agent = await indexedDB.getAgentByName({ userId, teamName, agentName });
         if (!agent) agent = await postgresDB.getAgentByName({ userId, teamName, agentName });
@@ -45,17 +52,17 @@ const useHandleRedirect = ({ userId }: Props): void => {
               isActive: true
             };
             tabsStorage.addTab(teamName, agentName, tab);
-            navigate(`/${teamName}/${agentName}/${id}`);
+            navigate(`/${teamName}/${agentName}/${id}`, { replace: true });
           });
         } else {
-          navigate(`${teamName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
+          navigate(`/${teamName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
         }
       };
       redirect();
     } catch (error) {
       throw new Error(`Failed to redirect: ${error}`);
     }
-  },[agentName, userId]);
+  },[teamName, agentName, userId]);
 };
 
 export default useHandleRedirect;

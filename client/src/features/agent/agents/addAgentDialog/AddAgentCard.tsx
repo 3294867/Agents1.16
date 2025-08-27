@@ -6,15 +6,16 @@ import dispatchEvent from 'src/events/dispatchEvent';
 import utils from 'src/utils';
 import Heading from 'src/components/heading';
 import Dialog from 'src/components/dialog';
-import { Agent } from 'src/types';
+import { Team, Agent } from 'src/types';
 import styles from './AddAgentCard.module.css';
 
 interface Props {
   userId: string;
+  team: Team;
   availableAgent: Agent;
 }
 
-const AgentCard = ({ userId, availableAgent }: Props) => {
+const AgentCard = ({ userId, team, availableAgent }: Props) => {
   const navigate = useNavigate();
   
   const handleClick = async () => {
@@ -23,6 +24,8 @@ const AgentCard = ({ userId, availableAgent }: Props) => {
       type: availableAgent.type,
       model: availableAgent.model,
       userId,
+      teamId: team.id,
+      teamName: team.name,
       name: availableAgent.name,
       systemInstructions: availableAgent.systemInstructions,
       stack: availableAgent.stack,
@@ -34,7 +37,7 @@ const AgentCard = ({ userId, availableAgent }: Props) => {
     const agentPostgres = await postgresDB.addAgent({ agent });
     await indexedDB.addAgent({ agent: agentPostgres });
     dispatchEvent.agentAdded(agentPostgres);
-    navigate(`/${agent.name}`);
+    navigate(`/${agent.teamName}/${agent.name}`);
   };
   
   const thumbnails = import.meta.glob('/src/assets/thumbnails/*.jpg', {

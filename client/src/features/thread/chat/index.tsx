@@ -5,6 +5,8 @@ import styles from './Chat.module.css';
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   agentId: string;
   agentName: string;
   agentType: AgentType;
@@ -15,6 +17,8 @@ interface Props {
 
 const Chat = ({
   userId,
+  teamId,
+  teamName,
   agentId,
   agentName,
   agentType,
@@ -28,6 +32,8 @@ const Chat = ({
         <div key={idx} className={styles.messageGroup}>
           <Question
             userId={userId}
+            teamId={teamId}
+            teamName={teamName}
             agentId={agentId}
             agentName={agentName}
             agentType={agentType}

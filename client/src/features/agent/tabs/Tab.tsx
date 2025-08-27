@@ -4,10 +4,11 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import utils from 'src/utils';
 import Icons from 'src/assets/icons';
-import { Agent as AgentType, Tab as TabType} from 'src/types';
+import { Team, Agent as AgentType, Tab as TabType} from 'src/types';
 import styles from './Tab.module.css';
 
 interface Props {
+  team: Team;
   agent: AgentType;
   tab: TabType;
   tabs: TabType[];
@@ -15,7 +16,7 @@ interface Props {
   currentThreadPositionY: number;
 }
 
-const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
+const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
   const navigate = useNavigate();
   
   const handleSelectTab = async (threadId: string, agentId: string) => {
@@ -24,7 +25,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
       ? { ...t, isActive: t.id === threadId }
       : t
     );
-    tabsStorage.save(agent.name, updatedTabs);
+    tabsStorage.save(team.name, agent.name, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
     dispatchEvent.tabsUpdated(agent.name);
@@ -35,7 +36,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
       positionY: currentThreadPositionY
     });
     
-    navigate(`/${agent.name}/${threadId}`);
+    navigate(`/${team.name}/${agent.name}/${threadId}`);
   };
 
   const handleRemoveTab = async (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {
@@ -48,7 +49,7 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
     if (updatedTabs.length > 0 && removedTab.isActive) {
       updatedTabs[updatedTabs.length - 1].isActive = true;
     }
-    tabsStorage.save(agent.name, updatedTabs);
+    tabsStorage.save(team.name, agent.name, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
     dispatchEvent.tabsUpdated(agent.name);
@@ -60,15 +61,15 @@ const Tab = ({ agent, tab, tabs, currentThreadId, currentThreadPositionY }: Prop
     });
 
     if (tabs.length > 1) {
-      navigate(`/${agent.name}/${updatedTabs[updatedTabs.length - 1].id}`);
+      navigate(`/${team.name}/${agent.name}/${updatedTabs[updatedTabs.length - 1].id}`);
     } else {
-      navigate(`/${agent.name}`);
+      navigate(`/${team.name}/${agent.name}`);
     };
   };
   
   return (
     <a
-      href={`/${agent.name}/${tab.id}`}
+      href={`/${team.name}/${agent.name}/${tab.id}`}
       className={utils.cn(styles.tab, tab.isActive ? styles.active : styles.inactive)}
       onClick={() => handleSelectTab(tab.id, tab.agentId)}
     >

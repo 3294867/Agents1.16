@@ -1,10 +1,3 @@
-.agentsContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: 7rem;
-}
-
 .agentButton {
   background-color: var(--accent-primary);
   transition: background-color 0.15s;
@@ -12,4 +5,12 @@
 
 .agentButton:hover {
   background-color: var(--accent-primary-hover);
+}
+
+.separator {
+  width: 100%;
+  height: 0.0625rem;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  background-color: var(--border);
 }

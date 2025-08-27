@@ -11,16 +11,18 @@ import styles from './Thread.module.css'
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   agentId: string;
   agentName: string;
   agentType: AgentType;
   agentModel: AgentModel;
 }
 
-const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) => {
+const Thread = ({ userId, teamId, teamName, agentId, agentName, agentType, agentModel }: Props) => {
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({
-    userId, agentId, agentName, threadId
+    userId, teamId, teamName, agentId, agentName, threadId
   });
 
   if (error) return <Error error={error} />;
@@ -38,10 +40,13 @@ const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) =>
         threadId={threadId}
         threadTitle={threadTitle}
         isBookmarked={thread.isBookmarked}
+        teamName={teamName}
         agentName={agentName}
       />
       <Chat
         userId={userId}
+        teamId={teamId}
+        teamName={teamName}
         agentId={agentId}
         agentName={agentName}
         agentModel={agentModel}
@@ -50,6 +55,8 @@ const Thread = ({ userId, agentId, agentName, agentType, agentModel }: Props) =>
         threadBody={threadBody}
       />
       <Form
+        teamId={teamId}
+        teamName={teamName}
         agentId={agentId}
         agentName={agentName}
         agentModel={agentModel}

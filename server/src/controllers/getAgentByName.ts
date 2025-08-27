@@ -13,7 +13,7 @@ const getAgentByName = async (req: Request, res: Response) => {
 
   try {
     const getAgent = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid
-      AND "teamName" = $2::uuid AND "name" = $2::text;`, [
+      AND "teamName" = $2::text AND "name" = $3::text;`, [
       userId, teamName, agentName
     ]);
     if (getAgent.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agent");

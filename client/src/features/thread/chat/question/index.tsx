@@ -10,6 +10,8 @@ import styles from './Question.module.css';
 
 interface Props {
   userId: string;
+  teamId: string;
+  teamName: string;
   agentId: string;
   agentName: string;
   agentType: AgentType;
@@ -21,6 +23,8 @@ interface Props {
 
 const Question = ({
   userId,
+  teamId,
+  teamName,
   agentId,
   agentName,
   agentType,
@@ -48,6 +52,8 @@ const Question = ({
         />
         <MoveButton
           userId={userId}
+          teamId={teamId}
+          teamName={teamName}
           agentId={agentId}
           agentName={agentName}
           threadId={threadId}
@@ -74,6 +80,8 @@ const Question = ({
           <div style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', display: 'flex' }}>
             <ChangeAgentButton
               userId={userId}
+              teamId={teamId}
+              teamName={teamName}
               currentAgentId={agentId}
               currentAgentType={agentType}
               currentAgentName={agentName}

@@ -2,7 +2,7 @@ import { SVGProps } from 'react';
 import utils from 'src/utils';
 import styles from './Icons.module.css';
 
-const Close = ({ className = styles.base, ...props }: SVGProps<SVGSVGElement>) => {
+const Close = ({ className, ...props }: SVGProps<SVGSVGElement>) => {
   return (
     <svg
       className={utils.cn(styles.base, className)}
