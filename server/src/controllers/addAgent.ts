@@ -3,66 +3,72 @@ import { pool } from '..';
 import utils from '../utils';
 import { Agent } from '../types';
 
-interface Props {
+interface RequestBody {
   agent: Agent;
 }
 
 const addAgent = async (req: Request, res: Response) => {
-  const { agent }: Props = req.body;
+  const { agent }: RequestBody = req.body;
+
+  const error = utils.validate.addAgent(agent);
+  if (error) return utils.sendResponse(res, 400, error);
 
   try {
-    const addAgent = await pool.query(`
-      INSERT INTO "Agent" (
-        "id",
-        "type",
-        "model",
-        "userId",
-        "teamId",
-        "teamName",
-        "name",
-        "systemInstructions",
-        "temperature",
-        "webSearch",
-        "createdAt",
-        "updatedAt"
+    const insertedAgent = await pool.query(`
+      INSERT INTO agents (
+        user_id,
+        workspace_id,
+        name,
+        type,
+        model,
+        system_instructions,
+        stack,
+        temperature,
+        web_search
       )
-      SELECT
+      VALUES (
         $1::uuid,
-        $2::text,
+        $2::uuid,
         $3::text,
-        $4::uuid,
-        $5::uuid,
+        $4::text,
+        $5::varchar(20),
         $6::text,
-        $7::text,
-        $8::text,
-        $9::float,
-        $10::boolean,
-        $11::timestamp,
-        $12::timestamp
+        $7::text[],
+        $8::float,
+        $9::boolean
+      )
       RETURNING *;
     `, [
-      agent.id,
-      agent.type,
-      agent.model,
       agent.userId,
-      agent.teamId,
-      agent.teamName,
+      agent.workspaceId,
       agent.name,
-      agent.systemInstructions,
-      agent.temperature,
-      agent.webSearch,
-      agent.createdAt,
-      agent.updatedAt
+      agent.type ?? 'general',
+      agent.model ?? 'gpt-3.5-turbo',
+      agent.systemInstructions ?? null,
+      agent.stack ?? null,
+      agent.temperature ?? 0.5,
+      agent.webSearch ?? true,
     ]);
-    if (addAgent.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add agent");
+    if (insertedAgent.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add agent");
 
-    res.status(200).json({
-      message: "Agent added",
-      data: addAgent.rows[0]
-    });
+    const mappedAgent: Agent = {
+      id: insertedAgent.rows[0].id,
+      userId: insertedAgent.rows[0].user_id,
+      workspaceId: insertedAgent.rows[0].workspace_id,
+      name: insertedAgent.rows[0].name,
+      type: insertedAgent.rows[0].type,
+      model: insertedAgent.rows[0].model,
+      systemInstructions: insertedAgent.rows[0].system_instructions,
+      stack: insertedAgent.rows[0].stack,
+      temperature: insertedAgent.rows[0].temperature,
+      webSearch: insertedAgent.rows[0].web_search,
+      createdAt: insertedAgent.rows[0].created_at,
+      updatedAt: insertedAgent.rows[0].updated_at
+    };
 
-  } catch (error) {
-    console.error("Failed to add agent: ", error);
+    res.status(201).json({ message: "Agent added", data: mappedAgent});
+  } catch (error: any) {
+    console.error("Failed to add agent: ", error.stack || error);
     res.status(500).json({ error: "Internal server error" });
   }
 }

@@ -13,12 +13,11 @@ type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview
 
 interface Agent {
   id: string;
+  userId: string;
+  workspaceId: string;
+  name: string;
   type: AgentType;
   model: AgentModel;
-  userId: string;
-  teamId: string;
-  teamName: string;
-  name: string;
   systemInstructions: string;
   stack: string[] | null;
   temperature: number;

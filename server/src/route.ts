@@ -1,66 +1,37 @@
 import express from "express";
-import signUp from './controllers/signUp';
-import login from './controllers/login';
-import logout from './controllers/logout';
-import getCurrentUser from './controllers/getCurrentUser';
-import getTeams from './controllers/getTeams';
-import getTeamByName from './controllers/getTeamByName';
-import getAgents from "./controllers/getAgents";
-import getAgentByName from './controllers/getAgentByName';
-import getAgentByType from './controllers/getAgentByType';
-import addAgent from './controllers/addAgent';
-import getAvailableAgents from './controllers/getAvailableAgents';
-import getAvailableAgentByType from './controllers/getAvailableAgentByType';
-import getThread from "./controllers/getThread";
-import addThread from './controllers/addThread';
-import addPublicThread from './controllers/addPublicThread';
-import deleteThread from './controllers/deleteThread';
-import addQuery from './controllers/addQuery';
-import deleteQuery from './controllers/deleteQuery';
-import updateRequestBody from './controllers/updateRequestBody';
-import updateResponseBody from './controllers/updateResponseBody';
-import createThreadTitle from "./controllers/createThreadTitle";
-import updateThreadTitle from './controllers/updateThreadTitle';
-import removeThreadTitle from './controllers/removeThreadTitle';
-import updateThreadIsBookmarked from './controllers/updateThreadIsBookmarked';
-import createResponse from "./controllers/createResponse";
-import inferAgentType from './controllers/inferAgentType';
-import getThreadUpdatedAt from './controllers/getThreadUpdatedAt';
-import duplicateThread from './controllers/duplicateThread';
-import getAgentsUpdatedAt from './controllers/getAgentsUpdatedAt';
-import getTeamsUpdatedAt from './controllers/getTeamsUpdatedAt';
+import controllers from './controllers';
 
 const router = express.Router();
 
-router.post("/sign-up", signUp);
-router.post("/log-in", login);
-router.post("/logout", logout);
-router.get("/get-current-user", getCurrentUser);
-router.post("/get-teams", getTeams),
-router.post("/get-team-by-name", getTeamByName)
-router.post("/get-agents", getAgents);
-router.post("/get-agent-by-name", getAgentByName);
-router.post("/get-agent-by-type", getAgentByType);
-router.post("/add-agent", addAgent);
-router.get("/get-available-agents", getAvailableAgents);
-router.post("/get-available-agent-by-type", getAvailableAgentByType)
-router.post("/get-thread", getThread);
-router.post("/add-thread", addThread);
-router.post("/add-public-thread", addPublicThread);
-router.post("/duplicate-thread", duplicateThread);
-router.post("/delete-thread", deleteThread);
-router.post("/add-query", addQuery);
-router.post("/delete-query", deleteQuery);
-router.post("/update-request-body", updateRequestBody);
-router.post("/update-response-body", updateResponseBody);
-router.post("/create-thread-title", createThreadTitle);
-router.post("/update-thread-title", updateThreadTitle);
-router.post("/remove-thread-title", removeThreadTitle);
-router.post("/update-thread-is-bookmarked", updateThreadIsBookmarked);
-router.post("/create-response", createResponse);
-router.post("/infer-agent-type", inferAgentType);
-router.post("/get-thread-updated-at", getThreadUpdatedAt);
-router.post("/get-agents-updated-at", getAgentsUpdatedAt);
-router.post("/get-teams-updated-at", getTeamsUpdatedAt);
+router.post("/sign-up", controllers.signUp);
+router.post("/log-in", controllers.login);
+router.post("/logout", controllers.logout);
+router.get("/get-current-user", controllers.getCurrentUser);
+router.post("/get-teams", controllers.getTeams),
+router.post("/get-team-by-name", controllers.getTeamByName)
+router.post("/get-agents", controllers.getAgents);
+router.post("/get-agent-by-name", controllers.getAgentByName);
+router.post("/get-agent-by-type", controllers.getAgentByType);
+router.post("/add-agent", controllers.addAgent);
+router.get("/get-available-agents", controllers.getAvailableAgents);
+router.post("/get-available-agent-by-type", controllers.getAvailableAgentByType)
+router.post("/get-thread", controllers.getThread);
+router.post("/add-thread", controllers.addThread);
+router.post("/add-public-thread", controllers.addPublicThread);
+router.post("/duplicate-thread", controllers.duplicateThread);
+router.post("/delete-thread", controllers.deleteThread);
+router.post("/add-query", controllers.addQuery);
+router.post("/delete-query", controllers.deleteQuery);
+router.post("/update-request-body", controllers.updateRequestBody);
+router.post("/update-response-body", controllers.updateResponseBody);
+router.post("/create-thread-title", controllers.createThreadTitle);
+router.post("/update-thread-title", controllers.updateThreadTitle);
+router.post("/remove-thread-title", controllers.removeThreadTitle);
+router.post("/update-thread-is-bookmarked", controllers.updateThreadIsBookmarked);
+router.post("/create-response", controllers.createResponse);
+router.post("/infer-agent-type", controllers.inferAgentType);
+router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
+router.post("/get-agents-updated-at", controllers.getAgentsUpdatedAt);
+router.post("/get-teams-updated-at", controllers.getTeamsUpdatedAt);
 
 export default router;

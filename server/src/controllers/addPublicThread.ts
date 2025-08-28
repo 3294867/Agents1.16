@@ -1,104 +1,129 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
-import utils from '../utils';
+import utils from "../utils";
 
-interface Props {
+interface RequestBody {
   threadId: string;
 }
 
 const addPublicThread = async (req: Request, res: Response) => {
-  const { threadId } = req.body as Props;
+  const { threadId } = req.body as RequestBody;
+
+  const error = await utils.validate.addPublicThread(threadId);
+  if (error) return utils.sendResponse(res, 400, error);
 
   try {
     await pool.query("BEGIN");
 
-    const getThread = await utils.getThread(threadId);
-    if (getThread.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get thread");
-    
-    const getAgentType = await pool.query(`SELECT "type" FROM "Agent" WHERE "id" = $1::uuid;`, [ getThread.rows[0].agentId ]);
-    if (getAgentType.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agent type"); 
-    
-    const getRootUserId = await utils.getRootUserId();
-    if (getRootUserId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get root user");
-    
-    const getAgentId = await pool.query(`SELECT "id" FROM "Agent" WHERE "userId" = $1::uuid AND "type" = $2::text;`, [
-      getRootUserId.rows[0].id, getAgentType.rows[0].type
-    ]);
-    if (getAgentId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get general agent id");
-    
-    const addPublicThread = await pool.query(`
-      INSERT INTO "Thread" (
-        "userId",
-        "agentId",
-        "title"
-      )
-      SELECT
-        $1::uuid,
-        $2::uuid,
-        $3::text
-      RETURNING "id";
-    `, [
-      getRootUserId.rows[0].id,
-      getAgentId.rows[0].id,
-      getThread.rows[0].title,
-    ]);
-    if (addPublicThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add public thread");
-    
-    let threadBody = [];
-    for (const query of getThread.rows[0].body) {
-      const getRequestBody = await pool.query(`SELECT "body" FROM "Request" WHERE "id" = $1::uuid;`, [ query.requestId ]);
-      if (getRequestBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get requestBody");
-
-      const addRequest = await pool.query(`
-        INSERT INTO "Request" (
-          "threadId", "body"
-        )
-        SELECT
-          $1::uuid, $2::text
-        RETURNING "id";
-      `, [ addPublicThread.rows[0].id, getRequestBody.rows[0].body ]);
-      if (addRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
-
-      const getResponseBody = await pool.query(`SELECT "body" FROM "Response" WHERE "id" = $1::uuid;`, [ query.responseId ]);
-      if (getResponseBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get responseBody");
-
-      const addResponse = await pool.query(`
-        INSERT INTO "Response" (
-          "threadId", "body"
-        )
-        SELECT
-          $1::uuid, $2::text
-        RETURNING "id";
-      `, [ addPublicThread.rows[0].id, getResponseBody.rows[0].body ]);
-      if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
-
-      threadBody.push({ requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id });
+    const selectedThread = await utils.selectedThread(threadId);
+    if (selectedThread.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return utils.sendResponse(res, 404, "Failed to get thread");
     }
 
-    const updateThreadBody = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid RETURNING "id";`, [
-      JSON.stringify(threadBody), addPublicThread.rows[0].id
+    const selectedAgentType = await pool.query(`SELECT type FROM agents WHERE id = $1::uuid;`, [
+      selectedThread.rows[0].agent_id
     ]);
-    if (updateThreadBody.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread body");
-    
+    if (selectedAgentType.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return utils.sendResponse(res, 404, "Failed to get agent type");
+    }
+
+    const selectedRootUserId = await utils.selectedRootUserId();
+    if (selectedRootUserId.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return utils.sendResponse(res, 404, "Failed to get root user id");
+    }
+
+    const selectedAgentId = await pool.query(`SELECT id FROM agents WHERE user_id = $1::uuid AND type = $2::text;`, [
+      selectedRootUserId.rows[0].id, selectedAgentType.rows[0].type
+    ]);
+    if (selectedAgentId.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return utils.sendResponse(res, 404, "Failed to get general agent id");
+    }
+
+    const insertedPublicThread = await pool.query(`
+      INSERT INTO threads (user_id, agent_id, title)
+      VALUES ($1::uuid, $2::uuid, $3::text)
+      RETURNING id;
+    `, [ selectedRootUserId.rows[0].id, selectedAgentId.rows[0].id, selectedThread.rows[0].title ]
+    );
+    if (insertedPublicThread.rows.length === 0) {
+      await pool.query("ROLLBACK");
+      return utils.sendResponse(res, 503, "Failed to add public thread");
+    }
+
+    if (selectedThread.rows[0].body.length > 0) {
+      const requestIds = selectedThread.rows[0].body.map((q: { request_id: string, response_id: string }) => q.request_id);
+      const responseIds = selectedThread.rows[0].body.map((q: { request_id: string, response_id: string }) => q.response_id);
+  
+      const requestsResult = await pool.query(`SELECT id, body FROM requests WHERE id = ANY($1::uuid[])`, [
+        requestIds
+      ]);
+      const requestLookup: Record<string, string> = {};
+      for (const row of requestsResult.rows) requestLookup[row.id] = row.body;
+  
+      const responsesResult = await pool.query(`SELECT id, body FROM responses WHERE id = ANY($1::uuid[])`, [
+        responseIds
+      ]);
+      const responseLookup: Record<string, string> = {};
+      for (const row of responsesResult.rows) responseLookup[row.id] = row.body;
+  
+      const newBody: { request_id: string, response_id: string }[] = [];
+      for (let i = 0; i < selectedThread.rows[0].body.length; i++) {
+        const requestId = requestIds[i];
+        const responseId = responseIds[i];
+  
+        const insertedRequest = await pool.query(`INSERT INTO requests (thread_id, body) VALUES ($1::uuid, $2::text) RETURNING id;`, [
+          insertedPublicThread.rows[0].id, requestLookup[requestId]
+        ]);
+        if (insertedRequest.rows.length === 0) {
+          await pool.query("ROLLBACK");
+          return utils.sendResponse(res, 503, "Failed to add request");
+        }
+  
+        const insertedResponse = await pool.query(`INSERT INTO responses (thread_id, body) VALUES ($1::uuid, $2::text) RETURNING id;`, [
+          insertedPublicThread.rows[0].id, responseLookup[responseId]
+        ]);
+        if (insertedResponse.rows.length === 0) {
+          await pool.query("ROLLBACK");
+          return utils.sendResponse(res, 503, "Failed to add response");
+        }
+  
+        newBody.push({
+          request_id: insertedRequest.rows[0].id,
+          response_id: insertedResponse.rows[0].id,
+        });
+      }
+  
+      const updatedThread = await pool.query(`UPDATE threads SET body = $1::jsonb WHERE id = $2::uuid RETURNING id;`, [
+        JSON.stringify(newBody), insertedPublicThread.rows[0].id
+      ]);
+      if (updatedThread.rows.length === 0) {
+        await pool.query("ROLLBACK");
+        return utils.sendResponse(res, 503, "Failed to update thread body");
+      }
+    }
+
     await pool.query("COMMIT");
 
     res.status(200).json({
       message: "Public thread added",
       data: {
-        agentType: getAgentType.rows[0].type,
-        threadId: addPublicThread.rows[0].id
-      }
+        agentType: selectedAgentType.rows[0].type,
+        threadId: insertedPublicThread.rows[0].id,
+      },
     });
-
-  } catch (error) {
+  } catch (error: any) {
     try {
       await pool.query("ROLLBACK");
-    } catch (rollbackError) {
-      console.error("Rollback error: ", rollbackError);
+    } catch (rollbackError: any) {
+      console.error("Rollback error: ", rollbackError.stack || rollbackError);
     }
-    console.error("Failed to add public thread: ", error);
+    console.error("Failed to add public thread: ", error.stack || error);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 export default addPublicThread;

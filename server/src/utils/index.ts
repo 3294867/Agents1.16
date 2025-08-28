@@ -2,17 +2,21 @@ import encrypt from './encrypt';
 import decrypt from './decrypt';
 import updateSeedPasswords from './updateSeedPasswords';
 import sendResponse from './sendResponse';
-import getRootUserId from './getRootUserId';
-import getThread from './getThread';
 import inferAgentType from './inferAgentType';
+import regex from './regex';
+import validate from './validate';
+import selectedThread from './selectedThread';
+import selectedRootUserId from './selectedRootUserId';
 
 const utils = {
   encrypt,
   decrypt,
   updateSeedPasswords,
+  validate,
+  regex,
   sendResponse,
-  getRootUserId,
-  getThread,
+  selectedRootUserId,
+  selectedThread,
   inferAgentType
 };
 
