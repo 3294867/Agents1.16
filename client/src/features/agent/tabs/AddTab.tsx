@@ -30,10 +30,6 @@ const AddTab = ({ userId, team, agent, tabs, currentThreadId, currentThreadPosit
     });
     if (!thread) return;
 
-    /** Add thread (IndexedDB) */
-    const updatedThread = { ...thread, positionY: 0 };
-    await indexedDB.addThread({ thread: updatedThread });
-
     /** Update tabs (localStorage) */
     const updatedTabs = tabs.map(t => t.agentId === agentId
       ? { ...t, isActive: false }

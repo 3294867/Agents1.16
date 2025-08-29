@@ -2,30 +2,44 @@ import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
 
-interface Props {
+interface RequestBody {
   userId: string;
-  teamName: string;
+  workspaceName: string;
   agentName: string;
 }
 
-const getAgentByName = async (req: Request, res: Response) => {
-  const { userId, teamName, agentName }: Props = req.body;
+const getAgentByName = async (req: Request, res: Response): Promise<void> => {
+  const { userId, workspaceName, agentName }: RequestBody = req.body;
+
+  const validationError = utils.validate.getAgentByName(userId);
+  if (validationError) return utils.sendResponse(res, 404, validationError);
 
   try {
-    const getAgent = await pool.query(`SELECT * FROM "Agent" WHERE "userId" = $1::uuid
-      AND "teamName" = $2::text AND "name" = $3::text;`, [
-      userId, teamName, agentName
+    const selectedUserWorkspacesIds = await pool.query(`SELECT workspace_id FROM workspace_users WHERE user_id = $1::uuid;`, [ userId ]);
+    if (selectedUserWorkspacesIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces ids");
+
+    const selectedWorkspaceId = await pool.query(`SELECT id FROM workspaces WHERE user_id = $1::uuid AND name = $2::text`,[
+      userId, workspaceName
     ]);
-    if (getAgent.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch agent");
+    if (selectedWorkspaceId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace id");
+    
+    const selectedAgent = await pool.query(`
+      SELECT id FROM agents WHERE user_id = $1::uuid
+        AND workspace_id = $2::text
+        AND name = $3::text;
+    `, [
+      userId, selectedWorkspaceId.rows[0].id, agentName
+    ]);
+    if (selectedAgent.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent");
     
     res.status(200).json({
       message: "Agent has been fetched",
-      data: getAgent.rows[0]
+      data: selectedAgent.rows[0].id
     });
 
-  } catch (error) {
-    console.error("Failed to fetch agent: ", error);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    console.error("Failed to fetch agent: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
   }
 }
 

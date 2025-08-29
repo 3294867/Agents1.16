@@ -8,18 +8,18 @@ interface RequestBody {
   workspaceId: string;
 }
 
-const duplicateThread = async (req: Request, res: Response) => {
+const duplicateThread = async (req: Request, res: Response): Promise<void> => {
   const { publicThreadId, userId, workspaceId }: RequestBody = req.body;
 
-  const error = await utils.validate.duplicateThread(publicThreadId, userId, workspaceId );
-  if (error) return utils.sendResponse(res, 404, error);
+  const validationError = await utils.validate.duplicateThread(publicThreadId, userId, workspaceId );
+  if (validationError) return utils.sendResponse(res, 404, validationError);
 
   try {
-    await pool.query("BEGIN");
+    await pool.query(`BEGIN`);
     
     const selectedPublicThread = await utils.selectedThread(publicThreadId);
     if (selectedPublicThread.rows.length === 0) {
-      await pool.query("ROLLBACK");
+      await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get public thread");
     }
 
@@ -27,7 +27,7 @@ const duplicateThread = async (req: Request, res: Response) => {
       selectedPublicThread.rows[0].agent_id
     ]);
     if (selectedAgentType.rows.length === 0) {
-      await pool.query("ROLLBACK");
+      await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get agent type");
     }
     
@@ -41,7 +41,7 @@ const duplicateThread = async (req: Request, res: Response) => {
     } else {
       const selectedRootUserId = await utils.selectedRootUserId();
       if (selectedRootUserId.rows.length === 0) {
-        await pool.query("ROLLBACK");
+        await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get root user id");
       }
         
@@ -49,7 +49,7 @@ const duplicateThread = async (req: Request, res: Response) => {
         selectedRootUserId.rows[0].id, selectedAgentType.rows[0].type
       ]);
       if (selectedRootAgent.rows.length === 0) {
-        await pool.query("ROLLBACK");
+        await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get root agent");
       }
 
@@ -89,7 +89,7 @@ const duplicateThread = async (req: Request, res: Response) => {
         selectedRootAgent.rows[0].web_search
       ]);
       if (insertedAgent.rows.length === 0) {
-        await pool.query("ROLLBACK");
+        await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 503, "Failed to add agent");
       }
       
@@ -119,11 +119,11 @@ const duplicateThread = async (req: Request, res: Response) => {
       selectedPublicThread.rows[0].body,
     ]);
     if (duplicatedThread.rows.length === 0) {
-      await pool.query("ROLLBACK");
+      await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to duplicate thread");
     }
     
-    await pool.query("COMMIT");
+    await pool.query(`COMMIT`);
 
     res.status(200).json({
       message: "Thread duplicated",
@@ -132,13 +132,13 @@ const duplicateThread = async (req: Request, res: Response) => {
 
   } catch (error: any) {
     try {
-      await pool.query("ROLLBACK");
+      await pool.query(`ROLLBACK`);
     } catch (rollbackError: any) {
       console.error("Rollback error: ", rollbackError.stack || rollbackError);
     }
     console.error("Failed to duplicate thread: ", error.stack || error);
-    res.status(500).json({ error: "Internal server error" });
+    utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default duplicateThread;

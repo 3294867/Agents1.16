@@ -3,69 +3,64 @@ import { pool } from "../index";
 import utils from '../utils';
 import { Query } from '../types';
 
-interface Props {
+interface RequestBody {
   threadId: string;
   requestBody: string;
   responseBody: string;
 }
 
-const addQuery = async (req: Request, res: Response) => {
-  const { threadId, requestBody, responseBody }: Props = req.body;
+const addQuery = async (req: Request, res: Response): Promise<void> => {
+  const { threadId, requestBody, responseBody }: RequestBody = req.body;
 
+  const validationError = await utils.validate.addQuery(threadId, requestBody, responseBody);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
+  
   try {
-    await pool.query("BEGIN");
+    await pool.query(`BEGIN`);
 
-    const addRequest = await pool.query(`
-      INSERT INTO "Request" (
-        "threadId", "body"
-      )
-      SELECT
-        $1::uuid, $2::text
-      RETURNING "id", "createdAt";
+    const insertedRequest = await pool.query(`
+      INSERT INTO (requests thread_id, body)
+      VALUES ($1::uuid, $2::text)
+      RETURNING id, created_at;
     `, [ threadId, requestBody ]);
-    if (addRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
+    if (insertedRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
 
     const addResponse = await pool.query(`
-      INSERT INTO "Response" (
-        "threadId", "body"
-      )
-      SELECT
-        $1::uuid, $2::text
-      Returning "id", "createdAt";
+      INSERT INTO responses (thread_id, body)
+      VALUES ($1::uuid, $2::text)
+      RETURNING id, created_at;
     `, [ threadId, responseBody ]);
     if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
 
-    const getThreadBody = await pool.query(`SELECT "body" FROM "Thread" WHERE "id" = $1::uuid;`,[
-      threadId
+    const selectedThreadBody = await pool.query(`SELECT body FROM threads WHERE id = $1::uuid;`,[ threadId ]);
+    if (selectedThreadBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread body");
+
+    let currentThreadBody = selectedThreadBody.rows[0].body;
+    if (!Array.isArray(currentThreadBody)) currentThreadBody = [];
+
+    const newThreadBody: Query[] = [...currentThreadBody, { requestId: insertedRequest.rows[0].id, responseId: addResponse.rows[0].id }];
+
+    const updatedThread = await pool.query(`UPDATE threads SET body = $1::jsonb WHERE id = $2::uuid RETURNING id;`, [
+      JSON.stringify(newThreadBody), threadId
     ]);
-    if (getThreadBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread body");
+    if (updatedThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread");
 
-    let currentBody = getThreadBody.rows[0].body;
-    if (!Array.isArray(currentBody)) currentBody = [];
-
-    const newBody: Query[] = [...currentBody, { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }];
-
-    const updateThread = await pool.query(`UPDATE "Thread" SET "body" = $1::jsonb WHERE "id" = $2::uuid RETURNING "id";`, [
-      JSON.stringify(newBody), threadId
-    ]);
-    if (updateThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread");
-
-    await pool.query("COMMIT");
+    await pool.query(`COMMIT`);
 
     res.status(200).json({
       message: "Thread updated",
-      data: { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }
+      data: { requestId: insertedRequest.rows[0].id, responseId: addResponse.rows[0].id }
     });
 
-  } catch (error) {
+  } catch (error: any) {
     try {
-      await pool.query("ROLLBACK");
-    } catch (rollbackError) {
-      console.error("Rollback error: ", rollbackError);
+      await pool.query(`ROLLBACK`);
+    } catch (rollbackError: any) {
+      console.error("Rollback error: ", rollbackError.stack || error);
     }
-    console.error("Failed to update thread: ", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error("Failed to add query: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default addQuery;

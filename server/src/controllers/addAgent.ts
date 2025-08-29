@@ -7,11 +7,11 @@ interface RequestBody {
   agent: Agent;
 }
 
-const addAgent = async (req: Request, res: Response) => {
+const addAgent = async (req: Request, res: Response): Promise<void> => {
   const { agent }: RequestBody = req.body;
 
-  const error = utils.validate.addAgent(agent);
-  if (error) return utils.sendResponse(res, 400, error);
+  const validationError = utils.validate.addAgent(agent);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
     const insertedAgent = await pool.query(`
@@ -42,35 +42,23 @@ const addAgent = async (req: Request, res: Response) => {
       agent.userId,
       agent.workspaceId,
       agent.name,
-      agent.type ?? 'general',
-      agent.model ?? 'gpt-3.5-turbo',
-      agent.systemInstructions ?? null,
-      agent.stack ?? null,
-      agent.temperature ?? 0.5,
-      agent.webSearch ?? true,
+      agent.type,
+      agent.model,
+      agent.systemInstructions,
+      agent.stack,
+      agent.temperature,
+      agent.webSearch,
     ]);
     if (insertedAgent.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add agent");
 
-    const mappedAgent: Agent = {
-      id: insertedAgent.rows[0].id,
-      userId: insertedAgent.rows[0].user_id,
-      workspaceId: insertedAgent.rows[0].workspace_id,
-      name: insertedAgent.rows[0].name,
-      type: insertedAgent.rows[0].type,
-      model: insertedAgent.rows[0].model,
-      systemInstructions: insertedAgent.rows[0].system_instructions,
-      stack: insertedAgent.rows[0].stack,
-      temperature: insertedAgent.rows[0].temperature,
-      webSearch: insertedAgent.rows[0].web_search,
-      createdAt: insertedAgent.rows[0].created_at,
-      updatedAt: insertedAgent.rows[0].updated_at
-    };
-
-    res.status(201).json({ message: "Agent added", data: mappedAgent});
+    res.status(201).json({
+      message: "Agent added",
+      data: { agentName: insertedAgent.rows[0].name }
+    });
   } catch (error: any) {
     console.error("Failed to add agent: ", error.stack || error);
-    res.status(500).json({ error: "Internal server error" });
+    utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default addAgent;

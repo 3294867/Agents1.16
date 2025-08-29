@@ -3,35 +3,38 @@ import { client, pool } from "../index";
 import utils from '../utils';
 import { AgentModel } from '../types';
 
-interface Props {
+interface RequestBody {
   agentId: string;
-  agentModel: AgentModel;
   input: string;
+  agentModel?: AgentModel;
 }
 
-const createResponse = async (req: Request, res: Response) => {
-  const { agentId, agentModel, input }: Props = req.body;
+const createResponse = async (req: Request, res: Response): Promise<void> => {
+  const { agentId, input, agentModel }: RequestBody = req.body;
+
+  const validationError = await utils.validate.createResponse(agentId, input, agentModel);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const instructions = await pool.query(`SELECT "systemInstructions" FROM "Agent" WHERE "id" = $1::uuid;`, [ agentId ]);
-    if (instructions.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get instructions");
+    const selectedAgent = await pool.query(`SELECT model, system_instructions FROM agents WHERE id = $1::uuid;`, [ agentId ]);
+    if (selectedAgent.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent");
 
     const apiResponse = await client.responses.create({
-      model: agentModel,
+      model: agentModel ?? selectedAgent.rows[0].model,
       input,
-      instructions: instructions.rows[0].systemInstructions
+      instructions: selectedAgent.rows[0].system_instructions
     });
-    if (!apiResponse) return utils.sendResponse(res, 503, "Failed to get response");
+    if (!apiResponse.output_text) return utils.sendResponse(res, 503, "Failed to get response");
 
     res.status(200).json({
       message: "apiResponse created",
-      data: apiResponse.output_text
+      data: { response: apiResponse.output_text }
     });
     
-  } catch (error) {
-    console.error("Failed to create apiResponse: ", error);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    console.error("Failed to get apiResponse: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default createResponse;
