@@ -5,8 +5,6 @@ import sendResponse from './sendResponse';
 import inferAgentType from './inferAgentType';
 import regex from './regex';
 import validate from './validate';
-import selectedThread from './selectedThread';
-import selectedRootUserId from './selectedRootUserId';
 
 const utils = {
   encrypt,
@@ -15,8 +13,6 @@ const utils = {
   validate,
   regex,
   sendResponse,
-  selectedRootUserId,
-  selectedThread,
   inferAgentType
 };
 

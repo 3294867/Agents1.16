@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
-import { Query } from '../types';
+import { QueryPG } from '../types';
 
 interface RequestBody {
   threadId: string;
@@ -18,38 +18,58 @@ const addQuery = async (req: Request, res: Response): Promise<void> => {
   try {
     await pool.query(`BEGIN`);
 
-    const insertedRequest = await pool.query(`
-      INSERT INTO (requests thread_id, body)
-      VALUES ($1::uuid, $2::text)
-      RETURNING id, created_at;
-    `, [ threadId, requestBody ]);
-    if (insertedRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add request");
+    /** Request */
+    const insertedRequest = await pool.query(`INSERT INTO requests (body) VALUES ($1::text) RETURNING id;`, [ requestBody ]);
+    if (insertedRequest.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to add request");
+    }
 
-    const addResponse = await pool.query(`
-      INSERT INTO responses (thread_id, body)
-      VALUES ($1::uuid, $2::text)
-      RETURNING id, created_at;
-    `, [ threadId, responseBody ]);
-    if (addResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to add response");
+    const insertedThreadRequest = await pool.query(`INSERT INTO thread_request (thread_id, request_id) VALUES ($1::uuid, $2::uuid) RETURNING thread_id;`, [
+      threadId, insertedRequest.rows[0].id
+    ]);
+    if (insertedThreadRequest.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to add thread_request");
+    }
 
-    const selectedThreadBody = await pool.query(`SELECT body FROM threads WHERE id = $1::uuid;`,[ threadId ]);
-    if (selectedThreadBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread body");
+    /** Response */
+    const insertedResponse = await pool.query(`INSERT INTO responses (body) VALUES ($1::text) RETURNING id;`, [ responseBody ]);
+    if (insertedResponse.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to add response");
+    }
 
-    let currentThreadBody = selectedThreadBody.rows[0].body;
-    if (!Array.isArray(currentThreadBody)) currentThreadBody = [];
+    const insertedThreadResponse = await pool.query(`INSERT INTO thread_response (thread_id, response_id) VALUES ($1::uuid, $2::uuid) RETURNING thread_id;`, [
+      threadId, insertedResponse.rows[0].id
+    ]);
+    if (insertedThreadResponse.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to add thread_response");
+    }
 
-    const newThreadBody: Query[] = [...currentThreadBody, { requestId: insertedRequest.rows[0].id, responseId: addResponse.rows[0].id }];
+    /** Thread */
+    const selectedThreadBody = await pool.query(`SELECT body FROM threads WHERE id = $1::uuid;`, [ threadId ]);
+    if (selectedThreadBody.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 404, "Failed to get thread");
+    }
+
+    const newThreadBody: QueryPG[] = [...selectedThreadBody.rows[0].body, { request_id: insertedRequest.rows[0].id, response_id: insertedResponse.rows[0].id }];
 
     const updatedThread = await pool.query(`UPDATE threads SET body = $1::jsonb WHERE id = $2::uuid RETURNING id;`, [
       JSON.stringify(newThreadBody), threadId
     ]);
-    if (updatedThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread");
+    if (updatedThread.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to update thread");
+    }
 
     await pool.query(`COMMIT`);
 
-    res.status(200).json({
-      message: "Thread updated",
-      data: { requestId: insertedRequest.rows[0].id, responseId: addResponse.rows[0].id }
+    res.status(201).json({
+      message: "Query added",
+      data: { requestId: insertedRequest.rows[0].id, responseId: insertedResponse.rows[0].id }
     });
 
   } catch (error: any) {

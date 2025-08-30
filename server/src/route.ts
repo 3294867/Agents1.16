@@ -7,11 +7,10 @@ router.post("/sign-up", controllers.signUp);
 router.post("/log-in", controllers.login);
 router.post("/logout", controllers.logout);
 router.get("/get-current-user", controllers.getCurrentUser);
-router.post("/get-teams", controllers.getTeams),
-router.post("/get-team-by-name", controllers.getTeamByName)
+router.post("/get-workspaces", controllers.getWorkspaces),
+router.post("/get-workspace-id", controllers.getWorkspaceId)
 router.post("/get-agents", controllers.getAgents);
-router.post("/get-agent-by-name", controllers.getAgentByName);
-router.post("/get-agent-by-type", controllers.getAgentByType);
+router.post("/get-agent-id-by-name", controllers.getAgentIdByName);
 router.post("/add-agent", controllers.addAgent);
 router.get("/get-available-agents", controllers.getAvailableAgents);
 router.post("/get-available-agent-by-type", controllers.getAvailableAgentByType)
@@ -25,13 +24,13 @@ router.post("/delete-query", controllers.deleteQuery);
 router.post("/update-request-body", controllers.updateRequestBody);
 router.post("/update-response-body", controllers.updateResponseBody);
 router.post("/create-thread-title", controllers.createThreadTitle);
-router.post("/update-thread-title", controllers.updateThreadTitle);
+router.post("/update-thread-name", controllers.updateThreadName);
 router.post("/remove-thread-title", controllers.removeThreadTitle);
 router.post("/update-thread-is-bookmarked", controllers.updateThreadIsBookmarked);
 router.post("/create-response", controllers.createResponse);
 router.post("/infer-agent-type", controllers.inferAgentType);
 router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
 router.post("/get-agents-updated-at", controllers.getAgentsUpdatedAt);
-router.post("/get-teams-updated-at", controllers.getTeamsUpdatedAt);
+router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);
 
 export default router;

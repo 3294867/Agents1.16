@@ -9,36 +9,33 @@ declare module 'express-session' {
   }
 }
 
-interface Props {
+interface RequestBody {
   name: string;
   password: string;
 }
 
-const login = async (req: Request, res: Response) => {
-  const { name, password }: Props = req.body;
+const login = async (req: Request, res: Response): Promise<void> => {
+  const { name, password }: RequestBody = req.body;
+
+  const validationError = utils.validate.login(name, password);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    if (!name) return utils.sendResponse(res, 400, "Name is required");
+    const selectedUser = await pool.query(`SELECT * FROM users WHERE name = $1::text;`, [ name ]);
+    if (selectedUser.rows.length === 0) return utils.sendResponse(res, 401,"Invalid name");
     
-    const getUser = await pool.query(`SELECT * FROM "User" WHERE "name" = $1::text;`, [
-      name,
-    ]);
-    if (getUser.rows.length === 0) return utils.sendResponse(res, 401,"Invalid name");
-    
-    if (!password) return utils.sendResponse(res, 400, "Password is required");
-
-    const match = await bcrypt.compare(password, getUser.rows[0].password);
+    const match = await bcrypt.compare(password, selectedUser.rows[0].password);
     if (!match) return utils.sendResponse(res, 401, "Invalid password");
 
-    req.session.userId = getUser.rows[0].id;
+    req.session.userId = selectedUser.rows[0].id;
     res.status(200).json({
       success: true,
-      userId: getUser.rows[0].id
+      userId: selectedUser.rows[0].id
     });
 
-  } catch (error) {
-    console.error("Failed to login: ", error);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    console.error("Failed to login: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
   }
 }
 

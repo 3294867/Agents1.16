@@ -1,12 +1,8 @@
 import utils from '..';
 
-const deleteQuery = (threadId: string, requestId: string, responseId: string): string | null => {
-  if (!threadId || !requestId || !responseId) {
-    return "Missing required fields: threadId, requestId, responseId";
-  }
-
-  if (!utils.regex.isUuidV4(threadId)) {
-    return "Incorrect format of thread id. Expected UUID_V4";
+const deleteQuery = (requestId: string, responseId: string): string | null => {
+  if (!requestId || !responseId) {
+    return "Missing required fields: requestId, responseId";
   }
 
   if (!utils.regex.isUuidV4(requestId)) {

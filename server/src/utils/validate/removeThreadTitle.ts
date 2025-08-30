@@ -1,6 +1,6 @@
 import utils from '..';
 
-const deleteThread = (threadId: string): string | null => {
+const removeThreadTitle = (threadId: string ): string | null => {
   if (!threadId) {
     return "Missing required fields: threadId";
   }
@@ -12,4 +12,4 @@ const deleteThread = (threadId: string): string | null => {
   return null;
 };
 
-export default deleteThread;
+export default removeThreadTitle;

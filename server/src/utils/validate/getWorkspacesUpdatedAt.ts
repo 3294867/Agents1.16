@@ -1,6 +1,6 @@
 import utils from '..';
 
-const getAgentByName = (userId: string): string | null => {
+const getWorkspacesUpdatedAt = (userId: string): string | null => {
   if (!userId) {
     return "Missing required fields: userId";
   }
@@ -12,4 +12,4 @@ const getAgentByName = (userId: string): string | null => {
   return null;
 };
 
-export default getAgentByName;
+export default getWorkspacesUpdatedAt;

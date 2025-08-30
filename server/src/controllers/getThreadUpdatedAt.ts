@@ -2,25 +2,28 @@ import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
 
-interface Props {
+interface RequestBody {
   threadId: string;
 }
 
-const getThreadUpdatedAt = async (req: Request, res: Response) => {
-  const { threadId } = req.body as Props;
+const getThreadUpdatedAt = async (req: Request, res: Response): Promise<void> => {
+  const { threadId } = req.body as RequestBody;
+
+  const validationError = utils.validate.getThreadUpdatedAt(threadId);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const getThreadUpdatedAt = await pool.query(`SELECT "updatedAt" FROM "Thread" WHERE "id" = $1::uuid;`, [ threadId ]);
-    if (getThreadUpdatedAt.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch 'updatedAt' property of the thread")
+    const selectedThreadUpdatedAt = await pool.query(`SELECT updated_at FROM threads WHERE id = $1::uuid`, [ threadId ]);
+    if (selectedThreadUpdatedAt.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread updatedAt");
 
     res.status(200).json({
-      message: "Thread fetched",
-      data: getThreadUpdatedAt.rows[0].updatedAt
+      message: "Thread udpatedAt fetched",
+      data: { threadUpdatedAt: selectedThreadUpdatedAt.rows[0].updated_at }
     });
 
-  } catch (error) {
-    console.error("Failed to fetch 'updatedAt' property of the thread: ", error);
-    res.status(500).json({ error: "Internal server error" });
+  } catch (error: any) {
+    console.error("Failed to fetch thread updatedAt: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
   }
 }
 

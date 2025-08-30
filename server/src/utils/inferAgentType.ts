@@ -3,8 +3,8 @@ import { client } from "../index";
 const inferAgentType = async (question: string): Promise<string | null> => {
   const query = `
     Choose the most appropriate agent type for the following question: ${question}.
-    Available agent types: "general", "math", "geography", "literature".
-    Return in lower case agent type only.
+    Available agent types: 'general_assistant', 'data_analyst', 'copywriter', 'devops_helper'.
+    Return only agent type in lower case.
   `;
 
   const apiResponse = await client.responses.create({

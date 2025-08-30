@@ -26,7 +26,7 @@ const createResponse = async (req: Request, res: Response): Promise<void> => {
     });
     if (!apiResponse.output_text) return utils.sendResponse(res, 503, "Failed to get response");
 
-    res.status(200).json({
+    res.status(201).json({
       message: "apiResponse created",
       data: { response: apiResponse.output_text }
     });

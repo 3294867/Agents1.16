@@ -1,3 +1,11 @@
+interface WorkspaceJS {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface Team {
   id: string;
   name: string;
@@ -13,8 +21,19 @@ type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview
 
 interface Agent {
   id: string;
-  userId: string;
-  workspaceId: string;
+  name: string;
+  type: AgentType;
+  model: AgentModel;
+  systemInstructions: string;
+  stack: string[] | null;
+  temperature: number;
+  webSearch: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface AgentJS {
+  id: string;
   name: string;
   type: AgentType;
   model: AgentModel;
@@ -54,13 +73,53 @@ interface NormalizedThreads {
   allIds: string[];
 }
 
+type QueryPG = {
+  request_id: string;
+  response_id: string;
+}
+
+interface ThreadPG {
+  id: string;
+  name: string;
+  body: QueryPG[] | [];
+  is_bookmarked: boolean;
+  is_shared: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+type QueryJS = {
+  requestId: string;
+  requestBody: string;
+  responseId: string;
+  responseBody: string;
+  inferredAgentType: AgentType;
+  isNew: boolean;
+}
+
+interface ThreadJS {
+  id: string;
+  name: string;
+  body: QueryJS[] | [];
+  isBookmarked: boolean;
+  isShared: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export {
+  WorkspaceJS,
   Team,
   AgentType,
   AgentModel,
   Agent,
+  AgentJS,
   NormalizedAgents,
   Query,
   Thread,
-  NormalizedThreads
+  NormalizedThreads,
+  QueryPG,
+  ThreadPG,
+  QueryJS,
+  ThreadJS
 };

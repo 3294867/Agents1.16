@@ -7,16 +7,14 @@ import createThreadTitle from './createThreadTitle';
 import deleteQuery from './deleteQuery';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
-import getAgentByName from './getAgentByName';
-import getAgentByType from './getAgentByType';
+import getAgentIdByName from './getAgentIdByName';
 import getAgents from './getAgents';
 import getAgentsUpdatedAt from './getAgentsUpdatedAt';
 import getAvailableAgentByType from './getAvailableAgentByType';
 import getAvailableAgents from './getAvailableAgents';
 import getCurrentUser from './getCurrentUser';
-import getTeamByName from './getTeamByName';
-import getTeams from './getTeams';
-import getTeamsUpdatedAt from './getTeamsUpdatedAt';
+import getWorkspaceId from './getWorkspaceId';
+import getWorkspacesUpdatedAt from './getWorkspacesUpdatedAt';
 import getThread from './getThread';
 import getThreadUpdatedAt from './getThreadUpdatedAt';
 import inferAgentType from './inferAgentType';
@@ -27,7 +25,8 @@ import signUp from './signUp';
 import updateRequestBody from './updateRequestBody';
 import updateResponseBody from './updateResponseBody';
 import updateThreadIsBookmarked from './updateThreadIsBookmarked';
-import updateThreadTitle from './updateThreadTitle';
+import updateThreadName from './updateThreadName';
+import getWorkspaces from './getWorkspaces';
 
 const controllers = {
   addAgent,
@@ -39,16 +38,15 @@ const controllers = {
   deleteQuery,
   deleteThread,
   duplicateThread,
-  getAgentByName,
-  getAgentByType,
+  getAgentIdByName,
   getAgents,
   getAgentsUpdatedAt,
   getAvailableAgentByType,
   getAvailableAgents,
   getCurrentUser,
-  getTeamByName,
-  getTeams,
-  getTeamsUpdatedAt,
+  getWorkspaceId,
+  getWorkspaces,
+  getWorkspacesUpdatedAt,
   getThread,
   getThreadUpdatedAt,
   inferAgentType,
@@ -59,7 +57,7 @@ const controllers = {
   updateRequestBody,
   updateResponseBody,
   updateThreadIsBookmarked,
-  updateThreadTitle
+  updateThreadName
 };
 
 export default controllers;
