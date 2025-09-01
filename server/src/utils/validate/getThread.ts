@@ -6,7 +6,7 @@ const getThread = (threadId: string ): string | null => {
   }
 
   if (!utils.regex.isUuidV4(threadId)) {
-    return "Incorrect format of thread id. Expected UUID_V4";
+    return "Incorrect format of threadId. Expected UUID_V4";
   }
 
   return null;

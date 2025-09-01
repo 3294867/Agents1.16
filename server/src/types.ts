@@ -1,3 +1,5 @@
+type UserRole = 'admin' | 'editor' | 'viewer' 
+
 interface WorkspacePG {
   id: string;
   name: string;
@@ -6,15 +8,17 @@ interface WorkspacePG {
   updated_at: Date;
 }
 
-interface WorkspaceBE {
+interface WorkspaceFE {
   id: string;
   name: string;
   description: string;
+  userRole: UserRole;
+  agentIds: string[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-type AgentType = 'general_assistant' | 'data_analyst' | 'copywriter' | 'devops_helper'
+type AgentType = 'general' | 'data-analyst' | 'copywriter' | 'devops-helper'
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
 interface AgentPG {
@@ -30,15 +34,16 @@ interface AgentPG {
   updated_at: Date;
 }
 
-interface AgentBE {
+interface AgentFE {
   id: string;
   name: string;
   type: AgentType;
   model: AgentModel;
   systemInstructions: string;
-  stack: string[] | null;
+  stack: string[] | [];
   temperature: number;
   webSearch: boolean;
+  workspaceId: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -58,34 +63,36 @@ interface ThreadPG {
   updated_at: Date;
 }
 
-type ReqResBE = {
+type ReqResFE = {
   requestId: string;
   requestBody: string;
   responseId: string;
   responseBody: string;
   inferredAgentType: AgentType;
-  isNew: boolean;
 }
 
-interface ThreadBE {
+interface ThreadFE {
   id: string;
   name: string;
-  body: ReqResBE[] | [];
+  body: ReqResFE[] | [];
   isBookmarked: boolean;
   isShared: boolean;
+  isActive: boolean;
+  agentId: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export {
+export type {
+  UserRole,
   WorkspacePG,
-  WorkspaceBE,
+  WorkspaceFE,
   AgentType,
   AgentModel,
   AgentPG,
-  AgentBE,
+  AgentFE,
   ReqResPG,
   ThreadPG,
-  ReqResBE,
-  ThreadBE
+  ReqResFE,
+  ThreadFE
 };

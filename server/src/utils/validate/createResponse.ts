@@ -8,11 +8,11 @@ const createResponse = async (agentId: string, input: string, agentModel?: Agent
   }
 
   if (!utils.regex.isUuidV4(agentId)) {
-    return "Incorrect format of agent id. Expected UUID_V4";
+    return "Incorrect format of agentId. Expected UUID_V4";
   }
 
   if (agentModel && !constants.data.agentModels.includes(agentModel)) {
-    return "Incorrect agent model. Expected: 'gpt-3.5-turbo', 'gpt-4.1', 'gpt-4o', 'gpt-4o-audio-preview' or 'chatgpt-4o'";
+    return "Incorrect agentModel. Expected: 'gpt-3.5-turbo', 'gpt-4.1', 'gpt-4o', 'gpt-4o-audio-preview' or 'chatgpt-4o'";
   }
 
   return null;

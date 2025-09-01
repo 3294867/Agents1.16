@@ -6,7 +6,7 @@ const updateResponseBody = (responseId: string, responseBody: string): string | 
   }
 
   if (!utils.regex.isUuidV4(responseId)) {
-    return "Incorrect format of response id. Expected UUID_V4";
+    return "Incorrect format of responseId. Expected UUID_V4";
   }
 
   return null;

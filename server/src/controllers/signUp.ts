@@ -94,7 +94,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     const getRootGeneralAgent = await pool.query(`
       SELECT name, type, model, system_instructions, stack, temperature, web_search
       FROM agents
-      WHERE id = ANY($1::uuid[]) AND name = 'general_assistant'::text;
+      WHERE id = ANY($1::uuid[]) AND name = 'general'::text;
     `, [ rootAgentIds ]);
     if (getRootGeneralAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);

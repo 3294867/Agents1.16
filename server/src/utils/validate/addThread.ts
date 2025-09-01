@@ -6,11 +6,11 @@ const addThread = (userId: string, agentId: string): string | null => {
   }
 
   if (!utils.regex.isUuidV4(userId)) {
-    return "Incorrect format of user id. Expected UUID_V4";
+    return "Incorrect format of userId. Expected UUID_V4";
   }
 
   if (!utils.regex.isUuidV4(agentId)) {
-    return "Incorrect format of agent id. Expected UUID_V4";
+    return "Incorrect format of agentId. Expected UUID_V4";
   }
 
   return null;

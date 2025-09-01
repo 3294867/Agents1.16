@@ -6,7 +6,7 @@ const getWorkspacesUpdatedAt = (userId: string): string | null => {
   }
 
   if (!utils.regex.isUuidV4(userId)) {
-    return "Incorrect format of user id. Expected UUID_V4";
+    return "Incorrect format of userId. Expected UUID_V4";
   }
 
   return null;

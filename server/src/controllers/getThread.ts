@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { client, pool } from "../index";
 import utils from '../utils';
-import { ReqResBE, ReqResPG, ThreadBE } from '../types';
+import { ReqResFE, ReqResPG, ThreadFE } from '../types';
 
 interface RequestBody {
   threadId: string;
@@ -21,7 +21,13 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (getThread.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread");
 
-    const mappedThread: ThreadBE = {
+    const getAgentId = await pool.query(`
+      SELECT agent_id FROM agent_thread
+      WHERE thread_id = $1::uuid;
+    `, [ threadId ]);
+    if (getAgentId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent id");
+
+    const thread: ThreadFE = {
       id: getThread.rows[0].id,
       name: getThread.rows[0].name,
       body: getThread.rows[0].body.map((i: ReqResPG) => {
@@ -31,17 +37,18 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           responseId: i.response_id,
           responseBody: null,
           inferredAgentType: null,
-          isNew: false
         };
       }),
       isBookmarked: getThread.rows[0].is_bookmarked,
       isShared: getThread.rows[0].is_shared,
+      isActive: false,
+      agentId: getAgentId.rows[0].agent_id, 
       createdAt: getThread.rows[0].created_at,
       updatedAt: getThread.rows[0].updated_at
     };
 
     const bodyWithDetails = await Promise.all(
-      mappedThread.body.map(async (i: ReqResBE) => {
+      thread.body.map(async (i: ReqResFE) => {
         const getRequestBody = await pool.query(`
           SELECT body
           FROM requests
@@ -53,7 +60,7 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           model: "gpt-3.5-turbo",
           input: `
             Choose the most appropriate agent type for the following question: ${getRequestBody.rows[0].body}.
-            Available agent types: 'general_assistant', 'data_analyst', 'copywriter', 'devops_helper'.
+            Available agent types: 'general', 'data-analyst', 'copywriter', 'devops-helper'.
             Return only agent type in lower case.
           `,
         });
@@ -71,17 +78,16 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           requestBody: getRequestBody.rows[0].body,
           responseId: i.responseId,
           responseBody: getResponseBody.rows[0].body,
-          inferredAgentType: inferAgentType.output_text,
-          isNew: false
-        } as ReqResBE
+          inferredAgentType: inferAgentType.output_text
+        } as ReqResFE
       })
     );
 
-    mappedThread.body = bodyWithDetails as ReqResBE[];
+    thread.body = bodyWithDetails as ReqResFE[];
 
     res.status(200).json({
       message: "Thread fetched",
-      data: { thread: mappedThread }
+      data: { thread }
     });
   } catch (error: any) {
     console.error("Failed to fetch thread: ", error.stack || error );

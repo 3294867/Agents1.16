@@ -8,7 +8,7 @@ const getAvailableAgentByType = (agentType: AgentType, ): string | null => {
   }
 
   if (!constants.data.agentTypes.includes(agentType)) {
-    return "Incorrect agent type. Expected: 'general_assistant', 'data_analyst', 'copywriter' or 'devops_helper";
+    return "Incorrect agentType. Expected: 'general', 'data-analyst', 'copywriter' or 'devops-helper";
   }
 
   return null;

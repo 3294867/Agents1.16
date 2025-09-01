@@ -4,11 +4,10 @@ import Button from 'src/components/button';
 
 interface Props {
   userId: string;
-  addedTeams: Team[];
 }
 
 {/* TODO */}
-const AddTeamDialog = memo(({ userId, addedTeams }: Props) => {
+const AddWorkspaceDialog = memo(({ userId }: Props) => {
   return (
     <Button variant='outline' size='icon'>
       <Icons.Add />
@@ -16,4 +15,4 @@ const AddTeamDialog = memo(({ userId, addedTeams }: Props) => {
   );
 });
 
-export default AddTeamDialog;
+export default AddWorkspaceDialog;

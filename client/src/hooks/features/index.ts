@@ -1,5 +1,5 @@
 import useHandleRedirect from './useHandleRedirect';
-import useHandleTeams from './useHandleLayoutData';
+import useHandleWorkspaces from './useHandleWorkspaces';
 import useHandleAgentLayout from './useHandleAgentLayout';
 import useHandleAgentData from './useHandleAgentData';
 import useHandleAvailableAgents from './useHandleAvailableAgents';
@@ -14,7 +14,7 @@ import useHandleThreadPostionY from './useHandleThreadPostionY';
 
 export const hooks = {
   useHandleRedirect,
-  useHandleTeams,
+  useHandleWorkspaces,
   useHandleAgentData,
   useHandleAvailableAgents,
   useHandleThread,

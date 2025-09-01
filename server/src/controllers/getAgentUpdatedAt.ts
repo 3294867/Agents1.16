@@ -1,0 +1,33 @@
+import { Request, Response } from "express";
+import { pool } from "../index";
+import utils from '../utils';
+
+interface RequestBody {
+  agentId: string;
+}
+
+const getAgentUpdatedAt = async (req: Request, res: Response): Promise<void> => {
+  const { agentId } = req.body as RequestBody;
+
+  const validationError = utils.validate.getAgentUpdatedAt(agentId);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
+
+  try {
+    const getAgentUpdatedAt = await pool.query(`
+      SELECT updated_at
+      FROM agents
+      WHERE id = $1::uuid;
+    `, [ agentId ]);
+    if (getAgentUpdatedAt.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent updated at");
+
+    res.status(200).json({
+      message: "Agent updatedAt fetched",
+      data: { agentUpdatedAt: getAgentUpdatedAt.rows[0].updated_at }
+    });
+  } catch (error: any) {
+    console.error("Failed to get agent updated at: ", error.stack || error);
+    utils.sendResponse(res, 500, "Internal server error");
+  }
+};
+
+export default getAgentUpdatedAt;

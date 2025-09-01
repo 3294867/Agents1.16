@@ -37,12 +37,12 @@ const getAvailableAgentByType = async (req: Request, res: Response): Promise<voi
     res.status(200).json({
       message: "Available agent fetched",
       data: { agentData: {
-        name: getAgent.rows[0].name,
-        model: getAgent.rows[0].model,
-        systemInstructions: getAgent.rows[0].system_instructions,
-        stack: getAgent.rows[0].stack,
-        temperature: getAgent.rows[0].temperature,
-        webSearch: getAgent.rows[0].web_search
+          name: getAgent.rows[0].name,
+          model: getAgent.rows[0].model,
+          systemInstructions: getAgent.rows[0].system_instructions,
+          stack: getAgent.rows[0].stack,
+          temperature: getAgent.rows[0].temperature,
+          webSearch: getAgent.rows[0].web_search
         }
       }
     });

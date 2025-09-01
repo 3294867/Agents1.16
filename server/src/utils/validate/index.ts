@@ -9,8 +9,7 @@ import deleteQuery from './deleteQuery';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
 import getAgentIdByName from './getAgentIdByName';
-import getAgents from './getAgents';
-import getAgentsUpdatedAt from './getAgentsUpdatedAt';
+import getAgentUpdatedAt from './getAgentUpdatedAt';
 import getAvailableAgentByType from './getAvailableAgentByType';
 import getThread from './getThread';
 import getThreadUpdatedAt from './getThreadUpdatedAt';
@@ -24,6 +23,7 @@ import updateRequestBody from './updateRequestBody';
 import updateResponseBody from './updateResponseBody';
 import updateThreadIsBookmarked from './updateThreadIsBookmarked';
 import updateThreadName from './updateThreadName';
+import getWorkspaceAgents from './getWorkspaceAgents';
 
 const validate = {
   addAgent,
@@ -36,8 +36,8 @@ const validate = {
   getAgentIdByName,
   duplicateThread,
   createThreadTitle,
-  getAgents,
-  getAgentsUpdatedAt,
+  getWorkspaceAgents,
+  getAgentUpdatedAt,
   getAvailableAgentByType,
   getWorkspaceId,
   getWorkspaces,

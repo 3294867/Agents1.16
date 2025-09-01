@@ -2,7 +2,7 @@ import { Outlet } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
-import Sidebar from 'src/features/layout/sidebar';
+import Sidebar from 'src/features/workspace/sidebar';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import styles from './Layout.module.css';
@@ -11,20 +11,20 @@ interface Props {
   userId: string;
 }
 
-const Layout = ({ userId }: Props) => {
+const Workspace = ({ userId }: Props) => {
   const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });
-  const { teams, error, isLoading } = hooks.features.useHandleTeams({ userId });
+  const { workspaces, error, isLoading } = hooks.features.useHandleWorkspaces({ userId });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!teams) return <Error error='Something went wrong. Try again later.' />;
+  if (!workspaces) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className={styles.layoutWrapper}>
       <div className={styles.layoutContainer}>
         <Sidebar
           userId={userId}
-          teams={teams}
+          workspaces={workspaces}
           isMobile={isMobile}
         />
         <Outlet />
@@ -44,7 +44,7 @@ const Layout = ({ userId }: Props) => {
   );
 };
 
-export default Layout;
+export default Workspace;
 
 const Loading = () => {
   return (

@@ -30,11 +30,11 @@ const getWorkspacesUpdatedAt = async (req: Request, res: Response): Promise<void
 
     const workspacesData: { id: string, updatedAt: Date }[] = [];
     for (const item of getWorkspacesData.rows) {
-      const mappedItem = {
+      const workspaceData = {
         id: item.id,
         updatedAt: item.updated_at
       };
-      workspacesData.push(mappedItem);
+      workspacesData.push(workspaceData);
     }
     
     res.status(200).json({

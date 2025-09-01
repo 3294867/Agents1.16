@@ -91,7 +91,10 @@ const addQuery = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Query added",
-      data: { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }
+      data: {
+        requestId: addRequest.rows[0].id,
+        responseId: addResponse.rows[0].id
+      }
     });
   } catch (error: any) {
     try {

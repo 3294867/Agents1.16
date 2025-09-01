@@ -1,42 +1,42 @@
 import { memo } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import AddWorkspaceDialog from './AddWorkspaceDialog';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
-import AddTeamDialog from './addTeamDialog';
-import { Team } from 'src/types';
 import styles from './Teams.module.css';
+import { WorkspaceFE } from 'src/types';
 
 interface Props {
   userId: string;
-  teams: Team[];
+  workspaces: WorkspaceFE[];
 }
 
-const Teams = memo(({ userId, teams }: Props) => {
-  const { teamName } = useParams();
+const Workspaces = memo(({ userId, workspaces }: Props) => {
+  const { workspaceName } = useParams();
   
   return (
     <div className={styles.teamsContainer}>
-      {teams.map(t => (
-        <Tooltip.Root key={t.name}>
+      {workspaces.map(w => (
+        <Tooltip.Root key={w.name}>
           <Tooltip.Trigger asChild>
-            <Link prefetch='intent' to={`/${t.name}`}> 
+            <Link prefetch='intent' to={`/${w.name}`}> 
               <Button
                 variant='outline'
                 size='icon'
-                className={`${teamName === t.name ?  styles.teamButton: ''}`}
+                className={`${workspaceName === w.name ?  styles.teamButton: ''}`}
                 >
-                {t.name[0].toUpperCase()}
+                {w.name[0].toUpperCase()}
               </Button>
             </Link>
           </Tooltip.Trigger>
           <Tooltip.Content side='right' sideOffset={12}>
-            {t.name}
+            {w.name}
           </Tooltip.Content>
         </Tooltip.Root>
       ))}
-      <AddTeamDialog userId={userId} addedTeams={teams} />
+      <AddWorkspaceDialog userId={userId} />
     </div>
   );
 });
 
-export default Teams;
+export default Workspaces;

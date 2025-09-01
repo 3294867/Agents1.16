@@ -32,7 +32,7 @@ CREATE TABLE workspaces (
 CREATE TABLE workspace_user (
   workspace_id UUID NOT NULL,
   user_id UUID NOT NULL,
-  role TEXT NOT NULL DEFAULT 'viewer' CHECK (role IN ('admin', 'editor', 'viewer')),
+  user_role TEXT NOT NULL DEFAULT 'viewer' CHECK (user_role IN ('admin', 'editor', 'viewer')),
   CONSTRAINT workspace_user_pkey PRIMARY KEY (workspace_id, user_id),
   CONSTRAINT workspace_user_workspace_id_fkey FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT workspace_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -184,19 +184,19 @@ VALUES
   ('79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid, 'personal', 'Root personal workspace'),
   ('bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid, 'personal', 'Test personal workspace');
 
-INSERT INTO workspace_user (workspace_id, user_id, role)
+INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid AND u.name = 'root';
 
-INSERT INTO workspace_user (workspace_id, user_id, role)
+INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = 'bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid AND u.name = 'test';
 
 INSERT INTO agents (id, name, type, model, system_instructions, stack, temperature, web_search)
 VALUES
-  ('18fcb91d-cd74-423d-a6be-09e705529304'::uuid, 'general_assistant', 'general_assistant', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
-  ('f7e5617e-538b-487e-85f7-b6533a179011'::uuid, 'data_analyst', 'data_analyst', 'gpt-3.5-turbo', 'You are a data analyst', ARRAY['sql','python']::text[], 0.2, TRUE),
+  ('18fcb91d-cd74-423d-a6be-09e705529304'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('f7e5617e-538b-487e-85f7-b6533a179011'::uuid, 'data-analyst', 'data-analyst', 'gpt-3.5-turbo', 'You are a data analyst', ARRAY['sql','python']::text[], 0.2, TRUE),
   ('b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid, 'copywriter', 'copywriter', 'gpt-3.5-turbo', 'You are a marketing copywriter', ARRAY['seo','content']::text[], 0.7, FALSE),
-  ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops_helper', 'devops_helper', 'gpt-3.5-turbo', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
-  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general_assistant', 'general_assistant', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
+  ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops-helper', 'devops-helper', 'gpt-3.5-turbo', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
+  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
 
 INSERT INTO user_agent (user_id, agent_id)
 VALUES
@@ -236,3 +236,8 @@ FROM workspaces w, agents a
 WHERE w.id = 'bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid
   AND a.id = 'd9dcde55-7a55-44de-992a-f255658483eb';
 
+INSERT INTO threads (id, name)
+VALUES ('326cf95d-4c0c-468f-98e3-8940d590e9bf', 'New Chat');
+
+INSERT INTO agent_thread (agent_id, thread_id)
+VALUES ('18fcb91d-cd74-423d-a6be-09e705529304', '326cf95d-4c0c-468f-98e3-8940d590e9bf');
