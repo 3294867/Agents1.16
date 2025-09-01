@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { client } from '..';
 import utils from '../utils';
 
 interface RequestBody {
@@ -9,21 +10,27 @@ const inferAgentType = async (req: Request, res: Response): Promise<void> => {
   const { input }: RequestBody = req.body;
 
   const validationError = utils.validate.inferAgentType(input);
-  if (!validationError) return utils.sendResponse(res, 400, validationError);
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const apiResponse = await utils.inferAgentType(input);
-    if (!apiResponse) return utils.sendResponse(res, 503, "Failed to fetch appropriate agent type");
-
-    res.status(200).json({
-      message: "apiResponse created",
-      data: { response: apiResponse }
-    });
+  const inferAgentType = await client.responses.create({
+    model: "gpt-3.5-turbo",
+    input: `
+      Choose the most appropriate agent type for the following question: ${input}.
+      Available agent types: 'general_assistant', 'data_analyst', 'copywriter', 'devops_helper'.
+      Return only agent type in lower case.
+    `,
+  });
+  if (!inferAgentType.output_text) return utils.sendResponse(res, 503, "Failed to infer agent type");
     
+  res.status(200).json({
+    message: "Agent type inferred",
+    data: { agentType: inferAgentType }
+  });
   } catch (error: any) {
-    console.error("Failed to fetch appropriate agent type: ", error.stack || error);
+    console.error("Failed to infer agent type: ", error.stack || error);
     utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default inferAgentType;

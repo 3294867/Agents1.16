@@ -24,8 +24,12 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
   try {
     await pool.query(`BEGIN`); 
 
-    const selectedExistingUser = await pool.query(`SELECT id FROM users WHERE name = $1::text;`, [ name ]);
-    if (selectedExistingUser.rows.length === 1) {
+    const getExistingUser = await pool.query(`
+      SELECT id
+      FROM users
+      WHERE name = $1::text;
+    `, [ name ]);
+    if (getExistingUser.rows.length === 1) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 409, "User exists");
     }
@@ -34,57 +38,70 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     /** User */
-    const insertedUser = await pool.query(`
+    const addUser = await pool.query(`
       INSERT INTO users (name, password, apiKey)
       VALUES ($1::text, $2::text, $3::text)
       RETURNING id;
     `, [ name, hashedPassword, apiKey ]);
-    if (insertedUser.rows.length === 0) {
+    if (addUser.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add user");
     }
 
-    /** Personal Workspace */
-    const insertedWorkspace = await pool.query(`INSERT INTO workspaces (name, description) VALUES ('personal', 'Personal workspace') RETURNING id;`);
-    if (insertedWorkspace.rows.length === 0) {
+    /** Workspace */
+    const addWorkspace = await pool.query(`
+      INSERT INTO workspaces (name, description)
+      VALUES ('personal', 'Personal workspace')
+      RETURNING id;
+    `);
+    if (addWorkspace.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add workspace");
     }
 
-    const insertedWorkspaceUser =  await pool.query(`INSERT INTO workspace_user (workspace_id, user_id) VALUES ($1::uuid, $2::uuid) RETURNING workspace_id;`, [
-      insertedWorkspace.rows[0].id, insertedUser.rows[0].id
-    ]);
-    if (insertedWorkspaceUser.rows.length === 0) {
+    const addWorkspaceUser = await pool.query(`
+      INSERT INTO workspace_user (workspace_id, user_id)
+      VALUES ($1::uuid, $2::uuid)
+      RETURNING workspace_id;
+    `, [ addWorkspace.rows[0].id, addUser.rows[0].id ]);
+    if (addWorkspaceUser.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add workspace_user");
+      return utils.sendResponse(res, 503, "Failed to add workspace user");
     }
 
-    /** General Agent */
-    const selectedRootUserId = await pool.query(`SELECT id FROM users WHERE name = 'root';`);
-    if (selectedRootUserId.rows.length === 0) {
+    /** Agent */
+    const getRootUserId = await pool.query(`
+      SELECT id
+      FROM users
+      WHERE name = 'root'::text;
+    `);
+    if (getRootUserId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to fetch root user id");
     }
 
-    const selectedRootAgentIds = await pool.query(`SELECT agent_id FROM user_agent WHERE user_id = $1::uuid;`, [
-      selectedRootUserId.rows[0].id
-    ]);
-    if (selectedRootAgentIds.rows.length === 0) {
+    const getRootAgentIds = await pool.query(`
+      SELECT agent_id
+      FROM user_agent
+      WHERE user_id = $1::uuid;
+    `, [ getRootUserId.rows[0].id ]);
+    if (getRootAgentIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to fetch root agents ids");
     }
-    const mappedSelectedRootAgentIds = selectedRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
     
-    const selectedRootGeneralAgent = await pool.query(`
+    const getRootGeneralAgent = await pool.query(`
       SELECT name, type, model, system_instructions, stack, temperature, web_search
-      FROM agents WHERE id = ANY($1::uuid[]) AND name = 'general_assistant';
-    `, [ mappedSelectedRootAgentIds ]);
-    if (selectedRootGeneralAgent.rows.length === 0) {
+      FROM agents
+      WHERE id = ANY($1::uuid[]) AND name = 'general_assistant'::text;
+    `, [ rootAgentIds ]);
+    if (getRootGeneralAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to fetch agent data");
     }
     
-    const insertedGeneralAgent = await pool.query(`
+    const addGeneralAgent = await pool.query(`
       INSERT INTO agents (
         name,
         type,
@@ -94,7 +111,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
         temperature,
         web_search
       )
-      SELECT
+      VALUES (
         $1::text,
         $2::text,
         $3::varchar(20),
@@ -102,44 +119,45 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
         $5::text[],
         $6::float,
         $7::boolean
+      )
       RETURNING id;
     `, [
-      selectedRootGeneralAgent.rows[0].name,
-      selectedRootGeneralAgent.rows[0].type,
-      selectedRootGeneralAgent.rows[0].model,
-      selectedRootGeneralAgent.rows[0].system_instructions,
-      selectedRootGeneralAgent.rows[0].stack,
-      selectedRootGeneralAgent.rows[0].temperature,
-      selectedRootGeneralAgent.rows[0].web_search,
-
+      getRootGeneralAgent.rows[0].name,
+      getRootGeneralAgent.rows[0].type,
+      getRootGeneralAgent.rows[0].model,
+      getRootGeneralAgent.rows[0].system_instructions,
+      getRootGeneralAgent.rows[0].stack,
+      getRootGeneralAgent.rows[0].temperature,
+      getRootGeneralAgent.rows[0].web_search,
     ]);
-    if (insertedGeneralAgent.rows.length === 0) {
+    if (addGeneralAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add general agent");
     }
 
-    const insertedUserAgent = await pool.query(`INSERT INTO user_agent (user_id, agent_id) VALUES ($1::uuid, $2::uuid) RETURNING user_id;`, [
-      insertedUser.rows[0].id, insertedGeneralAgent.rows[0].id
-    ]);
-    if (insertedUserAgent.rows.length === 0) {
+    const addUserAgent = await pool.query(`
+      INSERT INTO user_agent (user_id, agent_id)
+      VALUES ($1::uuid, $2::uuid)
+      RETURNING user_id;
+    `, [ addUser.rows[0].id, addGeneralAgent.rows[0].id ]);
+    if (addUserAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add agent");
+      return utils.sendResponse(res, 503, "Failed to add user agent");
     }
     
     await pool.query(`COMMIT`);
 
-    req.session.userId = insertedUser.rows[0].id;
-    res.json({ success: true, userId: insertedUser.rows[0].id })
-
+    req.session.userId = addUser.rows[0].id;
+    res.json({ success: true, userId: addUser.rows[0].id })
   } catch (error: any) {
     try {
-      await pool.query(`ROLLLBACK`);
+      await pool.query(`ROLLBACK`);
     } catch (rollbackError: any) {
       console.error("Rollback error: ", rollbackError.stack || error);
     }
     console.error("Failed to create user: ", error.stack || error);
     utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default signUp;

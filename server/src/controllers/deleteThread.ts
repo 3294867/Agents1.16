@@ -15,28 +15,44 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
   try {
     await pool.query(`BEGIN`);
     
-    const deletedThread = await pool.query(`DELETE FROM threads WHERE id = $1::uuid RETURNING id;`, [ threadId ]);
-    if (deletedThread.rows.length === 0) {
+    const deleteThread = await pool.query(`
+      DELETE FROM threads
+      WHERE id = $1::uuid
+      RETURNING id;
+    `, [ threadId ]);
+    if (deleteThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to delete thread");
     }
 
-    const deletedAgentThread = await pool.query(`DELETE FROM agent_thread WHERE thread_id = $1::uuid RETURNING agent_id;`, [ threadId ]);
-    if (deletedAgentThread.rows.length === 0) {
+    const deleteAgentThread = await pool.query(`
+      DELETE FROM agent_thread
+      WHERE thread_id = $1::uuid
+      RETURNING agent_id;
+    `, [ threadId ]);
+    if (deleteAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete agent_thread");
+      return utils.sendResponse(res, 503, "Failed to delete agent thread");
     }
 
-    const deletedThreadRequest = await pool.query(`DELETE FROM thread_request WHERE thread_id = $1::uuid RETURNING thread_id;`, [ threadId ]);
-    if (deletedThreadRequest.rows.length === 0) {
+    const deleteThreadRequest = await pool.query(`
+      DELETE FROM thread_request
+      WHERE thread_id = $1::uuid
+      RETURNING thread_id;
+    `, [ threadId ]);
+    if (deleteThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread_request");
+      return utils.sendResponse(res, 503, "Failed to delete thread request");
     }
 
-    const deletedThreadResponse = await pool.query(`DELETE FROM thread_response WHERE thread_id = $1::uuid RETURNING thread_id;`, [ threadId ]);
-    if (deletedThreadResponse.rows.length === 0) {
+    const deleteThreadResponse = await pool.query(`
+      DELETE FROM thread_response
+      WHERE thread_id = $1::uuid
+      RETURNING thread_id;
+    `, [ threadId ]);
+    if (deleteThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread_response");
+      return utils.sendResponse(res, 503, "Failed to delete thread response");
     }
 
     await pool.query(`COMMIT`);

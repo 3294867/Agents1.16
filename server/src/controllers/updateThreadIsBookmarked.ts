@@ -11,19 +11,22 @@ const updateThreadIsBookmarked = async (req: Request, res: Response): Promise<vo
   const { threadId, isBookmarked }: RequestBody = req.body;
 
   const validationError = utils.validate.updateThreadIsBookmarked(threadId, isBookmarked);
-  if (validationError) return utils.sendResponse(res, 400, validationError)
+  if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const updatedThread = await pool.query(`UPDATE threads SET is_bookmarked = $1::boolean WHERE id = $2::uuid RETURNING id;`, [
-      isBookmarked, threadId
-    ]);
-    if (updatedThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update 'isBookmarked' property")
+    const updateThread = await pool.query(`
+      UPDATE threads
+      SET is_bookmarked = $1::boolean
+      WHERE id = $2::uuid
+      RETURNING id;
+    `, [ isBookmarked, threadId ]);
+    if (updateThread.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update thread 'isBookmarked' property");
 
-    utils.sendResponse(res, 200, "'isBookmarked' property of the thread updated");
+    utils.sendResponse(res, 200, "Thread 'isBookmarked' property updated");
   } catch (error: any) {
-    console.error("Failed to update 'isBookmarked' property of the thread: ", error.stack || error);
+    console.error("Failed to update thread 'isBookmarked' property: ", error.stack || error);
     utils.sendResponse(res, 500, "Internal server error");
   }
-}
+};
 
 export default updateThreadIsBookmarked;

@@ -18,17 +18,17 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`BEGIN`);
 
     /** Get agent from the root */
-    const selectedRootAgent = await pool.query(`
+    const getRootAgent = await pool.query(`
       SELECT name, type, model, system_instructions, stack, temperature, web_search
       FROM agents WHERE id = $1::uuid;
     `, [ rootAgentId ]);
-    if (selectedRootAgent.rows.length === 0) {
+    if (getRootAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent");
+      return utils.sendResponse(res, 404, "Failed to get root agent");
     }
 
     /** Add agent for the user */
-    const insertedAgent = await pool.query(`
+    const addAgent = await pool.query(`
       INSERT INTO agents (
         name,
         type,
@@ -49,37 +49,37 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
       )
       RETURNING id;
     `, [
-      selectedRootAgent.rows[0].name,
-      selectedRootAgent.rows[0].type,
-      selectedRootAgent.rows[0].model,
-      selectedRootAgent.rows[0].system_instructions,
-      selectedRootAgent.rows[0].stack,
-      selectedRootAgent.rows[0].temperature,
-      selectedRootAgent.rows[0].web_search,
+      getRootAgent.rows[0].name,
+      getRootAgent.rows[0].type,
+      getRootAgent.rows[0].model,
+      getRootAgent.rows[0].system_instructions,
+      getRootAgent.rows[0].stack,
+      getRootAgent.rows[0].temperature,
+      getRootAgent.rows[0].web_search,
     ]);
-    if (insertedAgent.rows.length === 0) {
+    if (addAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add agent");
     }
 
     /** Add row to workspace_agent join table */
-    const insertedWorkspaceAgent = await pool.query(`
+    const addWorkspaceAgent = await pool.query(`
       INSERT INTO workspace_agent (workspace_id, agent_id)
       VALUES ($1::uuid, $2::uuid)
       RETURNING workspace_id;
-    `,[ workspaceId, insertedAgent.rows[0].id ]);
-    if (insertedWorkspaceAgent.rows.length === 0) {
+    `,[ workspaceId, addAgent.rows[0].id ]);
+    if (addWorkspaceAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add workspace agent");
     }
 
     /** Add row to user_agent join table */
-    const insertedUserAgent = await pool.query(`
+    const addUserAgent = await pool.query(`
       INSERT INTO user_agent (user_id, agent_id)
       VALUES ($1::uuid, $2::uuid)
       RETURNING user_id;
-    `, [ userId, insertedAgent.rows[0].id ]);
-    if (insertedUserAgent.rows.length === 0) {
+    `, [ userId, addAgent.rows[0].id ]);
+    if (addUserAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add user agent");
     }

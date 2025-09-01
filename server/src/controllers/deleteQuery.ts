@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
-import { QueryPG } from '../types';
+import { ReqResPG } from '../types';
 
 interface RequestBody {
   requestId: string;
@@ -17,53 +17,79 @@ const deleteQuery = async (req: Request, res: Response): Promise<void> => {
   try {
     await pool.query(`BEGIN`);
 
-    /** Get thread id */
-    const selectedThreadId = await pool.query(`SELECT thread_id FROM thread_request WHERE request_id = $1::uuid;`, [ requestId ]);
-    if (selectedThreadId.rows.length === 0) {
+    const getThreadId = await pool.query(`
+      SELECT thread_id
+      FROM thread_request
+      WHERE request_id = $1::uuid;
+    `, [ requestId ]);
+    if (getThreadId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get thread id");
     }
 
     /** Delete request */
-    const deletedRequest = await pool.query(`DELETE FROM requests WHERE id = $1::uuid RETURNING id;`, [ requestId ]);
-    if (deletedRequest.rows.length === 0) {
+    const deleteRequest = await pool.query(`
+      DELETE FROM requests
+      WHERE id = $1::uuid
+      RETURNING id;
+    `, [ requestId ]);
+    if (deleteRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to delete request");
     }
 
-    const deleteThreadRequest = await pool.query(`DELETE FROM thread_request WHERE thread_id = $1::uuid RETURNING thread_id;`, [ selectedThreadId.rows[0].thread_id ]);
+    const deleteThreadRequest = await pool.query(`
+      DELETE FROM thread_request
+      WHERE thread_id = $1::uuid
+      RETURNING thread_id;
+    `, [ getThreadId.rows[0].thread_id ]);
     if (deleteThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread_request");
+      return utils.sendResponse(res, 503, "Failed to delete thread request");
     }
 
-    /** Delte response */
-    const deletedResponse = await pool.query(`DELETE FROM responses WHERE id = $1::uuid RETURNING id;`, [ responseId ]);
-    if (deletedResponse.rows.length === 0) {
+    /** Delete response */
+    const deleteResponse = await pool.query(`
+      DELETE FROM responses
+      WHERE id = $1::uuid
+      RETURNING id;
+    `, [ responseId ]);
+    if (deleteResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to delete response");
     }
 
-    const deleteThreadResponse = await pool.query(`DELETE FROM thread_response WHERE thread_id = $1::uuid RETURNING thread_id;`, [ selectedThreadId.rows[0].thread_id ]);
+    const deleteThreadResponse = await pool.query(`
+      DELETE FROM thread_response
+      WHERE thread_id = $1::uuid
+      RETURNING thread_id;
+    `, [ getThreadId.rows[0].thread_id ]);
     if (deleteThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread_response");
+      return utils.sendResponse(res, 503, "Failed to delete thread response");
     }
     
     /** Update thread */
-    const selectedThreadBody = await pool.query(`SELECT body FROM threads WHERE id = $1::uuid;`, [ selectedThreadId.rows[0].thread_id ]);
-    if (selectedThreadBody.rows.length === 0) {
+    const getThreadBody = await pool.query(`
+      SELECT body
+      FROM threads
+      WHERE id = $1::uuid;
+    `, [ getThreadId.rows[0].thread_id ]);
+    if (getThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get thread body");
     }
     
-    const filteredThreadBody: QueryPG[] = selectedThreadBody.rows[0].body
-      .filter((q: QueryPG) => q.request_id !== requestId);
+    const filteredThreadBody: ReqResPG[] = getThreadBody.rows[0].body
+      .filter((q: ReqResPG) => q.request_id !== requestId);
 
-    const updatedThreadBody = await pool.query(`UPDATE threads SET body = $1::jsonb WHERE id = $2::uuid RETURNING id;`,[
-      JSON.stringify(filteredThreadBody), selectedThreadId.rows[0].thread_id
-    ]);
-    if (updatedThreadBody.rows.length === 0) {
+    const updateThreadBody = await pool.query(`
+      UPDATE threads
+      SET body = $1::jsonb
+      WHERE id = $2::uuid
+      RETURNING id;
+    `, [ JSON.stringify(filteredThreadBody), getThreadId.rows[0].thread_id ]);
+    if (updateThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to update thread body");
     }

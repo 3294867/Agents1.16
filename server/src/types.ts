@@ -1,4 +1,12 @@
-interface WorkspaceJS {
+interface WorkspacePG {
+  id: string;
+  name: string;
+  description: string;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface WorkspaceBE {
   id: string;
   name: string;
   description: string;
@@ -6,20 +14,23 @@ interface WorkspaceJS {
   updatedAt: Date;
 }
 
-interface Team {
-  id: string;
-  name: string;
-  description: string;
-  userIds: string[];  
-  agentIds: string[];
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-type AgentType = 'general' | 'math' | 'geography' | 'literature'
+type AgentType = 'general_assistant' | 'data_analyst' | 'copywriter' | 'devops_helper'
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
-interface Agent {
+interface AgentPG {
+  id: string;
+  name: string;
+  type: AgentType;
+  model: AgentModel;
+  system_instructions: string;
+  stack: string[] | null;
+  temperature: number;
+  web_search: boolean;
+  created_at: Date;
+  updated_at: Date;
+}
+
+interface AgentBE {
   id: string;
   name: string;
   type: AgentType;
@@ -32,48 +43,7 @@ interface Agent {
   updatedAt: Date;
 }
 
-interface AgentJS {
-  id: string;
-  name: string;
-  type: AgentType;
-  model: AgentModel;
-  systemInstructions: string;
-  stack: string[] | null;
-  temperature: number;
-  webSearch: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface NormalizedAgents {
-  byId: Record<string, Agent>;
-  allIds: string[];
-}
-
-type Query = {
-  requestId: string;
-  requestBody: string;
-  responseId: string;
-  responseBody: string;
-}
-
-interface Thread {
-  id: string;
-  userId: string;
-  agentId: string;
-  title: string | null;
-  body: Query[] | [];
-  isBookmarked: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-interface NormalizedThreads {
-  byId: Record<string, Thread>;
-  allIds: string[];
-}
-
-type QueryPG = {
+type ReqResPG = {
   request_id: string;
   response_id: string;
 }
@@ -81,14 +51,14 @@ type QueryPG = {
 interface ThreadPG {
   id: string;
   name: string;
-  body: QueryPG[] | [];
+  body: ReqResPG[] | [];
   is_bookmarked: boolean;
   is_shared: boolean;
   created_at: Date;
   updated_at: Date;
 }
 
-type QueryJS = {
+type ReqResBE = {
   requestId: string;
   requestBody: string;
   responseId: string;
@@ -97,10 +67,10 @@ type QueryJS = {
   isNew: boolean;
 }
 
-interface ThreadJS {
+interface ThreadBE {
   id: string;
   name: string;
-  body: QueryJS[] | [];
+  body: ReqResBE[] | [];
   isBookmarked: boolean;
   isShared: boolean;
   createdAt: Date;
@@ -108,18 +78,14 @@ interface ThreadJS {
 }
 
 export {
-  WorkspaceJS,
-  Team,
+  WorkspacePG,
+  WorkspaceBE,
   AgentType,
   AgentModel,
-  Agent,
-  AgentJS,
-  NormalizedAgents,
-  Query,
-  Thread,
-  NormalizedThreads,
-  QueryPG,
+  AgentPG,
+  AgentBE,
+  ReqResPG,
   ThreadPG,
-  QueryJS,
-  ThreadJS
+  ReqResBE,
+  ThreadBE
 };

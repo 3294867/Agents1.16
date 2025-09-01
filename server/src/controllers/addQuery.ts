@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
-import { QueryPG } from '../types';
+import { ReqResPG } from '../types';
 
 interface RequestBody {
   threadId: string;
@@ -19,48 +19,70 @@ const addQuery = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`BEGIN`);
 
     /** Request */
-    const insertedRequest = await pool.query(`INSERT INTO requests (body) VALUES ($1::text) RETURNING id;`, [ requestBody ]);
-    if (insertedRequest.rows.length === 0) {
+    const addRequest = await pool.query(`
+      INSERT INTO requests (body)
+      VALUES ($1::text)
+      RETURNING id;
+    `, [ requestBody ]);
+    if (addRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add request");
     }
 
-    const insertedThreadRequest = await pool.query(`INSERT INTO thread_request (thread_id, request_id) VALUES ($1::uuid, $2::uuid) RETURNING thread_id;`, [
-      threadId, insertedRequest.rows[0].id
-    ]);
-    if (insertedThreadRequest.rows.length === 0) {
+    const addThreadRequest = await pool.query(`
+      INSERT INTO thread_request (thread_id, request_id)
+      VALUES ($1::uuid, $2::uuid)
+      RETURNING thread_id;
+    `, [ threadId, addRequest.rows[0].id ]);
+    if (addThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add thread_request");
+      return utils.sendResponse(res, 503, "Failed to add thread request");
     }
 
     /** Response */
-    const insertedResponse = await pool.query(`INSERT INTO responses (body) VALUES ($1::text) RETURNING id;`, [ responseBody ]);
-    if (insertedResponse.rows.length === 0) {
+    const addResponse = await pool.query(`
+      INSERT INTO responses (body)
+      VALUES ($1::text)
+      RETURNING id;
+    `, [ responseBody ]);
+    if (addResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add response");
     }
 
-    const insertedThreadResponse = await pool.query(`INSERT INTO thread_response (thread_id, response_id) VALUES ($1::uuid, $2::uuid) RETURNING thread_id;`, [
-      threadId, insertedResponse.rows[0].id
-    ]);
-    if (insertedThreadResponse.rows.length === 0) {
+    const addThreadResponse = await pool.query(`
+      INSERT INTO thread_response (thread_id, response_id)
+      VALUES ($1::uuid, $2::uuid)
+      RETURNING thread_id;
+    `, [ threadId, addResponse.rows[0].id ]);
+    if (addThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add thread_response");
+      return utils.sendResponse(res, 503, "Failed to add thread response");
     }
 
     /** Thread */
-    const selectedThreadBody = await pool.query(`SELECT body FROM threads WHERE id = $1::uuid;`, [ threadId ]);
-    if (selectedThreadBody.rows.length === 0) {
+    const getThreadBody = await pool.query(`
+      SELECT body
+      FROM threads
+      WHERE id = $1::uuid;
+    `, [ threadId ]);
+    if (getThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get thread");
     }
 
-    const newThreadBody: QueryPG[] = [...selectedThreadBody.rows[0].body, { request_id: insertedRequest.rows[0].id, response_id: insertedResponse.rows[0].id }];
+    const newThreadBody: ReqResPG[] = [
+      ...getThreadBody.rows[0].body,
+      { request_id: addRequest.rows[0].id, response_id: addResponse.rows[0].id }
+    ];
 
-    const updatedThread = await pool.query(`UPDATE threads SET body = $1::jsonb WHERE id = $2::uuid RETURNING id;`, [
-      JSON.stringify(newThreadBody), threadId
-    ]);
-    if (updatedThread.rows.length === 0) {
+    const updateThread = await pool.query(`
+      UPDATE threads
+      SET body = $1::jsonb
+      WHERE id = $2::uuid
+      RETURNING id;
+    `, [ JSON.stringify(newThreadBody), threadId ]);
+    if (updateThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to update thread");
     }
@@ -69,9 +91,8 @@ const addQuery = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Query added",
-      data: { requestId: insertedRequest.rows[0].id, responseId: insertedResponse.rows[0].id }
+      data: { requestId: addRequest.rows[0].id, responseId: addResponse.rows[0].id }
     });
-
   } catch (error: any) {
     try {
       await pool.query(`ROLLBACK`);

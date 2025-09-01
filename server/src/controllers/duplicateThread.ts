@@ -18,61 +18,82 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`BEGIN`);
 
     /** Get agent type from the root */
-    const selectedRootAgentId = await pool.query(`SELECT agent_id FROM agent_thread WHERE thread_id = $1::uuid`, [ publicThreadId ]);
-    if (selectedRootAgentId.rows.length === 0) {
+    const getRootAgentId = await pool.query(`
+      SELECT agent_id
+      FROM agent_thread
+      WHERE thread_id = $1::uuid;
+    `, [ publicThreadId ]);
+    if (getRootAgentId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent thread");
+      return utils.sendResponse(res, 404, "Failed to get root agent id");
     }
 
-    const selectedRootAgentType = await pool.query(`SELECT type FROM agents WHERE id = $1::uuid;`, [
-      selectedRootAgentId.rows[0].agent_id
-    ]);
-    if (selectedRootAgentType.rows.length === 0) {
+    const getRootAgentType = await pool.query(`
+      SELECT type
+      FROM agents
+      WHERE id = $1::uuid;
+    `, [ getRootAgentId.rows[0].agent_id ]);
+    if (getRootAgentType.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get agent type");
     }
 
     /** Get agent id from the user */
     let agentId: string;
-    const selectedAgentIds = await pool.query(`SELECT agent_id FROM user_agent WHERE user_id = $1::uuid;`, [ userId ]);
-    if (selectedAgentIds.rows.length === 0) {
+    const getAgentIds = await pool.query(`
+      SELECT agent_id
+      FROM user_agent
+      WHERE user_id = $1::uuid;
+    `, [ userId ]);
+    if (getAgentIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get user agent");
     }
-    const mappedSelectedAgentIds = selectedAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
+    const agentIds = getAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
     
-    const selectedAgentId = await pool.query(`SELECT id FROM agents WHERE id = ANY($1::uuid[]) AND type = $2::text;`, [
-      mappedSelectedAgentIds, selectedRootAgentType.rows[0].type
-    ]);
+    const getAgentId = await pool.query(`
+      SELECT id
+      FROM agents
+      WHERE id = ANY($1::uuid[]) AND type = $2::text;
+    `, [ agentIds, getRootAgentType.rows[0].type ]);
 
     /** Use existing agent id, if agent exists */
-    if (selectedAgentId.rows.length === 1) {
-      agentId = selectedAgentId.rows[0].id;
+    if (getAgentId.rows.length === 1) {
+      agentId = getAgentId.rows[0].id;
     /** Insert new agent, if does not exist */
     } else {
-      const selectedRootUserId = await pool.query(`SELECT id FROM users WHERE name = 'root'::text;`);
-      if (selectedRootUserId.rows.length === 0) {
+      const getRootUserId = await pool.query(`
+        SELECT id
+        FROM users
+        WHERE name = 'root'::text;
+      `);
+      if (getRootUserId.rows.length === 0) {
         await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get root user id");
       }
         
-      const selectedRootAgentIds = await pool.query(`SELECT agent_id FROM user_agent WHERE user_id = $1::uuid;`, [ selectedRootUserId.rows[0].id ]); 
-      if (selectedRootAgentIds.rows.length === 0) {
+      const getRootAgentIds = await pool.query(`
+        SELECT agent_id
+        FROM user_agent
+        WHERE user_id = $1::uuid;
+      `, [ getRootUserId.rows[0].id ]); 
+      if (getRootAgentIds.rows.length === 0) {
         await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get user agent");
       }
-      const mappedSelectedRootAgentIds = selectedRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+      const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
       
-      const selectedRootAgent = await pool.query(`
+      const getRootAgent = await pool.query(`
         SELECT name, type, model, system_instructions, stack, temperature, web_search
-        FROM agents WHERE id = ANY($1::uuid[]) AND type = $2::text;
-      `, [ mappedSelectedRootAgentIds, selectedRootAgentType.rows[0].type ]);
-      if (selectedRootAgent.rows.length === 0) {
+        FROM agents
+        WHERE id = ANY($1::uuid[]) AND type = $2::text;
+      `, [ rootAgentIds, getRootAgentType.rows[0].type ]);
+      if (getRootAgent.rows.length === 0) {
         await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get agent id");
       }
       
-      const insertedAgent = await pool.query(`
+      const addAgent = await pool.query(`
         INSERT INTO agents (
           name,
           type,
@@ -92,59 +113,63 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
           $7::boolean
         )
         RETURNING id;
-      `,[
-        selectedRootAgent.rows[0].name,
-        selectedRootAgent.rows[0].type,
-        selectedRootAgent.rows[0].model,
-        selectedRootAgent.rows[0].system_instructions,
-        selectedRootAgent.rows[0].stack,
-        selectedRootAgent.rows[0].temperature,
-        selectedRootAgent.rows[0].web_search
+      `, [
+        getRootAgent.rows[0].name,
+        getRootAgent.rows[0].type,
+        getRootAgent.rows[0].model,
+        getRootAgent.rows[0].system_instructions,
+        getRootAgent.rows[0].stack,
+        getRootAgent.rows[0].temperature,
+        getRootAgent.rows[0].web_search
       ]);
-      if (insertedAgent.rows.length === 0) {
+      if (addAgent.rows.length === 0) {
         await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 503, "Failed to add agent");
       }
 
       /** Assign new agent id */
-      agentId = insertedAgent.rows[0].id;
+      agentId = addAgent.rows[0].id;
     }
 
     /** Duplicate thread */
-    const selectedPublicThread = await pool.query(`SELECT name, body FROM threads WHERE id = $1::uuid`, [ publicThreadId ]);
-    if (selectedPublicThread.rows.length === 0) {
+    const getPublicThread = await pool.query(`
+      SELECT name, body
+      FROM threads
+      WHERE id = $1::uuid;
+    `, [ publicThreadId ]);
+    if (getPublicThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get public thread");
     }
 
-    const duplicatedThread = await pool.query(`
+    const duplicateThread = await pool.query(`
       INSERT INTO threads (
         name,
         body,
         is_shared
       )
       VALUES (
-        $3::text,
-        $4::jsonb,
+        $1::text,
+        $2::jsonb,
         TRUE
       )
       RETURNING id;
     `, [
-      selectedPublicThread.rows[0].name,
-      selectedPublicThread.rows[0].body,
+      getPublicThread.rows[0].name,
+      getPublicThread.rows[0].body,
     ]);
-    if (duplicatedThread.rows.length === 0) {
+    if (duplicateThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to duplicate thread");
     }
 
     /** Add row into agent_thread join table */
-    const insertedAgentThread = await pool.query(`
+    const addAgentThread = await pool.query(`
       INSERT INTO agent_thread (agent_id, thread_id)
       VALUES ($1::uuid, $2::uuid)
       RETURNING agent_id;
-    `, [ agentId, duplicatedThread.rows[0].id ]);
-    if (insertedAgentThread.rows[0].length === 0) {
+    `, [ agentId, duplicateThread.rows[0].id ]);
+    if (addAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add agent thread");
     }
@@ -153,9 +178,8 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       message: "Thread duplicated",
-      data: { threadId: duplicatedThread.rows[0].id }
+      data: { threadId: duplicateThread.rows[0].id }
     });
-
   } catch (error: any) {
     try {
       await pool.query(`ROLLBACK`);

@@ -16,18 +16,22 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
   try {
     await pool.query(`BEGIN`);
     
-    const insertedThread = await pool.query(`INSERT INTO threads (created_at) VALUES (NOW()) RETURNING id;`);
-    if (insertedThread.rows.length === 0) {
+    const addThread = await pool.query(`
+      INSERT INTO threads (created_at)
+      VALUES (NOW())
+      RETURNING id;
+    `);
+    if (addThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add thread");
     }
 
-    const insertedAgentThread = await pool.query(`
+    const addAgentThread = await pool.query(`
       INSERT INTO agent_thread (agent_id, thread_id)
       VALUES ($1::uuid, $2::uuid)
       RETURNING agent_id;
-    `, [ agentId, insertedThread.rows[0].id ]);
-    if (insertedAgentThread.rows.length === 0) {
+    `, [ agentId, addThread.rows[0].id ]);
+    if (addAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add agent thread");
     }
@@ -36,9 +40,8 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Thread added",
-      data: { threadId: insertedThread.rows[0].id }
+      data: { threadId: addThread.rows[0].id }
     });
-
   } catch (error: any) {
     try {
       await pool.query(`ROLLBACK`);

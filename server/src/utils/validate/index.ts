@@ -1,4 +1,4 @@
-import inferAgentType from '../inferAgentType';
+import inferAgentType from './inferAgentType';
 import addAgent from './addAgent';
 import addPublicThread from './addPublicThread';
 import addQuery from './addQuery';
