@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
-import { AgentFE } from '../types';
 
 interface RequestBody {
   workspaceId: string;

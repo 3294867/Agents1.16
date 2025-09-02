@@ -3,8 +3,7 @@ import initialize from 'src/storage/indexedDB/initialize';
 import addWorkspaces from 'src/storage/indexedDB/addWorkspaces';
 import addAgents from 'src/storage/indexedDB/storeAgents';
 import getAgents from 'src/storage/indexedDB/getAgents';
-import getTeamByName from 'src/storage/indexedDB/getTeamByName';
-import getAgentByName from 'src/storage/indexedDB/getAgentByName';
+import getWorkspaceId from 'src/storage/indexedDB/getWorkspaceId';
 import getAgentByType from 'src/storage/indexedDB/getAgentByType';
 import addAgent from 'src/storage/indexedDB/addAgent';
 import getThread from 'src/storage/indexedDB/getThread';
@@ -22,22 +21,25 @@ import pauseResponse from 'src/storage/indexedDB/pauseResponse';
 import getFirstQuery from 'src/storage/indexedDB/getFirstQuery';
 import updateThread from 'src/storage/indexedDB/updateThread';
 import getWorkspaces from 'src/storage/indexedDB/getWorkspaces';
-import { WorkspaceFE, AgentFE, ThreadFE } from 'src/types';
+import getAgentId from 'src/storage/indexedDB/getAgentId';
+import getAgent from 'src/storage/indexedDB/getAgent';
+import { Workspace, Agent, Thread } from 'src/types';
 
 const db = new Dexie('Agents') as Dexie & {
-  workspaces: EntityTable<WorkspaceFE, 'id'>,
-  agents: EntityTable<AgentFE, 'id'>,
-  threads: EntityTable<ThreadFE, 'id'>
+  workspaces: EntityTable<Workspace, 'id'>,
+  agents: EntityTable<Agent, 'id'>,
+  threads: EntityTable<Thread, 'id'>
 };
 
 const indexedDB = {
   initialize,
   getWorkspaces,
+  getAgent,
   getAgents,
   addWorkspaces,
   addAgents,
-  getTeamByName,
-  getAgentByName,
+  getWorkspaceId,
+  getAgentId,
   getAgentByType,
   addAgent,
   getThread,
@@ -53,7 +55,7 @@ const indexedDB = {
   updateThreadIsBookmarked,
   pauseResponse,
   getFirstQuery,
-  updateThread
+  updateThread,
 };
 
 export default indexedDB;

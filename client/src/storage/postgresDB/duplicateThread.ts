@@ -16,7 +16,7 @@ const duplicateThread = async ({ publicThreadId, newThreadId, userId, agentId }:
   
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error (`Failed to duplicate thread: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(`Failed to duplicate thread: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const data: { message: string, data: Thread | null } = await response.json();

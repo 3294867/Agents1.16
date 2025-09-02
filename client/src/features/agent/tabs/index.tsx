@@ -2,17 +2,17 @@ import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Tab from './Tab';
 import AddTab from './AddTab';
-import { Agent, Team } from 'src/types';
 
 interface Props {
-  userId: string;
-  team: Team;
-  agent: Agent;
+  workspaceId: string;
+  workspaceName: string;
+  agentId: string;
+  agentName: string;
 }
 
-const Tabs = ({ userId, team, agent }: Props) => {
+const Tabs = ({ workspaceId, workspaceName, agentId, agentName }: Props) => {
   const { threadId: currentThreadId } = useParams();
-  const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ teamName: team.name, agentName: agent.name });
+  const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ workspaceName, agentName });
   if (!tabs || !currentThreadId) return null;
 
   return (
@@ -20,8 +20,8 @@ const Tabs = ({ userId, team, agent }: Props) => {
       {tabs.map(t => (
         <Tab
           key={t.id}
-          team={team}
-          agent={agent}
+          workspaceName={workspaceName}
+          agentName={agentName}
           tab={t}
           tabs={tabs}
           currentThreadId={currentThreadId}
@@ -29,9 +29,10 @@ const Tabs = ({ userId, team, agent }: Props) => {
         />
       ))}
       <AddTab
-        userId={userId}
-        team={team}
-        agent={agent}
+        workspaceId={workspaceId}
+        workspaceName={workspaceName}
+        agentId={agentId}
+        agentName={agentName}
         tabs={tabs}
         currentThreadId={currentThreadId}
         currentThreadPositionY={currentThreadPositionY}

@@ -3,14 +3,13 @@ import { pool } from '..';
 import utils from '../utils';
 
 interface RequestBody {
-  userId: string;
   agentId: string;
 }
 
 const addThread = async (req: Request, res: Response): Promise<void> => {
-  const { userId, agentId }: RequestBody = req.body;
+  const { agentId }: RequestBody = req.body;
 
-  const validationError = utils.validate.addThread(userId, agentId);
+  const validationError = utils.validate.addThread(agentId);
   if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
@@ -40,7 +39,7 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Thread added",
-      data: { threadId: addThread.rows[0].id }
+      data: addThread.rows[0].id
     });
   } catch (error: any) {
     try {

@@ -1,15 +1,15 @@
 import { Agent } from 'src/types';
 
 interface Props {
-  userId: string;
+  workspaceId: string;
 }
 
-const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
+const getWorkspaceAgents = async ({ workspaceId }: Props): Promise<Agent[]> => {
   try {
-    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-agents`, {
+    const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-workspace-agents`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId })
+      body: JSON.stringify({ workspaceId })
     });
     
     if (!response.ok) {
@@ -26,4 +26,4 @@ const getAgents = async ({ userId }: Props): Promise<Agent[]> => {
   }
 };
 
-export default getAgents;
+export default getWorkspaceAgents;

@@ -30,12 +30,12 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
     `, [ workspaceIds ]);
     if (getWorkspaces.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces");
 
-    const getWorkspaceAgents = await pool.query(`
+    const getWorkspaceAgentIds = await pool.query(`
       SELECT agent_id
       FROM workspace_agent
       WHERE workspace_id = ANY($1::uuid[]);
     `, [ workspaceIds ]); 
-    if (getWorkspaceAgents.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace agents");
+    if (getWorkspaceAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace agents");
 
     const workspaces: WorkspaceFE[] = [];
     for (const item of getWorkspaces.rows) {
@@ -45,7 +45,7 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
           name: item.name,
           description: item.description,
           userRole,
-          agentIds: getWorkspaceAgents.rows,
+          agentIds: getWorkspaceAgentIds.rows,
           createdAt: item.created_at,
           updatedAt: item.updated_at
         };

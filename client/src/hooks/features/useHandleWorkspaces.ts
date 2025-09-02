@@ -1,14 +1,14 @@
   import { useEffect, useState } from 'react';
   import indexedDB from 'src/storage/indexedDB';
   import postgresDB from 'src/storage/postgresDB';
-  import { WorkspaceFE } from 'src/types';
+  import { Workspace } from 'src/types';
 
   interface Props {
     userId: string;
   }
 
-  const useHandleWorkspaces = ({ userId }: Props): { workspaces: WorkspaceFE[] | null, error: string | null, isLoading: boolean} => {
-    const [workspaces, setWorkspaces] = useState<WorkspaceFE[] | null>(null);
+  const useHandleWorkspaces = ({ userId }: Props): { workspaces: Workspace[] | null, error: string | null, isLoading: boolean} => {
+    const [workspaces, setWorkspaces] = useState<Workspace[] | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -45,7 +45,7 @@
           setWorkspaces(getWorkspacesIDB);
           setIsLoading(false);
         } catch (error) {
-          throw new Error(`Failed to fetch workspaces: ${error}`);
+          throw new Error(`Failed to set workspaces: ${error}`);
         }
       };
       getWorkspaces();

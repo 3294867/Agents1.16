@@ -1,4 +1,26 @@
-.agentCard {
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+@media (min-width: 30rem) {
+  .wrapper {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .wrapper {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+.thumbnail {
   position: relative;
   width: 8rem;
   height: 8rem;
@@ -12,20 +34,20 @@
   border: 1px solid transparent;
 }
 
-.agentCard:hover {
+.thumbnail:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
   border-color: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-  .agentCard {
+  .thumbnail {
     width: 6rem;
     height: 6rem;
   }
 }
 
-.cardImage {
+.image {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -38,11 +60,11 @@
   transition: opacity 0.2s ease-in-out;
 }
 
-.agentCard:hover .cardImage {
+.thumbnail:hover .image {
   opacity: 0.9;
 }
 
-.cardContent {
+.content {
   position: relative;
   z-index: 1;
   padding: 0.5rem;
@@ -54,8 +76,27 @@
   );
 }
 
-.cardTitle {
+.title {
   width: 100%;
   display: flex;
   justify-content: end;
+}
+
+.contentLoading {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  padding: 0.5rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    transparent 100%
+  );
+}
+
+.loadingIcon {
+  animation: spin 1s linear infinite;
 }

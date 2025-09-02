@@ -1,8 +1,8 @@
 import { db } from 'src/storage/indexedDB';
-import { WorkspaceFE } from 'src/types';
+import { Workspace } from 'src/types';
 
 interface Props {
-  workspaces: WorkspaceFE[];
+  workspaces: Workspace[];
 }
 
 const addWorkspaces = async ({ workspaces }: Props): Promise<void> => {

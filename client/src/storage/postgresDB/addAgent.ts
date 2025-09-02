@@ -1,15 +1,16 @@
-import { Agent } from 'src/types';
+import { Agent, AddAgent } from 'src/types';
 
 interface Props {
-  agent: Agent;
+  workspaceId: string;
+  agentData: AddAgent;
 }
 
-const addAgent = async ({ agent }: Props): Promise<Agent> => {
+const addAgent = async ({ workspaceId, agentData }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/add-agent`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ agent })
+      body: JSON.stringify({ workspaceId, agentData })
     });
     
     if (!response.ok) {
@@ -18,9 +19,7 @@ const addAgent = async ({ agent }: Props): Promise<Agent> => {
     }
     
     const data: { message: string, data: Agent | null } = await response.json();
-    if (!data.data) throw new Error(data.message);
-    return data.data as Agent;
-    
+    if (data.message !== "Agent added") throw new Error(data.message);
   } catch (error) {
     throw new Error(`Failed to add agent (PostgresDB): ${error}`);
   }

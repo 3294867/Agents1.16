@@ -1,12 +1,8 @@
 import utils from '..';
 
-const addThread = (userId: string, agentId: string): string | null => {
-  if (!userId || !agentId) {
-    return "Missing required fields: userId, agentId";
-  }
-
-  if (!utils.regex.isUuidV4(userId)) {
-    return "Incorrect format of userId. Expected UUID_V4";
+const addThread = (agentId: string): string | null => {
+  if (!agentId) {
+    return "Missing required fields: agentId";
   }
 
   if (!utils.regex.isUuidV4(agentId)) {

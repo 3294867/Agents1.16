@@ -7,7 +7,7 @@ import createThreadTitle from './createThreadTitle';
 import deleteQuery from './deleteQuery';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
-import getAgentIdByName from './getAgentIdByName';
+import getAgentId from './getAgentId';
 import getAvailableAgentByType from './getAvailableAgentByType';
 import getAvailableAgents from './getAvailableAgents';
 import getCurrentUser from './getCurrentUser';
@@ -27,6 +27,8 @@ import updateThreadName from './updateThreadName';
 import getWorkspaces from './getWorkspaces';
 import getWorkspaceAgents from './getWorkspaceAgents';
 import getAgentUpdatedAt from './getAgentUpdatedAt';
+import getAgent from './getAgent';
+import getAgentNames from './getAgentNames';
 
 const controllers = {
   addAgent,
@@ -38,7 +40,7 @@ const controllers = {
   deleteQuery,
   deleteThread,
   duplicateThread,
-  getAgentIdByName,
+  getAgentId,
   getWorkspaceAgents,
   getAgentUpdatedAt,
   getAvailableAgentByType,
@@ -57,7 +59,9 @@ const controllers = {
   updateRequestBody,
   updateResponseBody,
   updateThreadIsBookmarked,
-  updateThreadName
+  updateThreadName,
+  getAgent,
+  getAgentNames
 };
 
 export default controllers;

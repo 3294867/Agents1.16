@@ -8,7 +8,7 @@ interface RequestBody {
   agentName: string;
 }
 
-const getAgentIdByName = async (req: Request, res: Response): Promise<void> => {
+const getAgentId = async (req: Request, res: Response): Promise<void> => {
   const { userId, workspaceName, agentName }: RequestBody = req.body;
 
   const validationError = utils.validate.getAgentIdByName(userId, workspaceName, agentName);
@@ -57,4 +57,4 @@ const getAgentIdByName = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default getAgentIdByName;
+export default getAgentId;

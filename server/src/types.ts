@@ -48,6 +48,16 @@ interface AgentFE {
   updatedAt: Date;
 }
 
+interface AddAgent {
+  name: string;
+  type: AgentType;
+  model: AgentModel;
+  systemInstructions: string;
+  stack: string[];
+  temperature: number;
+  webSearch: boolean
+}
+
 type ReqResPG = {
   request_id: string;
   response_id: string;
@@ -91,6 +101,7 @@ export type {
   AgentModel,
   AgentPG,
   AgentFE,
+  AddAgent,
   ReqResPG,
   ThreadPG,
   ReqResFE,

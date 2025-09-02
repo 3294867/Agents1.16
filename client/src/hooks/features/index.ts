@@ -1,8 +1,8 @@
 import useHandleRedirect from './useHandleRedirect';
 import useHandleWorkspaces from './useHandleWorkspaces';
 import useHandleAgentLayout from './useHandleAgentLayout';
-import useHandleAgentData from './useHandleAgentData';
-import useHandleAvailableAgents from './useHandleAvailableAgents';
+import useHandleAgent from './useHandleAgent';
+import useHandleAddAgentDialog from './useHandleAddAgentDialog';
 import useHandleAnimatedParagraph from './useHandleAnimatedParagraph';
 import useHandleBreakpoint from './useHandleBreakpoint';
 import useHandleQuestion from './useHandleQuestion';
@@ -11,12 +11,13 @@ import useHandleTabs from './useHandleTabs';
 import useHandleTheme from './useHandleTheme';
 import useHandleThread from './useHandleThread';
 import useHandleThreadPostionY from './useHandleThreadPostionY';
+import useHandleAgentsDropdown from './useHandleAgentsDropdown';
 
 export const hooks = {
   useHandleRedirect,
   useHandleWorkspaces,
-  useHandleAgentData,
-  useHandleAvailableAgents,
+  useHandleAgent,
+  useHandleAddAgentDialog,
   useHandleThread,
   useHandleTabs,
   useHandleBreakpoint,
@@ -26,4 +27,5 @@ export const hooks = {
   useHandleAnimatedParagraph,
   useHandleQuestion,
   useHandleThreadPostionY,
+  useHandleAgentsDropdown
 };

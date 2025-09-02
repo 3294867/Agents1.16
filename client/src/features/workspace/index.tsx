@@ -5,7 +5,7 @@ import Error from 'src/components/error';
 import Sidebar from 'src/features/workspace/sidebar';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
-import styles from './Layout.module.css';
+import styles from './Workspace.module.css';
 
 interface Props {
   userId: string;
@@ -20,8 +20,8 @@ const Workspace = ({ userId }: Props) => {
   if (!workspaces) return <Error error='Something went wrong. Try again later.' />;
 
   return (
-    <div className={styles.layoutWrapper}>
-      <div className={styles.layoutContainer}>
+    <div className={styles.workspaceWrapper}>
+      <div className={styles.workspaceContainer}>
         <Sidebar
           userId={userId}
           workspaces={workspaces}
@@ -48,8 +48,8 @@ export default Workspace;
 
 const Loading = () => {
   return (
-    <div className={styles.layoutWrapper}>
-      <div className={styles.layoutContainer}>
+    <div className={styles.workspaceWrapper}>
+      <div className={styles.workspaceContainer}>
         <aside className={styles.sidebar}>
           <div className={styles.topSection}>
             <Button variant='outline' size='icon' />

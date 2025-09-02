@@ -4,19 +4,19 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import utils from 'src/utils';
 import Icons from 'src/assets/icons';
-import { Team, Agent as AgentType, Tab as TabType} from 'src/types';
+import { Tab as TabType} from 'src/types';
 import styles from './Tab.module.css';
 
 interface Props {
-  team: Team;
-  agent: AgentType;
+  workspaceName: string;
+  agentName: string;
   tab: TabType;
   tabs: TabType[];
   currentThreadId: string;
   currentThreadPositionY: number;
 }
 
-const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
+const Tab = ({ workspaceName, agentName, tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
   const navigate = useNavigate();
   
   const handleSelectTab = async (threadId: string, agentId: string) => {
@@ -25,10 +25,10 @@ const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }
       ? { ...t, isActive: t.id === threadId }
       : t
     );
-    tabsStorage.save(team.name, agent.name, updatedTabs);
+    tabsStorage.save(workspaceName, agentName, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
-    dispatchEvent.tabsUpdated(agent.name);
+    dispatchEvent.tabsUpdated(agentName);
 
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
@@ -36,7 +36,7 @@ const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }
       positionY: currentThreadPositionY
     });
     
-    navigate(`/${team.name}/${agent.name}/${threadId}`);
+    navigate(`/${workspaceName}/${agentName}/${threadId}`);
   };
 
   const handleRemoveTab = async (e: React.MouseEvent<HTMLButtonElement>, threadId: string) => {
@@ -49,10 +49,10 @@ const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }
     if (updatedTabs.length > 0 && removedTab.isActive) {
       updatedTabs[updatedTabs.length - 1].isActive = true;
     }
-    tabsStorage.save(team.name, agent.name, updatedTabs);
+    tabsStorage.save(workspaceName, agentName, updatedTabs);
 
     /** Dispatch tabsUpdated event (Events) */
-    dispatchEvent.tabsUpdated(agent.name);
+    dispatchEvent.tabsUpdated(agentName);
 
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
@@ -61,20 +61,20 @@ const Tab = ({ team, agent, tab, tabs, currentThreadId, currentThreadPositionY }
     });
 
     if (tabs.length > 1) {
-      navigate(`/${team.name}/${agent.name}/${updatedTabs[updatedTabs.length - 1].id}`);
+      navigate(`/${workspaceName}/${agentName}/${updatedTabs[updatedTabs.length - 1].id}`);
     } else {
-      navigate(`/${team.name}/${agent.name}`);
+      navigate(`/${workspaceName}/${agentName}`);
     };
   };
   
   return (
     <a
-      href={`/${team.name}/${agent.name}/${tab.id}`}
+      href={`/${workspaceName}/${agentName}/${tab.id}`}
       className={utils.cn(styles.tab, tab.isActive ? styles.active : styles.inactive)}
       onClick={() => handleSelectTab(tab.id, tab.agentId)}
     >
       <span className={styles.title}>
-        {tab.title ?? 'New chat'}
+        {tab.name ?? 'New chat'}
       </span>
       {tabs.length > 1 && (
         <button

@@ -1,8 +1,7 @@
 import { postgresDB as auth } from "src/storage/postgresDB/auth/index";
 import getWorkspaces from 'src/storage/postgresDB/getWorkspaces';
-import getTeamByName from 'src/storage/postgresDB/getTeamByName';
-import getAgents from 'src/storage/postgresDB/getAgents';
-import getAgentByName from 'src/storage/postgresDB/getAgentByName';
+import getWorkspaceAgents from 'src/storage/postgresDB/getWorkspaceAgents';
+import getAgentId from 'src/storage/postgresDB/getAgentId';
 import getAgentByType from 'src/storage/postgresDB//getAgentByType';
 import addAgent from 'src/storage/postgresDB/addAgent';
 import getAvailableAgents from 'src/storage/postgresDB/getAvailableAgents';
@@ -21,14 +20,18 @@ import removeThreadTitle from 'src/storage/postgresDB/removeThreadTitle';
 import updatedThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
 import getThreadUpdatedAt from 'src/storage/postgresDB/getThreadUpdatedAt';
 import getAgentsUpdatedAt from 'src/storage/postgresDB/getAgentUpdatedAt';
-import getWorkspacesUpdatedAt from 'src/storage/postgresDB/getTeamsUpdatedAt';
+import getWorkspacesUpdatedAt from 'src/storage/postgresDB/getWorkspacesUpdatedAt';
+import getWorkspaceId from 'src/storage/postgresDB/getWorkspaceId';
+import getAgent from 'src/storage/postgresDB/getAgent';
+import getAgentNames from 'src/storage/postgresDB/getAgentNames';
 
 const postgresDB = {
   auth,
   getWorkspaces,
-  getTeamByName,
-  getAgents,
-  getAgentByName,
+  getWorkspaceId,
+  getWorkspaceAgents,
+  getAgent,
+  getAgentId,
   getAgentByType,
   addAgent,
   getAvailableAgents,
@@ -47,7 +50,8 @@ const postgresDB = {
   updatedThreadIsBookmarked,
   getThreadUpdatedAt,
   getAgentsUpdatedAt,
-  getWorkspacesUpdatedAt
+  getWorkspacesUpdatedAt,
+  getAgentNames
 };
 
 export default postgresDB;

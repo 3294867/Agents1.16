@@ -11,7 +11,7 @@ const getAgentByType = async ({ userId, agentType }: Props): Promise<Agent | und
     const agent = await db.agents.get({userId, type: agentType});
     return agent;
   } catch (error) {
-    throw new Error (`Failed to fetch agent (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
+    throw new Error(`Failed to fetch agent (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
   }
 };
 

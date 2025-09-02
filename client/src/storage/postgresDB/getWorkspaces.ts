@@ -1,10 +1,10 @@
-import { WorkspaceFE } from 'src/types';
+import { Workspace } from 'src/types';
 
 interface Props {
   userId: string;
 }
 
-const getWorkspaces = async ({ userId }: Props): Promise<WorkspaceFE[]> => {
+const getWorkspaces = async ({ userId }: Props): Promise<Workspace[]> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-workspaces`, {
       method: 'POST',
@@ -17,9 +17,9 @@ const getWorkspaces = async ({ userId }: Props): Promise<WorkspaceFE[]> => {
       throw new Error(`Failed to fetch workspaces (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: WorkspaceFE[] | null } = await response.json();
+    const data: { message: string, data: Workspace[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as WorkspaceFE[];
+    return data.data as Workspace[];
     
   } catch (error) {
     throw new Error(`Failed to fetch workspaces (PostgresDB): ${error}`);

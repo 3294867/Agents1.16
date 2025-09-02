@@ -14,3 +14,7 @@
   margin-bottom: 0.25rem;
   background-color: var(--border);
 }
+
+.loader {
+  animation: spin 1s linear infinite;
+}

@@ -1,15 +1,15 @@
-.teamsContainer {
+.workspacesContainer {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 7rem;
 }
 
-.teamButton {
+.workspaceButton {
   background-color: var(--accent-primary);
   transition: background-color 0.15s;
 }
 
-.teasmButton:hover {
+.workspaceButton:hover {
   background-color: var(--accent-primary-hover);
 }

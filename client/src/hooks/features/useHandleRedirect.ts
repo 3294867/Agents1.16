@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { v4 as uuidV4 } from 'uuid';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import { Agent, Team } from 'src/types';
 
 interface Props {
   userId: string;
@@ -12,57 +10,51 @@ interface Props {
 
 const useHandleRedirect = ({ userId }: Props): void => {
   const navigate = useNavigate();
-  const { teamName, agentName } = useParams();
+  const { workspaceName, agentName } = useParams();
 
   useEffect(() => {
-    if (!teamName) return;
+    if (!workspaceName) return;
     
     try {
       const redirect = async () => {
-        let team: Team | undefined;
-        team = await indexedDB.getTeamByName({ userId, teamName });
-        if (!team) team = await postgresDB.getTeamByName({ userId, teamName });
+        let workspaceId:  string | undefined;
+        workspaceId = await indexedDB.getWorkspaceId({ workspaceName });
+        if (!workspaceId) workspaceId = await postgresDB.getWorkspaceId({ userId, workspaceName });
 
-        /** Redirect from  /:teamName */
+        /** Redirect from  /:workspaceName */
         if (!agentName) {
-          navigate(`/${team.name}/general`);
+          navigate(`/${workspaceName}/general`);
           return;
         }
         
-        /** Redirect from  /:teamName/:agentName */
-        let agent: Agent | undefined;
-        agent = await indexedDB.getAgentByName({ userId, teamName, agentName });
-        if (!agent) agent = await postgresDB.getAgentByName({ userId, teamName, agentName });
+        /** Redirect from  /:workspaceName/:agentName */
+        let agentId: string | undefined;
+        agentId = await indexedDB.getAgentId({ workspaceId, agentName });
+        if (!agentId) agentId = await postgresDB.getAgentId({ userId, workspaceName, agentName });
   
-        const loadSavedTabs = tabsStorage.load(teamName, agentName);
+        const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
         if (!loadSavedTabs || loadSavedTabs.length === 0) {
-          const id = uuidV4();
-          const addThreadPGDB = await postgresDB.addThread({
-            id,
-            userId,
-            agentId: agent.id,
-          });
-          if (!addThreadPGDB) return;
-          await indexedDB.addThread({ thread: addThreadPGDB }).then(() => {
+          const { threadId, threadCreatedAt, threadUpdatedAt } = await postgresDB.addThread({ userId, agentId });
+          await indexedDB.addThread({ threadId, agentId, createdAt: threadCreatedAt, updatedAt: threadUpdatedAt }).then(() => {
             const tab = {
-              id: addThreadPGDB.id,
-              teamId: team.id,
-              agentId: agent.id,
-              title: addThreadPGDB.title,
+              id: threadId,
+              workspaceId,
+              agentId,
+              name: 'New chat',
               isActive: true
             };
-            tabsStorage.addTab(teamName, agentName, tab);
-            navigate(`/${teamName}/${agentName}/${id}`, { replace: true });
+            tabsStorage.addTab(workspaceName, agentName, tab);
+            navigate(`/${workspaceName}/${agentName}/${threadId}`, { replace: true });
           });
         } else {
-          navigate(`/${teamName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
+          navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
         }
       };
       redirect();
     } catch (error) {
       throw new Error(`Failed to redirect: ${error}`);
     }
-  },[teamName, agentName, userId]);
+  },[userId, workspaceName, agentName]);
 };
 
 export default useHandleRedirect;

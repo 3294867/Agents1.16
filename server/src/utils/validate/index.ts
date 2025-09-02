@@ -24,6 +24,9 @@ import updateResponseBody from './updateResponseBody';
 import updateThreadIsBookmarked from './updateThreadIsBookmarked';
 import updateThreadName from './updateThreadName';
 import getWorkspaceAgents from './getWorkspaceAgents';
+import getAgent from './getWorkspaceAgent';
+import getAgentNames from './getAgentNames';
+import getAvailableAgents from './getAvailableAgents';
 
 const validate = {
   addAgent,
@@ -51,7 +54,10 @@ const validate = {
   updateRequestBody,
   updateResponseBody,
   updateThreadIsBookmarked,
-  updateThreadName
+  updateThreadName,
+  getAgent,
+  getAgentNames,
+  getAvailableAgents
 };
 
 export default validate;

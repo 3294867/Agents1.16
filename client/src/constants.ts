@@ -1,7 +1,4 @@
-const agentTypes = [
-  'research',
-  'code'
-] as ('research' | 'code')[];
+const agentTypes = [ 'general', 'data-analyst', 'copywriter', 'devops-helper' ];
 
 const agentModels = [
   'gpt-4.1',

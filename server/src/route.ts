@@ -10,7 +10,8 @@ router.get("/get-current-user", controllers.getCurrentUser);
 router.post("/get-workspaces", controllers.getWorkspaces),
 router.post("/get-workspace-id", controllers.getWorkspaceId)
 router.post("/get-workspace-agents", controllers.getWorkspaceAgents);
-router.post("/get-agent-id-by-name", controllers.getAgentIdByName);
+router.post("/get-agent", controllers.getAgent);
+router.post("/get-agent-id", controllers.getAgentId);
 router.post("/add-agent", controllers.addAgent);
 router.get("/get-available-agents", controllers.getAvailableAgents);
 router.post("/get-available-agent-by-type", controllers.getAvailableAgentByType)

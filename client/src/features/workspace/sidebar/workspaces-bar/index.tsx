@@ -3,21 +3,21 @@ import { Link, useParams } from 'react-router-dom';
 import AddWorkspaceDialog from './AddWorkspaceDialog';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
-import styles from './Teams.module.css';
-import { WorkspaceFE } from 'src/types';
+import styles from './Workspaces.module.css';
+import { Workspace } from 'src/types';
 
 interface Props {
   userId: string;
-  workspaces: WorkspaceFE[];
+  workspaces: Workspace[];
 }
 
-const Workspaces = memo(({ userId, workspaces }: Props) => {
+const WorkspacesBar = memo(({ userId, workspaces }: Props) => {
   const { workspaceName } = useParams();
   
   return (
-    <div className={styles.teamsContainer}>
+    <div className={styles.workspacesContainer}>
       {workspaces.map(w => (
-        <Tooltip.Root key={w.name}>
+        <Tooltip.Root key={w.id}>
           <Tooltip.Trigger asChild>
             <Link prefetch='intent' to={`/${w.name}`}> 
               <Button
@@ -39,4 +39,4 @@ const Workspaces = memo(({ userId, workspaces }: Props) => {
   );
 });
 
-export default Workspaces;
+export default WorkspacesBar;

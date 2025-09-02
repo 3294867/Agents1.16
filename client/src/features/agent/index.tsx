@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import Error from 'src/components/error';
-import Agents from './agents';
+import AgentsDropdown from './AgentsDropdown';
 import Tabs from './tabs';
 import Actions from './Actions';
 import Thread from 'src/features/thread';
@@ -14,20 +14,29 @@ interface Props {
 }
 
 const Agent = ({ userId }: Props) => {
-  const { teamName, agentName } = useParams();
-  const { team, agents, agent, error, isLoading } = hooks.features.useHandleAgentData({ userId, teamName, agentName });
+  const { workspaceName, agentName } = useParams();
+  const { agent, error, isLoading } = hooks.features.useHandleAgent({ userId, workspaceName, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!teamName || !team || !agentName || !agents || !agent) return <Error error='Something went wrong. Try again later.' />;
+  if (!workspaceName || !agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <div className={styles.wrapper}>
-          <Agents userId={userId} team={team} agents={agents} />
+          <AgentsDropdown
+            workspaceId={agent.workspaceId}
+            workspaceName={workspaceName}
+            agentName={agentName}
+          />
           <div className={styles.separator} />
-          <Tabs userId={userId} team={team} agent={agent} />
+          <Tabs
+            workspaceId={agent.workspaceId}
+            workspaceName={workspaceName}
+            agentId={agent.id}
+            agentName={agent.name}
+          />
         </div>
         <Actions userId={userId} agentId={agent.id} />
       </header>

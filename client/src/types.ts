@@ -1,6 +1,6 @@
 type UserRole = 'admin' | 'editor' | 'viewer' 
 
-interface WorkspaceFE {
+interface Workspace {
   id: string;
   name: string;
   description: string;
@@ -13,7 +13,7 @@ interface WorkspaceFE {
 type AgentType = 'general' | 'data-analyst' | 'copywriter' | 'devops-helper'
 type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
 
-interface AgentFE {
+interface Agent {
   id: string;
   name: string;
   type: AgentType;
@@ -27,7 +27,17 @@ interface AgentFE {
   updatedAt: Date;
 }
 
-type ReqResFE = {
+interface AddAgent {
+  name: string;
+  type: AgentType;
+  model: AgentModel;
+  systemInstructions: string;
+  stack: string[];
+  temperature: number;
+  webSearch: boolean
+}
+
+type ReqRes = {
   requestId: string;
   requestBody: string;
   responseId: string;
@@ -35,14 +45,15 @@ type ReqResFE = {
   inferredAgentType: AgentType;
 }
 
-interface ThreadFE {
+interface Thread {
   id: string;
-  name: string;
-  body: ReqResFE[] | [];
+  name: string | null;
+  body: ReqRes[] | [];
   isBookmarked: boolean;
   isShared: boolean;
   isActive: boolean;
   agentId: string;
+  positionY: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -57,12 +68,13 @@ interface Tab {
 
 export type {
   UserRole,
-  WorkspaceFE,
+  Workspace,
   AgentType,
   AgentModel,
-  AgentFE,
-  ReqResFE,
-  ThreadFE,
+  Agent,
+  AddAgent,
+  ReqRes,
+  Thread,
   Tab
 };
 

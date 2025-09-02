@@ -13,7 +13,7 @@ const deleteThread = async ({ threadId }: Props): Promise<void> => {
   
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error (`Failed to delete thread: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(`Failed to delete thread: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const data: { message: string } = await response.json();

@@ -15,7 +15,7 @@ const addPublicThread = async ({ threadId }: Props): Promise<{ agentType: AgentT
   
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error (`Failed to add public thread: ${response.status} ${response.statusText} - ${errorText}`);
+    throw new Error(`Failed to add public thread: ${response.status} ${response.statusText} - ${errorText}`);
   }
 
   const data: { message: string, data: { agentType: AgentType, threadId: string } | null } = await response.json();

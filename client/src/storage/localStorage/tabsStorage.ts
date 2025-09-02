@@ -2,56 +2,53 @@ import dispatchEvent from 'src/events/dispatchEvent';
 import { Tab, Thread } from 'src/types';
 
 const tabsStorage = {
-  save: (teamName: string, agentName: string, tabs: Tab[] ): boolean => {
+  save: (workspaceName: string, agentName: string, tabs: Tab[] ): boolean => {
     try {
-      localStorage.setItem(`${teamName}_${agentName}_tabs`, JSON.stringify(tabs));
+      localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(tabs));
       return true;
     } catch (error) {
       console.error('Failed to save tabs: ', error);
-      return false
+      return false;
     }
   },
-  load: (teamName: string, agentName: string): Tab[] | null => {
+  load: (workspaceName: string, agentName: string): Tab[] | null => {
     try {
-      const getSavedTabs = localStorage.getItem(`${teamName}_${agentName}_tabs`);
+      const getSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
       if (getSavedTabs) return JSON.parse(getSavedTabs);
       return null;
     } catch (error) {
-      console.error(`Failed to load tabs: `, error);
+      console.error('Failed to load tabs: ', error);
       return null;
     }
   },
-  update: (teamName: string, teamId: string, agentName: string, agentId: string, threadId: string, title: string | null) => {
+  update: (workspaceName: string, agentName: string, workspaceId: string, agentId: string, threadId: string, name: string | null) => {
     try {
-      const getSavedTabs = localStorage.getItem(`${teamName}_${agentName}_tabs`);
+      const getSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
       if (getSavedTabs) {
-        const remainingTabs = JSON.parse(getSavedTabs)
-          .filter((tab: Tab) => tab.id !== threadId);
-        const updatedTab: Tab = { id: threadId, teamId, agentId, title, isActive: true };
+        const remainingTabs = JSON.parse(getSavedTabs).filter((tab: Tab) => tab.id !== threadId);
+        const updatedTab: Tab = { id: threadId, workspaceId, agentId, name, isActive: true };
         const updatedTabs = [...remainingTabs, updatedTab] as Tab[];
 
-        localStorage.setItem(`${teamName}_${agentName}_tabs`, JSON.stringify(updatedTabs));
-
-        /** Dispatch tabsUpdated event (Events) */
+        localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(updatedTabs));
         dispatchEvent.tabsUpdated(agentName);
       }
     } catch (error) {
       console.error(`Failed to udpate tabs: `, error);
     }
   },
-  addTab: (teamName: string, agentName: string, tab: Tab) => {
+  addTab: (workspaceName: string, agentName: string, tab: Tab) => {
     try {
-      const loadSavedTabs = tabsStorage.load(teamName, agentName);
+      const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
       const newTab = {
         id: tab.id,
-        teamId: tab.teamId,
+        workspaceId: tab.workspaceId,
         agentId: tab.agentId,
-        title: tab.title,
+        name: tab.name,
         isActive: true,
       }
 
       if (loadSavedTabs === null) {
-        tabsStorage.save(teamName, agentName, [newTab]);
+        tabsStorage.save(workspaceName, agentName, [newTab]);
       } else {
         const updatedTabs: Tab[] = [];
         for (const t of loadSavedTabs) {
@@ -60,19 +57,17 @@ const tabsStorage = {
           };
           updatedTabs.push(t);
         }
-        tabsStorage.save(teamName, agentName, [...updatedTabs, newTab]);
+        tabsStorage.save(workspaceName, agentName, [...updatedTabs, newTab]);
       }
-
-      /** Dispatch tabsUpdated event (Events) */
       dispatchEvent.tabsUpdated(agentName);
 
     } catch (error) {
       console.error(`Failed to add tab: `, error);
     }
   },
-  deleteTab: (teamName: string, agentName: string, threadId: string) => {
+  deleteTab: (workspaceName: string, agentName: string, threadId: string) => {
     try {
-      const loadSavedTabs = localStorage.getItem(`${teamName}_${agentName}_tabs`);
+      const loadSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
       if (loadSavedTabs) {
         const threadIndex = JSON.parse(loadSavedTabs).findIndex((t: Thread) => t.id === threadId);
         if (threadIndex === -1) return null;
@@ -84,10 +79,9 @@ const tabsStorage = {
           );
 
         const updatedTabs = [...remainingTabs] as Tab[];
-        localStorage.setItem(`${teamName}_${agentName}_tabs`, JSON.stringify(updatedTabs));
 
-        /** Dispatch tabsUpdated event (Events) */
-        dispatchEvent.tabsUpdated(agentName)
+        localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(updatedTabs));
+        dispatchEvent.tabsUpdated(agentName);
       }
     } catch (error) {
       console.error(`Failed to udpate tabs: `, error);
