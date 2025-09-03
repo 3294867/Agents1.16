@@ -1,4 +1,4 @@
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import Error from 'src/components/error';
 import AgentsDropdown from './AgentsDropdown';
 import Tabs from './tabs';
@@ -8,15 +8,12 @@ import hooks from 'src/hooks';
 import Icons from 'src/assets/icons';
 import styles from './Agent.module.css';
 
-
-interface OutletContext {
+interface Props {
   userId: string;
-  workspaceName?: string;
 }
 
-const Agent = () => {
-  const { userId, workspaceName } = useOutletContext<OutletContext>();
-  const { agentName } = useParams();
+const Agent = ({ userId }: Props) => {
+  const { workspaceName, agentName } = useParams();
   const { agent, error, isLoading } = hooks.features.useHandleAgent({ workspaceName, agentName });
 
   if (error) return <Error error={error} />;

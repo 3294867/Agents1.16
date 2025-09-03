@@ -3,7 +3,7 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';
 import Auth from 'src/components/auth';
-import Layout from './features/layout.tsx.tsx';
+import Layout from './features/layout.tsx';
 import Workspace from './features/workspace';
 import Agent from './features/agent';
 import Thread from './features/thread';
@@ -20,37 +20,34 @@ const ProtectedApp = () => {
       path: '/',
       element: <Layout userId={userId} />,
       children: [
-        { path: '/', element: <Navigate to='/personal/general'/> },
-        { path: '/:workspaceName',
-          element: <Workspace />,
+        { index: true, element: <Navigate to="/personal/general" /> },
+        {
+          path: ':workspaceName',
+          element: <Workspace userId={userId} />,
           children: [
-            { path: '/:workspaceName/:agentName',
-              element: <Agent />,
+            {
+              path: ':agentName',
+              element: <Agent userId={userId} />,
               children: [
-                { path: '/:workspaceName/:agentName/:threadId', element: <Thread />}
+                { path: ':threadId', element: <Thread userId={userId} /> }
               ]
             }
           ]
         },
-        { path: '/sign-up', element: <Navigate to='/personal/general' /> },
-        { path: '/login', element: <Navigate to='/personal/general' /> }
+        { path: 'sign-up', element: <Navigate to="/personal/general" /> },
+        { path: 'login', element: <Navigate to="/personal/general" /> }
       ]
     } : {
       path: '/*',
-      element: <Navigate to='/log-in' />,
+      element: <Navigate to="/log-in" />,
     },
-    {
-      path: '/sign-up',
-      element: <SignUpForm />
-    },
-    {
-      path: '/log-in',
-      element: <LogInForm />
-    }
-  ]),[userId]);
+
+    { path: '/sign-up', element: <SignUpForm /> },
+    { path: '/log-in', element: <LogInForm /> }
+  ]), [userId]);
 
   if (isLoading) return null;
-  
+
   return <RouterProvider router={router} />;
 };
 
@@ -61,4 +58,3 @@ const App = () => (
 );
 
 export default App;
-

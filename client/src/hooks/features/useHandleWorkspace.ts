@@ -19,7 +19,7 @@ const useHandleWorkspace = ({ userId, workspaceName }: Props): { workspaces: Wor
     const getWorkspaces = async () => {
       try {
         if (!userId || !workspaceName) {
-          setError('Missing required fields: workspaceName');
+          setError('Missing required fields: userId, workspaceName');
           return;
         }
         setIsLoading(true);

@@ -158,7 +158,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`COMMIT`);
 
     req.session.userId = addUser.rows[0].id;
-    res.json({ success: true, userId: addUser.rows[0].id })
+    res.json({ success: true, userId: addUser.rows[0].id });
   } catch (error: any) {
     try {
       await pool.query(`ROLLBACK`);

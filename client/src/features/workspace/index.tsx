@@ -1,4 +1,4 @@
-import { Outlet, useOutletContext, useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
 import Sidebar from 'src/features/workspace/sidebar';
@@ -6,12 +6,11 @@ import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import styles from './Workspace.module.css';
 
-interface OutletContext {
+interface Props {
   userId: string;
 }
 
-const Workspace = () => {
-  const { userId } = useOutletContext<OutletContext>();
+const Workspace = ({ userId }: Props) => {
   const { workspaceName } = useParams();
   const { workspaces, error, isLoading } = hooks.features.useHandleWorkspace({ userId, workspaceName });
   const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });

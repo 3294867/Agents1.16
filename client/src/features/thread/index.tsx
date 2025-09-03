@@ -1,4 +1,4 @@
-import { useOutletContext, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
 import Header from './header';
@@ -8,15 +8,12 @@ import SideNavigation from './SideNav';
 import Icons from 'src/assets/icons';
 import styles from './Thread.module.css'
 
-interface OutletContext {
+interface Props {
   userId: string;
-  workspaceName?: string;
-  agentName?: string;
 }
 
-const Thread = () => {
-  const { userId, workspaceName, agentName } = useOutletContext<OutletContext>();
-  const { threadId } = useParams();
+const Thread = ({ userId }: Props) => {
+  const { workspaceName, agentName, threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({
     userId, workspaceName, agentName, threadId
   });

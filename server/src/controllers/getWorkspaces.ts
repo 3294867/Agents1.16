@@ -56,7 +56,7 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       message: "Workspaces fetched",
-      data: { workspaces }
+      data: workspaces
     });
   } catch (error: any) {
     console.error("Failed to fetch workspaces: ", error.stack || error);

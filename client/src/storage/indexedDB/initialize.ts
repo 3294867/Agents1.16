@@ -10,9 +10,9 @@ export const db = new Dexie('Agents') as Dexie & {
 const initialize = () => {
   try {
     db.version(6).stores({
-      workspaces: 'id, name',
-      agents: 'id, name',
-      threads: 'id, name, positionY'
+      workspaces: 'id, name, updatedAt',
+      agents: 'id, name, type, workspaceId, updatedAt',
+      threads: 'id, agentId, positionY, updatedAt'
     });
     
   } catch (error) {
