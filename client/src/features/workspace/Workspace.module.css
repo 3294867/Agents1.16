@@ -1,8 +1,4 @@
-.workspaceWrapper {
-  background-color: var(--background);
-}
-
-.workspaceContainer {
+.container {
   min-height: 100vh;
   width: 100%;
   margin-inline: auto;

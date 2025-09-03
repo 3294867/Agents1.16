@@ -1,5 +1,5 @@
-import { db } from 'src/storage/indexedDB';
 import { Workspace } from 'src/types';
+import { db } from './initialize';
 
 interface Props {
   workspaces: Workspace[];

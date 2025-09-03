@@ -10,6 +10,7 @@ const getCurrentUser = async (): Promise<{ userId: string | null }> => {
     if (!response.ok || !data?.data) return { userId: null };
     return { userId: data.data as string };
   } catch (error) {
+    console.error(error);
     return { userId: null };
   }
 };

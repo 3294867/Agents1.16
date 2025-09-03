@@ -1,17 +1,17 @@
+import { db } from './initialize';
 import constants from 'src/constants';
-import { db } from 'src/storage/indexedDB';
 
 interface Props {
-  threadId: string;
+  id: string;
   agentId: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const addThread = async ({ threadId, agentId, createdAt, updatedAt }: Props): Promise<void> => {
+const addThread = async ({ id, agentId, createdAt, updatedAt }: Props): Promise<void> => {
   try {
     const thread = {
-      id: threadId,
+      id,
       name: null,
       body: [],
       isBookmarked: false,

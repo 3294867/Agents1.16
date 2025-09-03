@@ -28,7 +28,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     `, [ name ]);
     if (getUser.rows.length === 0) return utils.sendResponse(res, 401,"Invalid name");
     
-    const match = await bcrypt.compare(password, getUser.rows[0].password);
+    const match = password === getUser.rows[0].password;
     if (!match) return utils.sendResponse(res, 401, "Invalid password");
 
     req.session.userId = getUser.rows[0].id;

@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB';
+import { db } from './initialize';
 import { Query } from 'src/types';
 
 interface Props {

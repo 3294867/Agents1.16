@@ -1,6 +1,12 @@
-import { db } from 'src/storage/indexedDB';
+import Dexie, { EntityTable } from 'dexie';
+import { Agent, Thread, Workspace } from 'src/types';
 
-/** Initializes IndexedDB with workspaces, agents and threads object stores. */
+export const db = new Dexie('Agents') as Dexie & {
+  workspaces: EntityTable<Workspace, 'id'>,
+  agents: EntityTable<Agent, 'id'>,
+  threads: EntityTable<Thread, 'id'>
+};
+
 const initialize = () => {
   try {
     db.version(6).stores({

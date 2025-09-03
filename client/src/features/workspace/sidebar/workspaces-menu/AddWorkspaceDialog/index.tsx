@@ -6,7 +6,6 @@ interface Props {
   userId: string;
 }
 
-{/* TODO */}
 const AddWorkspaceDialog = memo(({ userId }: Props) => {
   return (
     <Button variant='outline' size='icon'>

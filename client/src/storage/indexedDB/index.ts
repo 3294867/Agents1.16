@@ -1,4 +1,3 @@
-import Dexie, { type  EntityTable } from 'dexie';
 import initialize from 'src/storage/indexedDB/initialize';
 import addWorkspaces from 'src/storage/indexedDB/addWorkspaces';
 import addAgents from 'src/storage/indexedDB/storeAgents';
@@ -23,13 +22,6 @@ import updateThread from 'src/storage/indexedDB/updateThread';
 import getWorkspaces from 'src/storage/indexedDB/getWorkspaces';
 import getAgentId from 'src/storage/indexedDB/getAgentId';
 import getAgent from 'src/storage/indexedDB/getAgent';
-import { Workspace, Agent, Thread } from 'src/types';
-
-const db = new Dexie('Agents') as Dexie & {
-  workspaces: EntityTable<Workspace, 'id'>,
-  agents: EntityTable<Agent, 'id'>,
-  threads: EntityTable<Thread, 'id'>
-};
 
 const indexedDB = {
   initialize,
@@ -59,5 +51,3 @@ const indexedDB = {
 };
 
 export default indexedDB;
-
-export { db };

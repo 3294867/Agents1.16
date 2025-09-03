@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB';
+import { db } from './initialize';
 import { Agent, AgentType } from 'src/types';
 
 interface Props {

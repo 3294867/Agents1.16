@@ -1,5 +1,5 @@
 import useHandleRedirect from './useHandleRedirect';
-import useHandleWorkspaces from './useHandleWorkspaces';
+import useHandleWorkspace from './useHandleWorkspace';
 import useHandleAgentLayout from './useHandleAgentLayout';
 import useHandleAgent from './useHandleAgent';
 import useHandleAddAgentDialog from './useHandleAddAgentDialog';
@@ -15,7 +15,7 @@ import useHandleAgentsDropdown from './useHandleAgentsDropdown';
 
 export const hooks = {
   useHandleRedirect,
-  useHandleWorkspaces,
+  useHandleWorkspace,
   useHandleAgent,
   useHandleAddAgentDialog,
   useHandleThread,

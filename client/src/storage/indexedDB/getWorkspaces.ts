@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB';
+import { db } from './initialize';
 import { Workspace } from 'src/types';
 
 const getWorkspaces = async (): Promise<Workspace[]> => {

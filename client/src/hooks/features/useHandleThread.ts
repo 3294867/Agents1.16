@@ -8,14 +8,12 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 
 interface Props {
   userId: string;
-  teamId: string;
-  teamName: string;
-  agentId: string;
+  workspaceName: string;
   agentName: string;
-  threadId: string | undefined;
+  threadId: string;
 }
 
-const useHandleThread = ({ userId, teamId, teamName, agentId, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
+const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const navigate = useNavigate();
   const [ searchParams ] = useSearchParams();
   const [ thread, setThread ] = useState<Thread | null>(null);

@@ -2,12 +2,13 @@ import { useMemo } from 'react';
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';
-import Redirect from 'src/features/Redirect';
-import SignUpForm from 'src/features/auth/SignUpForm';
-import LogInForm from 'src/features/auth/LogInForm';
 import Auth from 'src/components/auth';
+import Layout from './features/layout.tsx.tsx';
 import Workspace from './features/workspace';
 import Agent from './features/agent';
+import Thread from './features/thread';
+import SignUpForm from 'src/features/auth/SignUpForm';
+import LogInForm from 'src/features/auth/LogInForm';
 
 const ProtectedApp = () => {
   indexedDB.initialize();
@@ -17,14 +18,22 @@ const ProtectedApp = () => {
   const router = useMemo(() => createBrowserRouter([
     userId ? {
       path: '/',
-      element: <Workspace userId={userId} />,
+      element: <Layout userId={userId} />,
       children: [
         { path: '/', element: <Navigate to='/personal/general'/> },
-        { path: '/:workspaceName', element: <Redirect userId={userId} /> },
-        { path: '/:workspaceName/:agentName', element: <Redirect userId={userId} /> },
-        { path: '/:workspaceName/:agentName/:threadId', element: <Agent userId={userId} /> },
+        { path: '/:workspaceName',
+          element: <Workspace />,
+          children: [
+            { path: '/:workspaceName/:agentName',
+              element: <Agent />,
+              children: [
+                { path: '/:workspaceName/:agentName/:threadId', element: <Thread />}
+              ]
+            }
+          ]
+        },
         { path: '/sign-up', element: <Navigate to='/personal/general' /> },
-        { path: '/login', element: <Navigate to='/personal/general' /> },
+        { path: '/login', element: <Navigate to='/personal/general' /> }
       ]
     } : {
       path: '/*',
@@ -41,6 +50,7 @@ const ProtectedApp = () => {
   ]),[userId]);
 
   if (isLoading) return null;
+  
   return <RouterProvider router={router} />;
 };
 

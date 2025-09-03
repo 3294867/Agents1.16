@@ -1,15 +1,15 @@
-.workspacesContainer {
+.container {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-top: 7rem;
 }
 
-.workspaceButton {
+.button {
   background-color: var(--accent-primary);
   transition: background-color 0.15s;
 }
 
-.workspaceButton:hover {
+.button:hover {
   background-color: var(--accent-primary-hover);
 }

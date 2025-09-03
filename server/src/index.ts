@@ -8,7 +8,6 @@ import Router from "./route";
 import { createPool } from "./db";
 import { CustomPGSessionStore } from './sessionStore';
 import utils from './utils';
-import constants from './constants';
 
 dotenv.config();
 

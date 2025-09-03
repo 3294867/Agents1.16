@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
 import Header from './header';
@@ -6,23 +6,19 @@ import Chat from './chat';
 import Form from './form';
 import SideNavigation from './SideNav';
 import Icons from 'src/assets/icons';
-import { AgentModel, AgentType } from 'src/types';
 import styles from './Thread.module.css'
 
-interface Props {
+interface OutletContext {
   userId: string;
-  teamId: string;
-  teamName: string;
-  agentId: string;
-  agentName: string;
-  agentType: AgentType;
-  agentModel: AgentModel;
+  workspaceName?: string;
+  agentName?: string;
 }
 
-const Thread = ({ userId, teamId, teamName, agentId, agentName, agentType, agentModel }: Props) => {
+const Thread = () => {
+  const { userId, workspaceName, agentName } = useOutletContext<OutletContext>();
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({
-    userId, teamId, teamName, agentId, agentName, threadId
+    userId, workspaceName, agentName, threadId
   });
 
   if (error) return <Error error={error} />;

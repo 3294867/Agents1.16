@@ -1,5 +1,5 @@
 import dispatchEvent from 'src/events/dispatchEvent';
-import { db } from 'src/storage/indexedDB';
+import { db } from './initialize';
 import { Query } from 'src/types';
 
 interface Props {

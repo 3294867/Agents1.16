@@ -39,7 +39,11 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Thread added",
-      data: addThread.rows[0].id
+      data: {
+        id: addThread.rows[0].id,
+        createdAt: addThread.rows[0].created_at,
+        updatedtAt: addThread.rows[0].updatead_at
+      }
     });
   } catch (error: any) {
     try {

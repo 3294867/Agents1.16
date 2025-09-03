@@ -1,4 +1,4 @@
-import { db } from 'src/storage/indexedDB';
+import { db } from './initialize';
 import dispatchEvent from 'src/events/dispatchEvent';
 import { Query } from 'src/types';
 

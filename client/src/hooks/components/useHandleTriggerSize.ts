@@ -1,5 +1,4 @@
 import { RefObject, useEffect, useState } from 'react';
-import { debounce } from 'lodash';
 
 interface Props {
   triggerRef: RefObject<HTMLElement | null>;
@@ -13,10 +12,10 @@ const useHandleTriggerSize = ({ triggerRef }: Props): { triggerHeight: number, t
     if (!triggerRef.current) return;
 
     const el = triggerRef.current;
-    const updateSizes = debounce(() => {
+    const updateSizes = () => {
       setTriggerHeight(el.offsetHeight);
       setTriggerWidth(el.offsetWidth);
-    }, 100);
+    };
 
     const observer = new ResizeObserver(updateSizes);
     observer.observe(el);

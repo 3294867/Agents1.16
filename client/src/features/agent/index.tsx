@@ -1,21 +1,23 @@
-import { useParams } from 'react-router-dom';
+import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 import Error from 'src/components/error';
 import AgentsDropdown from './AgentsDropdown';
 import Tabs from './tabs';
 import Actions from './Actions';
-import Thread from 'src/features/thread';
 import Button from 'src/components/button';
 import hooks from 'src/hooks';
 import Icons from 'src/assets/icons';
 import styles from './Agent.module.css';
 
-interface Props {
+
+interface OutletContext {
   userId: string;
+  workspaceName?: string;
 }
 
-const Agent = ({ userId }: Props) => {
-  const { workspaceName, agentName } = useParams();
-  const { agent, error, isLoading } = hooks.features.useHandleAgent({ userId, workspaceName, agentName });
+const Agent = () => {
+  const { userId, workspaceName } = useOutletContext<OutletContext>();
+  const { agentName } = useParams();
+  const { agent, error, isLoading } = hooks.features.useHandleAgent({ workspaceName, agentName });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
@@ -40,15 +42,7 @@ const Agent = ({ userId }: Props) => {
         </div>
         <Actions userId={userId} agentId={agent.id} />
       </header>
-      <Thread
-        userId={userId}
-        teamId={team.id}
-        teamName={teamName}
-        agentId={agent.id}
-        agentName={agentName}
-        agentType={agent.type}
-        agentModel={agent.model}
-      />
+      <Outlet context={{ userId, workspaceName, agentName }} />
     </div>
   );
 };

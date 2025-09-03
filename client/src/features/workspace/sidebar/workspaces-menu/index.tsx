@@ -1,21 +1,20 @@
 import { memo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import AddWorkspaceDialog from './AddWorkspaceDialog';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
-import styles from './Workspaces.module.css';
+import styles from './WorkspacesMenu.module.css';
 import { Workspace } from 'src/types';
 
 interface Props {
   userId: string;
+  currentWorkspaceName: string;
   workspaces: Workspace[];
 }
 
-const WorkspacesBar = memo(({ userId, workspaces }: Props) => {
-  const { workspaceName } = useParams();
-  
+const WorkspacesMenu = memo(({ userId, currentWorkspaceName, workspaces }: Props) => {
   return (
-    <div className={styles.workspacesContainer}>
+    <div className={styles.container}>
       {workspaces.map(w => (
         <Tooltip.Root key={w.id}>
           <Tooltip.Trigger asChild>
@@ -23,8 +22,8 @@ const WorkspacesBar = memo(({ userId, workspaces }: Props) => {
               <Button
                 variant='outline'
                 size='icon'
-                className={`${workspaceName === w.name ?  styles.teamButton: ''}`}
-                >
+                className={`${currentWorkspaceName === w.name ?  styles.button: ''}`}
+              >
                 {w.name[0].toUpperCase()}
               </Button>
             </Link>
@@ -39,4 +38,4 @@ const WorkspacesBar = memo(({ userId, workspaces }: Props) => {
   );
 });
 
-export default WorkspacesBar;
+export default WorkspacesMenu;

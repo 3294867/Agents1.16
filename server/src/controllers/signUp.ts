@@ -39,7 +39,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 
     /** User */
     const addUser = await pool.query(`
-      INSERT INTO users (name, password, apiKey)
+      INSERT INTO users (name, password, api_key)
       VALUES ($1::text, $2::text, $3::text)
       RETURNING id;
     `, [ name, hashedPassword, apiKey ]);
@@ -143,6 +143,16 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     if (addUserAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 503, "Failed to add user agent");
+    }
+
+    const addWorkspaceAgent = await pool.query(`
+      INSERT INTO workspace_agent (workspace_id, agent_id)
+      VALUES ($1::uuid, $2::uuid)
+      RETURNING workspace_id;
+    `, [ addWorkspace.rows[0].id, addGeneralAgent.rows[0].id ]);
+    if (addWorkspaceAgent.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      return utils.sendResponse(res, 503, "Failed to add workspace agent");
     }
     
     await pool.query(`COMMIT`);
