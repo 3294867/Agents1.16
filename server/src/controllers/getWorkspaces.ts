@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
-import { UserRole, WorkspaceFE } from '../types';
+import { WorkspaceFE } from '../types';
 
 interface RequestBody {
   userId: string;
@@ -14,30 +14,36 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
   if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const getWorkspacesData = await pool.query(`
-      SELECT w.*, wu.user_role
+    const getWorkspaces = await pool.query(`
+      SELECT 
+        w.id,
+        w.name,
+        w.description,
+        w.created_at,
+        w.updated_at,
+        wu.user_role,
+        COALESCE(
+          array_agg(wa.agent_id) FILTER (WHERE wa.agent_id IS NOT NULL), '{}'
+        ) AS agent_ids
       FROM workspaces w
-      JOIN workspace_user wu ON w.id = wu.workspace_id
-      WHERE wu.user_id = $1::uuid;
+      JOIN workspace_user wu
+        ON w.id = wu.workspace_id
+      LEFT JOIN workspace_agent wa
+        ON w.id = wa.workspace_id
+      WHERE wu.user_id = $1::uuid
+      GROUP BY w.id, wu.user_role
+      ORDER BY w.created_at DESC;
     `, [ userId ]);
-    if (getWorkspacesData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces data");
+    if (getWorkspaces.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces");
 
     const workspaces: WorkspaceFE[] = [];
-    for (const item of getWorkspacesData.rows) {
-      const getWorkspaceAgents = await pool.query(`
-        SELECT agent_id
-        FROM workspace_agent
-        WHERE workspace_id = $1::uuid;
-      `, [ item.id ]);
-      if (getWorkspaceAgents.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace agents");
-      const agentIds = getWorkspaceAgents.rows.map((i: { agent_id: string }) => i.agent_id);
-
+    for (const item of getWorkspaces.rows) {
       const workspace: WorkspaceFE = {
         id: item.id,
         name: item.name,
         description: item.description,
         userRole: item.user_role,
-        agentIds,
+        agentIds: item.agent_ids,
         createdAt: item.created_at,
         updatedAt: item.updated_at
       };
