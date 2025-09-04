@@ -6,14 +6,14 @@ import Heading from 'src/components/heading';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
-interface TitleProps {
+interface NameProps {
   threadId: string;
-  threadTitle: string | null;
-  isBookmarked: boolean;
+  threadName: string | null;
+  threadIsBookmarked: boolean;
 }
 
-const Title = ({ threadId, threadTitle, isBookmarked }: TitleProps) => {
-  if (!threadTitle) return null;
+const Name = ({ threadId, threadName, threadIsBookmarked }: NameProps) => {
+  if (!threadName) return null;
   
   return (
     <motion.div
@@ -23,30 +23,30 @@ const Title = ({ threadId, threadTitle, isBookmarked }: TitleProps) => {
       style={{ display: 'flex', alignItems: 'start', gap: '0.5rem' }}
     >
       <Heading variant='h3' style={{ width: '100%' }}>
-        {threadTitle}
+        {threadName}
       </Heading>
-      {isBookmarked && <BookmarkButton threadId={threadId} currentIsBookmarked={isBookmarked} />}
+      {threadIsBookmarked && <BookmarkButton threadId={threadId} isBookmarked={threadIsBookmarked} />}
     </motion.div>
   );
 };
 
-export default Title;
+export default Name;
 
 interface BookmarkButtonProps {
   threadId: string;
-  currentIsBookmarked: boolean;
+  isBookmarked: boolean;
 }
 
-const BookmarkButton = ({ threadId, currentIsBookmarked }: BookmarkButtonProps) => {
+const BookmarkButton = ({ threadId, isBookmarked }: BookmarkButtonProps) => {
   const handleClick = async () => {
-    await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    dispatchEvent.threadIsBookmarkedUpdated(threadId, !currentIsBookmarked);
+    await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
+    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked });
+    dispatchEvent.threadIsBookmarkedUpdated(threadId, isBookmarked);
   };
   
   return (
     <Button onClick={handleClick} variant='ghost' size='icon'>
-      {currentIsBookmarked ? <Icons.BookmarkFilled /> : <Icons.BookmarkOutlined />}
+      {isBookmarked ? <Icons.BookmarkFilled /> : <Icons.BookmarkOutlined />}
     </Button>
   );
 };

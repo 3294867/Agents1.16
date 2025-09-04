@@ -36,8 +36,8 @@ const login = async (req: Request, res: Response): Promise<void> => {
       success: true,
       userId: getUser.rows[0].id
     });
-  } catch (error: any) {
-    console.error("Failed to login: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to login: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

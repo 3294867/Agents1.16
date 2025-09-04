@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { pool } from "../index";
 import utils from '../utils';
 import constants from '../constants';
-import { resolveMx } from 'dns';
+import { AddAgent, AgentType } from '../types';
 
 interface RequestBody {
   workspaceId: string;
@@ -22,8 +22,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       WHERE workspace_id = $1::uuid;
     `, [ workspaceId ]);
     if (getExistingAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get existing agent ids");
-
-    const existingAgentIds = getExistingAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const existingAgentIds: string[] = getExistingAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getExistingAgentTypes = await pool.query(`
       SELECT type
@@ -32,7 +31,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
     `, [ existingAgentIds ]);
     if (getExistingAgentTypes.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get existing agent types");
 
-    const existingAgentTypes = getExistingAgentTypes.rows.map((i: { type: string }) => i.type);
+    const existingAgentTypes: AgentType[] = getExistingAgentTypes.rows.map((i: { type: AgentType }) => i.type);
     let remainingAgentTypes = constants.data.agentTypes;
     for (const item of existingAgentTypes) {
       remainingAgentTypes = remainingAgentTypes.filter(i => i !== item);
@@ -63,7 +62,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
     `, [ remainingAgentTypes, rootAgentIds ]);
     if (getAvailableAgentsData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get available agents data")
 
-    const availableAgentsData = [];
+    const availableAgentsData: AddAgent[] = [];
     for (const item of getAvailableAgentsData.rows) {
       const agentData = {
         name: item.name,

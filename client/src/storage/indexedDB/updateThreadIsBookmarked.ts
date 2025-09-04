@@ -7,7 +7,7 @@ interface Props {
 
 const updateThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
   try {
-    const updatedThread = await db.threads.update(threadId, { isBookmarked });
+    const updatedThread = await db.threads.update(threadId, { isBookmarked: !isBookmarked });
     if (updatedThread === 0) throw new Error(`Failed to update 'isBookmarked' property of the thread`);
 
   } catch (error) {

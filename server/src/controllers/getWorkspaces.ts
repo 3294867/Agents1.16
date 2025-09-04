@@ -14,52 +14,42 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
   if (validationError) return utils.sendResponse(res, 400, validationError);
 
   try {
-    const getWorkspaceData = await pool.query(`
-      SELECT workspace_id, user_role
-      FROM workspace_user
-      WHERE user_id = $1::uuid;
+    const getWorkspacesData = await pool.query(`
+      SELECT w.*, wu.user_role
+      FROM workspaces w
+      JOIN workspace_user wu ON w.id = wu.workspace_id
+      WHERE wu.user_id = $1::uuid;
     `, [ userId ]);
-    if (getWorkspaceData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace ids");
-    const workspaceIds = getWorkspaceData.rows.map((i: { workspace_id: string, user_role: UserRole }) => i.workspace_id);
-    const workspaceUserRoles = getWorkspaceData.rows.map((i: { workspace_id: string, user_role: UserRole }) => i.user_role);
-
-    const getWorkspaces = await pool.query(`
-      SELECT *
-      FROM workspaces
-      WHERE id = ANY($1::uuid[]);
-    `, [ workspaceIds ]);
-    if (getWorkspaces.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces");
-
-    const getWorkspaceAgentIds = await pool.query(`
-      SELECT agent_id
-      FROM workspace_agent
-      WHERE workspace_id = ANY($1::uuid[]);
-    `, [ workspaceIds ]); 
-    if (getWorkspaceAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace agents");
-    const agentIds = getWorkspaceAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    if (getWorkspacesData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces data");
 
     const workspaces: WorkspaceFE[] = [];
-    for (const item of getWorkspaces.rows) {
-      for (const userRole of workspaceUserRoles) {
-        const workspace = {
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          userRole,
-          agentIds: agentIds,
-          createdAt: item.created_at,
-          updatedAt: item.updated_at
-        };
-        workspaces.push(workspace);
-      }
+    for (const item of getWorkspacesData.rows) {
+      const getWorkspaceAgents = await pool.query(`
+        SELECT agent_id
+        FROM workspace_agent
+        WHERE workspace_id = $1::uuid;
+      `, [ item.id ]);
+      if (getWorkspaceAgents.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspace agents");
+      const agentIds = getWorkspaceAgents.rows.map((i: { agent_id: string }) => i.agent_id);
+
+      const workspace: WorkspaceFE = {
+        id: item.id,
+        name: item.name,
+        description: item.description,
+        userRole: item.user_role,
+        agentIds,
+        createdAt: item.created_at,
+        updatedAt: item.updated_at
+      };
+      workspaces.push(workspace);
     }
 
     res.status(200).json({
       message: "Workspaces fetched",
       data: workspaces
     });
-  } catch (error: any) {
-    console.error("Failed to fetch workspaces: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to fetch workspaces: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

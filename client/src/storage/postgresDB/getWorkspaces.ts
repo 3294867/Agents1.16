@@ -19,8 +19,11 @@ const getWorkspaces = async ({ userId }: Props): Promise<Workspace[]> => {
     
     const data: { message: string, data: Workspace[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as Workspace[];
+    if (!Array.isArray(data.data) || data.data.length === 0) {
+      throw new Error(`Incorrect workspaces format. Expected non-empty '[]'`);
+    }
     
+    return data.data as Workspace[];
   } catch (error) {
     throw new Error(`Failed to fetch workspaces (PostgresDB): ${error}`);
   }

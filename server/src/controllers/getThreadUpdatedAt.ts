@@ -22,10 +22,10 @@ const getThreadUpdatedAt = async (req: Request, res: Response): Promise<void> =>
 
     res.status(200).json({
       message: "Thread updatedAt fetched",
-      data: { threadUpdatedAt: getThreadUpdatedAt.rows[0].updated_at }
+      data: getThreadUpdatedAt.rows[0].updated_at
     });
-  } catch (error: any) {
-    console.error("Failed to get thread updatedAt: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to get thread updatedAt: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

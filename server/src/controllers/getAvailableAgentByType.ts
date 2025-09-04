@@ -26,7 +26,7 @@ const getAvailableAgentByType = async (req: Request, res: Response): Promise<voi
       FROM user_agent
       WHERE user_id = $1::uuid;
     `, [ getRootUserId.rows[0].id ]);
-    const agentIds = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getAgent = await pool.query(`
       SELECT name, model, system_instructions, stack, temperature, web_search
@@ -36,18 +36,17 @@ const getAvailableAgentByType = async (req: Request, res: Response): Promise<voi
 
     res.status(200).json({
       message: "Available agent fetched",
-      data: { agentData: {
-          name: getAgent.rows[0].name,
-          model: getAgent.rows[0].model,
-          systemInstructions: getAgent.rows[0].system_instructions,
-          stack: getAgent.rows[0].stack,
-          temperature: getAgent.rows[0].temperature,
-          webSearch: getAgent.rows[0].web_search
-        }
+      data: {
+        name: getAgent.rows[0].name,
+        model: getAgent.rows[0].model,
+        systemInstructions: getAgent.rows[0].system_instructions,
+        stack: getAgent.rows[0].stack,
+        temperature: getAgent.rows[0].temperature,
+        webSearch: getAgent.rows[0].web_search
       }
     });
-  } catch (error: any) {
-    console.error("Failed to fetch available agent: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to fetch available agent: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

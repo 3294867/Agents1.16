@@ -10,20 +10,19 @@ import Paragraph from 'src/components/paragraph';
 import styles from './DeleteThreadDialog.module.css';
 
 interface Props {
-  threadId: string;
-  teamName: string;
+  workspaceName: string;
   agentName: string;
+  threadId: string;
 }
 
-const DeleteThreadDialog = ({ threadId, teamName, agentName }: Props) => {
+const DeleteThreadDialog = ({ workspaceName, agentName, threadId,  }: Props) => {
   const navigate = useNavigate();
 
   const handleClick = async () => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(teamName, agentName, threadId);
-    
-    navigate(`/${teamName}/${agentName}`);
+    tabsStorage.deleteTab(workspaceName, agentName, threadId);
+    navigate(`/${workspaceName}/${agentName}`);
   };
 
   return (
@@ -35,9 +34,9 @@ const DeleteThreadDialog = ({ threadId, teamName, agentName }: Props) => {
           variant='dropdown'
           className={styles.trigger}
           data-prevent-dropdown-close
-          data-thread-id={threadId}
+          data-workspace-name={workspaceName}
           data-agent-name={agentName}
-          data-team-name={teamName}
+          data-thread-id={threadId}
         >
           <Icons.Delete style={{ marginRight: '0.5rem' }}/>
           Delete

@@ -20,7 +20,7 @@ const getWorkspaceId = async (req: Request, res: Response): Promise<void> => {
       WHERE user_id = $1::uuid;
     `, [ userId ]);
     if (getWorkspaceIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces ids");
-    const workspaceIds = getWorkspaceIds.rows.map((i: { workspace_id: string }) => i.workspace_id);
+    const workspaceIds: string[] = getWorkspaceIds.rows.map((i: { workspace_id: string }) => i.workspace_id);
 
     const getWorkspaceId = await pool.query(`
       SELECT id
@@ -31,10 +31,10 @@ const getWorkspaceId = async (req: Request, res: Response): Promise<void> => {
     
     res.status(200).json({
       message: "Workspace id fetched",
-      data: { workspaceId: getWorkspaceId.rows[0].id }
+      data: getWorkspaceId.rows[0].id
     });
-  } catch (error: any) {
-    console.error("Failed to fetch workspace id: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to fetch workspace id: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

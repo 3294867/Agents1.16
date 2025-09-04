@@ -7,7 +7,7 @@ interface RequestBody {
   answer: string;
 }
 
-const createThreadTitle = async (req: Request, res: Response): Promise<void> => {
+const createThreadName = async (req: Request, res: Response): Promise<void> => {
   const { question, answer }: RequestBody = req.body;
 
   const validationError = utils.validate.createThreadTitle(question, answer);
@@ -18,16 +18,16 @@ const createThreadTitle = async (req: Request, res: Response): Promise<void> => 
       model: 'gpt-3.5-turbo',
       input: `Return only short title for the following conversation: Question: ${question}; Answer: ${answer}.`,
     });
-    if (!apiResponse.output_text) return utils.sendResponse(res, 503, "Failed to create thread title");
+    if (!apiResponse.output_text) return utils.sendResponse(res, 503, "Failed to create thread name");
 
     res.status(200).json({
-      message: "Thread title created",
-      data: { response: apiResponse.output_text }
+      message: "Thread name created",
+      data: apiResponse.output_text
     });
-  } catch (error: any) {
-    console.error("Failed to create thread title: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to create thread name: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };
 
-export default createThreadTitle;
+export default createThreadName;

@@ -5,17 +5,16 @@ interface Props {
   threadId: string;
 }
 
-/** Sets 'title' property of the thread to null (IndexedDB) */
-const removeThreadTitle = async ({ threadId }: Props): Promise<void> => {
+const removeThreadName = async ({ threadId }: Props): Promise<void> => {
   try {
-    const updatedThread = await db.threads.update(threadId, { title: null });
+    const updatedThread = await db.threads.update(threadId, { name: null });
     if (updatedThread === 0) throw new Error('Failed to remove thread title');
 
-    dispatchEvent.threadTitleUpdated(threadId, null);
+    dispatchEvent.threadNameUpdated(threadId, null);
     
   } catch (error) {
     console.error('Failed to remove thread title (IndexedDB): ', error);
   }
 };
 
-export default removeThreadTitle;
+export default removeThreadName;

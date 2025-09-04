@@ -49,7 +49,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get user agent");
     }
-    const agentIds = getAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
+    const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
     
     const getAgentId = await pool.query(`
       SELECT id
@@ -81,7 +81,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
         await pool.query(`ROLLBACK`);
         return utils.sendResponse(res, 404, "Failed to get user agent");
       }
-      const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+      const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
       
       const getRootAgent = await pool.query(`
         SELECT name, type, model, system_instructions, stack, temperature, web_search
@@ -178,15 +178,15 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       message: "Thread duplicated",
-      data: { threadId: duplicateThread.rows[0].id }
+      data: duplicateThread.rows[0].id
     });
-  } catch (error: any) {
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error("Rollback error: ", rollbackError.stack || rollbackError);
+    } catch (rollbackError) {
+      console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to duplicate thread: ", error.stack || error);
+    console.error("Failed to duplicate thread: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

@@ -79,6 +79,7 @@ type ReqResFE = {
   responseId: string;
   responseBody: string;
   inferredAgentType: AgentType;
+  isNew: boolean;
 }
 
 interface ThreadFE {

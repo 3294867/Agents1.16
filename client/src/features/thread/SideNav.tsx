@@ -1,17 +1,17 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import Button from 'src/components/button';
 import constants from 'src/constants';
 import hooks from 'src/hooks';
-import { Query } from 'src/types';
+import { ReqRes } from 'src/types';
 import styles from './SideNav.module.css';
 
 interface Props {
-  threadBody: Query[];
-  threadBodyLength: number;
+  threadBody: ReqRes[];
 }
 
-const SideNavigation = ({ threadBody, threadBodyLength }: Props) => {
-  const { isVisible, chatWidth } = hooks.features.useHandleSideNav({ threadBodyLength });
+const SideNavigation = memo(({ threadBody }: Props) => {
+  const { isVisible, chatWidth } = hooks.features.useHandleSideNav({ threadBodyLength: threadBody.length });
 
   const handleScrollToQuestion = (id: string) => {
     const question = document.getElementById(`question_${id}`);
@@ -49,6 +49,6 @@ const SideNavigation = ({ threadBody, threadBodyLength }: Props) => {
       ))}
     </motion.div>
   );
-};
+});
 
 export default SideNavigation;

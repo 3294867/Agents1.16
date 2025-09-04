@@ -16,10 +16,10 @@ const getWorkspaceId = async ({ userId, workspaceName }: Props): Promise<string>
       throw new Error(`Failed to fetch workspaceId (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: { workspaceId: string } | null } = await response.json();
+    const data: { message: string, data: string | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data.workspaceId as string;
     
+    return data.data as string;
   } catch (error) {
     throw new Error(`Failed to fetch workspaceId (PostgresDB): ${error}`);
   }

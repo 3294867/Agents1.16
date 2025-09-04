@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import openai from 'src/opanai';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
@@ -6,21 +6,21 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import AgentModelDropdown from './AgentModelDropdown';
 import Button from 'src/components/button';
 import Textarea from 'src/components/textarea';
-import { AgentModel } from 'src/types';
+import { AgentModel, AgentType } from 'src/types';
 import Icons from 'src/assets/icons';
 import styles from './Form.module.css';
 
 interface Props {
-  teamId: string;
-  teamName: string;
-  threadId: string;
+  workspaceId: string;
+  workspaceName: string;
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
+  threadId: string;
   threadBodyLength: number;
 }
 
-const Form = ({ teamId, teamName, threadId, agentId, agentName, agentModel: initialAgentModel, threadBodyLength }: Props) => {
+const Form = memo(({ workspaceId, workspaceName, agentId, agentName, agentModel: initialAgentModel, threadId, threadBodyLength }: Props) => {
   const [input, setInput] = useState<string>('');
   const [agentModel, setAgentModel] = useState<AgentModel>(initialAgentModel);
 
@@ -31,11 +31,11 @@ const Form = ({ teamId, teamName, threadId, agentId, agentName, agentModel: init
     const responseBody = await openai.createResponse({ agentId, agentModel, input });
 
     /** Infer type of an agent (OpenAI) */
-    const inferredAgentType = await openai.inferAgentType({ input });
+    const inferredAgentType = await openai.inferAgentType({ input }) as AgentType;
     
     /** Update thread body (PostgresDB) */
-    const { requestId, responseId } = await postgresDB.addQuery({
-      threadId: threadId,
+    const { requestId, responseId } = await postgresDB.addReqRes({
+      threadId,
       requestBody: input,
       responseBody
     });
@@ -44,27 +44,27 @@ const Form = ({ teamId, teamName, threadId, agentId, agentName, agentModel: init
 
     if (threadBodyLength === 0) {
       /** Update thread title (OpenAI, PostgresDB, IndexedDB) */
-      const threadTitle = await openai.createThreadTitle({
+      const threadName = await openai.createThreadName({
         question: input,
         answer: responseBody
       });
-      await postgresDB.updateThreadTitle({ threadId, threadTitle });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle });
+      await postgresDB.updateThreadName({ threadId, threadName });
+      await indexedDB.updateThreadName({ threadId, threadName });
 
       /** Update tabs (localStorage) */
-      tabsStorage.update(teamName, teamId, agentName, agentId, threadId, threadTitle);
+      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, threadName);
     }
 
     /** Update thread body (IndexedDB) */
-    await indexedDB.addQuery({
+    await indexedDB.addReqRes({
       threadId: threadId,
-      query: {
+      reqres: {
         requestId: requestId,
         requestBody: input,
         responseId: responseId,
         responseBody,
-        isNew: true,
-        inferredAgentType
+        inferredAgentType,
+        isNew: true
       }
     });
   };
@@ -93,6 +93,6 @@ const Form = ({ teamId, teamName, threadId, agentId, agentName, agentModel: init
       </div>
     </form>
   );
-};
+});
 
 export default Form;

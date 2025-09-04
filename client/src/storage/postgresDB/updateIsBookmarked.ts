@@ -3,7 +3,7 @@ interface Props {
   isBookmarked: boolean;
 }
 
-const updatedThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
+const updateThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/update-thread-is-bookmarked`, {
       method: 'POST',
@@ -16,14 +16,11 @@ const updatedThreadIsBookmarked = async ({ threadId, isBookmarked }: Props): Pro
     throw new Error(`Failed to update 'isBookmarked' property (PostresDB): ${response.status} ${response.statusText} - ${errorText}`);
   }
 
-  const data: { message: string } = await response.json();
-  if (data.message !== `'isBookmarked' property of the thread updated`) {
-    throw new Error(`Failed to update thread 'isBookmarked' property of the thread`);
-  }
-
+  const data: { message: string, data: null } = await response.json();
+  if (data.message !== `Thread 'isBookmarked' property updated`) throw new Error(data.message);
   } catch (error) {
     throw new Error(`Failed to update 'isBookmarked' property (PostresDB): ${error}`);
   }
 };
 
-export default updatedThreadIsBookmarked;
+export default updateThreadIsBookmarked;

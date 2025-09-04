@@ -1,9 +1,9 @@
 import addAgent from './addAgent';
 import addPublicThread from './addPublicThread';
-import addQuery from './addQuery';
+import addReqRes from './addReqRes';
 import addThread from './addThread';
 import createResponse from './createResponse';
-import createThreadTitle from './createThreadTitle';
+import createThreadName from './createThreadName';
 import deleteQuery from './deleteQuery';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
@@ -18,14 +18,13 @@ import getThreadUpdatedAt from './getThreadUpdatedAt';
 import inferAgentType from './inferAgentType';
 import login from './login';
 import logout from './logout';
-import removeThreadTitle from './removeThreadTitle';
+import removeThreadName from './removeThreadName';
 import signUp from './signUp';
 import updateRequestBody from './updateRequestBody';
 import updateResponseBody from './updateResponseBody';
 import updateThreadIsBookmarked from './updateThreadIsBookmarked';
 import updateThreadName from './updateThreadName';
 import getWorkspaces from './getWorkspaces';
-import getWorkspaceAgents from './getWorkspaceAgents';
 import getAgentUpdatedAt from './getAgentUpdatedAt';
 import getAgent from './getAgent';
 import getAgentNames from './getAgentNames';
@@ -33,15 +32,14 @@ import getAgentNames from './getAgentNames';
 const controllers = {
   addAgent,
   addPublicThread,
-  addQuery,
+  addReqRes,
   addThread,
   createResponse,
-  createThreadTitle,
+  createThreadName,
   deleteQuery,
   deleteThread,
   duplicateThread,
   getAgentId,
-  getWorkspaceAgents,
   getAgentUpdatedAt,
   getAvailableAgentByType,
   getAvailableAgents,
@@ -54,7 +52,7 @@ const controllers = {
   inferAgentType,
   login,
   logout,
-  removeThreadTitle,
+  removeThreadName,
   signUp,
   updateRequestBody,
   updateResponseBody,

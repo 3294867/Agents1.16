@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import AnimatedParagraph from 'src/components/AnimatedParagraph';
 import Paragraph from 'src/components/paragraph';
 import hooks from 'src/hooks';
@@ -8,12 +9,12 @@ interface AnswerProps {
   requestId: string;
   responseId: string;
   responseBody: string;
-  isNew: boolean;
   inferredAgentType: AgentType;
+  isNew: boolean;
 }
 
-const Answer = ({ threadId, requestId, responseId, responseBody, isNew, inferredAgentType }: AnswerProps) => {
-    const copy = hooks.features.useHandleAnimatedParagraph({
+const Answer = memo(({ threadId, requestId, responseId, responseBody, inferredAgentType, isNew }: AnswerProps) => {
+  const copy = hooks.features.useHandleAnimatedParagraph({
     threadId,
     requestId,
     responseId,
@@ -24,6 +25,6 @@ const Answer = ({ threadId, requestId, responseId, responseBody, isNew, inferred
   return isNew
     ? <AnimatedParagraph copy={copy} />
     : <Paragraph style={{ lineHeight: '2' }}>{responseBody}</Paragraph>;
-};
+});
 
 export default Answer;

@@ -1,4 +1,4 @@
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useOutletContext, useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
 import Sidebar from 'src/features/workspace/sidebar';
@@ -6,11 +6,12 @@ import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import styles from './Workspace.module.css';
 
-interface Props {
+interface OutletContext {
   userId: string;
 }
 
-const Workspace = ({ userId }: Props) => {
+const Workspace = () => {
+  const { userId } = useOutletContext<OutletContext>();
   const { workspaceName } = useParams();
   const { workspaces, error, isLoading } = hooks.features.useHandleWorkspace({ userId, workspaceName });
   const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });
@@ -18,6 +19,16 @@ const Workspace = ({ userId }: Props) => {
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!userId || !workspaceName || !workspaces) return <Error error='Something went wrong. Try again later.' />;
+
+  const workspaceId = workspaces
+    .filter(i => i.name === workspaceName)
+    .map(i => i.id)[0];
+
+  const outletContext = {
+    userId,
+    workspaceId,
+    workspaceName
+  }
 
   return (
     <div className={styles.container}>
@@ -27,8 +38,8 @@ const Workspace = ({ userId }: Props) => {
         workspaces={workspaces}
         isMobile={isMobile}
       />
-      <Outlet context={{ userId, workspaceName }}/>
-    </div>
+      <Outlet context={outletContext} />
+    </div> 
   );
 };
 

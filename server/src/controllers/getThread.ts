@@ -37,6 +37,7 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           responseId: i.response_id,
           responseBody: null,
           inferredAgentType: null,
+          isNew: false
         };
       }),
       isBookmarked: getThread.rows[0].is_bookmarked,
@@ -78,7 +79,8 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           requestBody: getRequestBody.rows[0].body,
           responseId: i.responseId,
           responseBody: getResponseBody.rows[0].body,
-          inferredAgentType: inferAgentType.output_text
+          inferredAgentType: inferAgentType.output_text,
+          isNew: false
         } as ReqResFE
       })
     );
@@ -87,10 +89,10 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
 
     res.status(200).json({
       message: "Thread fetched",
-      data: { thread }
+      data: thread
     });
-  } catch (error: any) {
-    console.error("Failed to fetch thread: ", error.stack || error );
+  } catch (error) {
+    console.error("Failed to fetch thread: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

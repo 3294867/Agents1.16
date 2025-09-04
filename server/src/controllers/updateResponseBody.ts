@@ -23,8 +23,8 @@ const updateResponseBody = async (req: Request, res: Response): Promise<void> =>
     if (updateResponse.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update response body");
     
     utils.sendResponse(res, 200, "Response body updated");
-  } catch (error: any) {
-    console.error("Failed to update response body: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to update response body: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

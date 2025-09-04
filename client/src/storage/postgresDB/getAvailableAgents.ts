@@ -19,8 +19,9 @@ const getAvailableAgents = async ({ workspaceId }: Props): Promise<AddAgent[]> =
     
     const data: { message: string, data: AddAgent[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as AddAgent[];
+    if (!Array.isArray(data.data)) throw new Error(`Incorrect format of availableAgentsData. Expected '[]'`);
     
+    return data.data as AddAgent[];
   } catch (error) {
     throw new Error(`Failed to fetch available agents (PostgresDB): ${error}`);
   }

@@ -17,8 +17,11 @@ const getWorkspacesUpdatedAt = async ({ userId }: Props): Promise<{ id: string, 
     
     const data: { message: string, data: { id: string, updatedAt: Date }[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
+    if(!Array.isArray(data.data) || data.data.length === 0) {
+      throw new Error(`Incorrect data format in the postgresDB.getWorkspacesUpdatedAt(). Expected non-empty '[]`);
+    }
+    
     return data.data as { id: string, updatedAt: Date }[];
-
   } catch (error) {
     throw new Error(`Failed to get workspaces data (PostgresDB): ${error}`);
   }

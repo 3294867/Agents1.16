@@ -20,7 +20,7 @@ const getAgent = async (req: Request, res: Response): Promise<void> => {
       WHERE workspace_id = $1::uuid;
     `, [ workspaceId ]);
     if (getAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent ids");
-    const agentIds = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getAgentData = await pool.query(`
       SELECT id, type, model, system_instructions, stack, temperature, web_search, created_at, updated_at
@@ -33,23 +33,21 @@ const getAgent = async (req: Request, res: Response): Promise<void> => {
     res.status(200).json({
       message: "Agent fetched",
       data: {
-        agent: {
-          id: getAgentData.rows[0].id,
-          name: agentName,
-          type: getAgentData.rows[0].type,
-          model: getAgentData.rows[0].model,
-          systemInstructions: getAgentData.rows[0].system_instructions,
-          stack: getAgentData.rows[0].stack,
-          temperature: getAgentData.rows[0].temperature,
-          webSearch: getAgentData.rows[0].web_search,
-          workspaceId,
-          createdAt: getAgentData.rows[0].created_at,
-          updatedAt: getAgentData.rows[0].updated_at
-        }
+        id: getAgentData.rows[0].id,
+        name: agentName,
+        type: getAgentData.rows[0].type,
+        model: getAgentData.rows[0].model,
+        systemInstructions: getAgentData.rows[0].system_instructions,
+        stack: getAgentData.rows[0].stack,
+        temperature: getAgentData.rows[0].temperature,
+        webSearch: getAgentData.rows[0].web_search,
+        workspaceId,
+        createdAt: getAgentData.rows[0].created_at,
+        updatedAt: getAgentData.rows[0].updated_at
       }
     });
-  } catch (error: any) {
-    console.error("Failed to fetch agent: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to fetch agent: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

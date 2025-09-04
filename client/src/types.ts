@@ -43,6 +43,7 @@ type ReqRes = {
   responseId: string;
   responseBody: string;
   inferredAgentType: AgentType;
+  isNew: boolean;
 }
 
 interface Thread {

@@ -17,12 +17,12 @@ const getAgentId = async ({ userId, workspaceName, agentName }: Props): Promise<
       throw new Error(`Failed to fetch agentId (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: { agentId: string } | null } = await response.json();
+    const data: { message: string, data: string | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data.agentId as string;
     
+    return data.data as string;
   } catch (error) {
-    throw new Error(`Failed to fetch agent (PostgresDB): ${error}`);
+    throw new Error(`Failed to fetch agentId (PostgresDB): ${error}`);
   }
 };
 

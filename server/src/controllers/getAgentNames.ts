@@ -20,7 +20,7 @@ const getAgentNames = async (req: Request, res: Response): Promise<void> => {
     `, [ workspaceId ]);
     if (getAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent ids");
 
-    const agentIds = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getAgentNames = await pool.query(`
       SELECT name
@@ -29,15 +29,15 @@ const getAgentNames = async (req: Request, res: Response): Promise<void> => {
     `, [ agentIds ]);
     if (getAgentNames.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent names");
 
-    const agentNames = getAgentNames.rows.map((i: { name: string }) => i.name);
+    const agentNames: string[] = getAgentNames.rows.map((i: { name: string }) => i.name);
     
     res.status(200).json({
       message: "Agent names fetched",
-      data: { agentNames }
+      data: agentNames
     });
     
-  } catch (error: any) {
-    console.error("Failed to fetch agent: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to fetch agent: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

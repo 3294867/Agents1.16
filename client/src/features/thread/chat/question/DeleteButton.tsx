@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import dispatchEvent from 'src/events/dispatchEvent';
@@ -6,8 +7,8 @@ import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
 interface Props {
-  teamId: string;
-  teamName: string;
+  workspaceId: string;
+  workspaceName: string;
   threadId: string;
   requestId: string;
   responseId: string;
@@ -16,9 +17,9 @@ interface Props {
   agentName: string,
 }
 
-const DeleteButton = ({
-  teamId,
-  teamName,
+const DeleteButton = memo(({
+  workspaceId,
+  workspaceName,
   threadId,
   requestId,
   responseId,
@@ -32,11 +33,11 @@ const DeleteButton = ({
     await indexedDB.deleteQuery({ threadId, requestId });
 
     if (threadBodyLength == 1) {
-      /** Remove thread title (IndexedDB, PostgresDB, localStorage) */
-      await indexedDB.removeThreadTitle({ threadId });
-      await postgresDB.removeThreadTitle({ threadId });
-      tabsStorage.update(teamId, teamName, agentName, agentId, threadId, null);
-      dispatchEvent.threadTitleUpdated(threadId, null);
+      /** Remove thread name (IndexedDB, PostgresDB, localStorage) */
+      await indexedDB.removeThreadName({ threadId });
+      await postgresDB.removeThreadName({ threadId });
+      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, null);
+      dispatchEvent.threadNameUpdated(threadId, null);
     }
   };
   
@@ -45,6 +46,6 @@ const DeleteButton = ({
       <Icons.Delete />
     </Button>
   );
-};
+});
 
 export default DeleteButton;

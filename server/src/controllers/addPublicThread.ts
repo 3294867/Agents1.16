@@ -57,7 +57,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get agent ids");
     }
-    const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getRootAgent = await pool.query(`
       SELECT id, name
@@ -190,13 +190,13 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
         threadId: addRootThread.rows[0].id,
       },
     });
-  } catch (error: any) {
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error("Rollback error: ", rollbackError.stack || rollbackError);
+    } catch (rollbackError) {
+      console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to add public thread: ", error.stack || error);
+    console.error("Failed to add public thread: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

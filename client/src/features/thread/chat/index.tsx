@@ -1,24 +1,23 @@
+import { memo } from 'react';
 import Answer from './Answer';
 import Question from './question';
-import { AgentModel, AgentType, Query } from 'src/types';
+import { AgentModel, AgentType, ReqRes } from 'src/types';
 import styles from './Chat.module.css';
 
 interface Props {
-  userId: string;
-  teamId: string;
-  teamName: string;
+  workspaceId: string;
+  workspaceName: string;
   agentId: string;
   agentName: string;
   agentType: AgentType;
   agentModel: AgentModel;
   threadId: string;
-  threadBody: Query[] | [];
+  threadBody: ReqRes[] | [];
 }
 
-const Chat = ({
-  userId,
-  teamId,
-  teamName,
+const Chat = memo(({
+  workspaceId,
+  workspaceName,
   agentId,
   agentName,
   agentType,
@@ -31,16 +30,15 @@ const Chat = ({
       {threadBody.length > 0 && threadBody.map((i, idx) => (
         <div key={idx} className={styles.messageGroup}>
           <Question
-            userId={userId}
-            teamId={teamId}
-            teamName={teamName}
+            workspaceId={workspaceId}
+            workspaceName={workspaceName}
             agentId={agentId}
             agentName={agentName}
             agentType={agentType}
-            threadId={threadId}
             agentModel={agentModel}
+            threadId={threadId}
             threadBodyLength={threadBody.length}
-            query={i}
+            reqres={i}
           />
           <Answer
             threadId={threadId}
@@ -54,6 +52,6 @@ const Chat = ({
       ))}
     </div>
   );
-};
+});
 
 export default Chat;

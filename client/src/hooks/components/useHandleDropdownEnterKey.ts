@@ -15,17 +15,17 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
   const navigate = useNavigate();
   
   const handleBookmarkThread = async ({ threadId, isBookmarked} : { threadId: string; isBookmarked: boolean }) => {
-    await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !isBookmarked });
-    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !isBookmarked });
-    dispatchEvent.threadIsBookmarkedUpdated(threadId, !isBookmarked);
+    await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
+    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked});
+    dispatchEvent.threadIsBookmarkedUpdated(threadId, isBookmarked);
   };
 
-  const handleDeleteThread = async ({ threadId, teamName, agentName }: { threadId: string, teamName: string, agentName: string}) => {
+  const handleDeleteThread = async ({ workspaceName, threadId, agentName }: { workspaceName: string, threadId: string, agentName: string}) => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(teamName, agentName, threadId);
+    tabsStorage.deleteTab(workspaceName, agentName, threadId);
     
-    navigate(`/${teamName}/${agentName}`);
+    navigate(`/${workspaceName}/${agentName}`);
   };
   
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -47,10 +47,10 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
         } else if (focusedElement.id.startsWith('delete_thread_button')) {
           const button = focusedElement.closest<HTMLButtonElement>('button[id^="delete_thread_button"]');
           if (button) {
-            const threadId = button.dataset.threadId || '';
-            const teamName = button.dataset.teamName || '';
+            const workspaceName = button.dataset.workspaceName || '';
             const agentName = button.dataset.agentName || '';
-            handleDeleteThread({threadId, teamName, agentName});
+            const threadId = button.dataset.threadId || '';
+            handleDeleteThread({ workspaceName, agentName, threadId, });
           }
         }
       }

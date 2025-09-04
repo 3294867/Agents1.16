@@ -36,7 +36,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
         $6::float,
         $7::boolean
       )
-      RETURNING id;
+      RETURNING id, name;
     `, [
       agentData.name,
       agentData.type,
@@ -70,7 +70,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to get workspace user ids");
     }
-    const userIds = getWorkspaceUserIds.rows.map((i: { user_id: string }) => i.user_id);
+    const userIds: string[] = getWorkspaceUserIds.rows.map((i: { user_id: string }) => i.user_id);
 
     for (const item of userIds) {
       const addUserAgent = await pool.query(`
@@ -86,14 +86,20 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
     
     await pool.query(`COMMIT`);
 
-    utils.sendResponse(res, 201, "Agent added");
-  } catch (error: any) {
+    res.status(201).json({
+      message: "Agent added",
+      data: {
+        id: addAgent.rows[0].id,
+        name: addAgent.rows[0].name
+      }
+    });
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error('Rollback error: ', rollbackError.stack || error);
+    } catch (rollbackError) {
+      console.error('Rollback error: ', rollbackError);
     }
-    console.error("Failed to add agent: ", error.stack || error);
+    console.error("Failed to add agent: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

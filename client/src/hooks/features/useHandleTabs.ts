@@ -39,17 +39,17 @@ const useHandleTabs = ({ workspaceName, agentName }: Props): { tabs: Tab[] | nul
     return () => window.removeEventListener('tabsUpdated', handleTabsUpdated as EventListener);
   },[workspaceName, agentName]);
 
-  /** Update tabs on threadTitleUpdated event (Events) */
+  /** Update tabs on threadNameUpdated event (Events) */
   useEffect(() => {
     if (!workspaceName || !agentName) return;
     
-    const handleThreadTitleUpdated = () => {
+    const handleThreadNameUpdated = () => {
       const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
       if (loadSavedTabs) setTabs(loadSavedTabs);
     };
 
-    window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
-    return () => window.removeEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
+    window.addEventListener('threadNameUpdated', handleThreadNameUpdated as EventListener);
+    return () => window.removeEventListener('threadNameUpdated', handleThreadNameUpdated as EventListener);
   },[workspaceName, agentName]);
 
   /** Set 'positionY' property of the current thread (UI) */

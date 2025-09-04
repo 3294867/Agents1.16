@@ -1,87 +1,48 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { v4 as uuidV4 } from 'uuid';
-import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
-import { Query, Thread } from 'src/types';
-import tabsStorage from 'src/storage/localStorage/tabsStorage';
+import indexedDB from 'src/storage/indexedDB';
+import { ReqRes, Thread } from 'src/types';
 
 interface Props {
-  userId: string;
-  workspaceName: string;
-  agentName: string;
-  threadId: string;
+  threadId: string | undefined;
 }
 
-const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
-  const navigate = useNavigate();
-  const [ searchParams ] = useSearchParams();
+const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
   const [ isLoading, setIsLoading ] = useState<boolean>(false);
   const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
   
-  /** Redirect on shared thread or get thread (IndexedDB, PostgresDB) */
+  /** Get thread */
   useEffect(() => {
     if (!threadId) {
       setError('Missing thread id');
       return;
     }
-    const isShared = searchParams.get('share');
-    if (!isShared) {
-      const getThread = async () => {
-        try {
-          setIsLoading(true);
-          setError(null);
-    
-          const getThreadIDB = await indexedDB.getThread({ threadId });
-          const getThreadPGDBUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
-    
-          if (!getThreadIDB || new Date(getThreadIDB.updatedAt).getTime() !== new Date(getThreadPGDBUpdatedAt).getTime()) {
-            const getThreadPGDB = await postgresDB.getThread({ threadId });
-            await indexedDB.updateThread({ thread: getThreadPGDB });
-            setThread(getThreadPGDB);
-            setIsLoading(false);
-            return;
-          }
-          
-          setThread(getThreadIDB);
-          setIsLoading(false);
-        } catch (error) {
-          throw new Error(`Failed to get thread: ${error}`);
-        }
-      };
-      getThread();
-      return;
-    }
+    setIsLoading(true);
 
-    const addSharedThread = async () => {
-      if (isShared === 'true') {
-        setIsLoading(true);        
-        const id = uuidV4();
-        const duplicateThreadPGDB = await postgresDB.duplicateThread({
-          publicThreadId: threadId,
-          newThreadId: id,
-          userId,
-          agentId
-        });
+    const init = async () => {
+      try {
+        const getThreadIDB = await indexedDB.getThread({ threadId });
+        const getThreadPGDBUpdatedAt = await postgresDB.getThreadUpdatedAt({ threadId });
+  
+        if (!getThreadIDB || new Date(getThreadIDB.updatedAt).getTime() !== new Date(getThreadPGDBUpdatedAt).getTime()) {
+          const getThreadPGDB = await postgresDB.getThread({ threadId });
+          await indexedDB.updateThread({ thread: getThreadPGDB });
+          setThread(getThreadPGDB);
+          setIsLoading(false);
+          return;
+        }
         
-        const getThreadPGDB = await postgresDB.getThread({ threadId: duplicateThreadPGDB.id });
-        await indexedDB.addThread({ thread: getThreadPGDB }).then(() => {
-          const tab = {
-            id: getThreadPGDB.id,
-            teamId,
-            agentId,
-            title: getThreadPGDB.title,
-            isActive: true
-          };
-          tabsStorage.addTab(teamName, agentName, tab);
-          navigate(`/${teamName}/${agentName}/${id}`);
-        });
+        setThread(getThreadIDB);
+        setIsLoading(false);
+      } catch (error) {
+        throw new Error(`Failed to get thread: ${error}`);
       }
     };
-    addSharedThread();
-  },[userId, teamId, teamName, agentId, agentName, threadId, searchParams]);
+    init();
+
+  }, [threadId]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */
   useEffect(() => {
@@ -142,7 +103,7 @@ const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props):
           if (!prevThread) return null;
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
           const queryIndex = prevBody.findIndex(q => q.requestId === event.detail.query.requestId);
-          const updatedBody: Query[] = prevBody.map((q, idx) =>
+          const updatedBody: ReqRes[] = prevBody.map((q, idx) =>
             idx === queryIndex ? event.detail.query : q
           );
           return {
@@ -187,7 +148,7 @@ const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props):
         if (queryIndex === -1) return;
   
         const isNew: boolean = event.detail.isNew;
-        const updatedThreadBody: Query[] = threadBody.map((q, idx) =>
+        const updatedThreadBody: ReqRes[] = threadBody.map((q, idx) =>
           idx === queryIndex ? { ...q, isNew } : q
         );
   
@@ -205,23 +166,23 @@ const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props):
     return () => window.removeEventListener('queryIsNewUpdated', handleQueryIsNewUpdated as EventListener);
   },[thread, threadId]);
 
-  /** Update thread on threadTitleUpdated event (UI) */
+  /** Update thread on threadNameUpdated event (UI) */
   useEffect(() => {
-    const handleThreadTitleUpdated = (event: CustomEvent) => {
+    const handleThreadNameUpdated = (event: CustomEvent) => {
       if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
           if (!prevThread) return null;
           return {
             ...prevThread,
-            title: event.detail.threadTitle
+            name: event.detail.threadName
           }
         });
       }
     };
-    window.addEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
+    window.addEventListener('threadNameUpdated', handleThreadNameUpdated as EventListener);
 
-    return () => window.removeEventListener('threadTitleUpdated', handleThreadTitleUpdated as EventListener);
+    return () => window.removeEventListener('threadNameUpdated', handleThreadNameUpdated as EventListener);
   },[thread, threadId]);
 
   /** Update thread on threadIsBookmarkedUpdated event (UI)*/
@@ -233,7 +194,7 @@ const useHandleThread = ({ userId, workspaceName, agentName, threadId }: Props):
           if (!prevThread) return null;
           return {
             ...prevThread,
-            isBookmarked: event.detail.isBookmarked
+            isBookmarked: !event.detail.isBookmarked
           }
         })
       }

@@ -1,10 +1,10 @@
-import { Query } from 'src/types';
+import { ReqRes } from 'src/types';
 
-const queryAdded =  (threadId: string, query: Query) => {
-  const event = new CustomEvent('queryAdded', {
+const reqresAdded =  (threadId: string, query: ReqRes) => {
+  const event = new CustomEvent('reqresAdded', {
     detail: { threadId, query }
   });
   window.dispatchEvent(event);
 };
 
-export default queryAdded;
+export default reqresAdded;

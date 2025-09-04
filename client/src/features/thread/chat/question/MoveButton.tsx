@@ -1,5 +1,5 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidV4 } from 'uuid';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import openai from 'src/opanai';
@@ -10,9 +10,8 @@ import Icons from 'src/assets/icons';
 import { AgentType } from 'src/types';
 
 interface Props {
-  userId: string;
-  teamId: string;
-  teamName: string;
+  workspaceId: string;
+  workspaceName: string;
   agentId: string;
   agentName: string;
   threadId: string;
@@ -24,10 +23,9 @@ interface Props {
   inferredAgentType: AgentType;
 }
 
-const MoveButton = ({
-  userId,
-  teamId,
-  teamName,
+const MoveButton = memo(({
+  workspaceId,
+  workspaceName,
   agentId,
   agentName,
   threadId,
@@ -47,58 +45,56 @@ const MoveButton = ({
     await postgresDB.deleteQuery({ threadId, requestId, responseId });
     
     /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
-    const firstQuery = await indexedDB.getFirstQuery({ threadId });
-    if (firstQuery) {
-      const threadTitle = await openai.createThreadTitle({
-        question: firstQuery.requestBody,
-        answer: firstQuery.responseBody
+    const firstReqRes = await indexedDB.getFirstQuery({ threadId });
+    if (firstReqRes) {
+      const threadName = await openai.createThreadName({
+        question: firstReqRes.requestBody,
+        answer: firstReqRes.responseBody
       });
-      await postgresDB.updateThreadTitle({ threadId, threadTitle });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle });
-      tabsStorage.update( teamName, teamId, agentName, agentId, threadId, threadTitle );
+      await postgresDB.updateThreadName({ threadId, threadName });
+      await indexedDB.updateThreadName({ threadId, threadName });
+      tabsStorage.update( workspaceId, workspaceName, agentId, agentName, threadId, threadName );
     } else {
-      await postgresDB.updateThreadTitle({ threadId, threadTitle: null });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle: null });  
-      tabsStorage.update( teamId, teamName, agentName, agentId, threadId, null );
+      await postgresDB.updateThreadName({ threadId, threadName: null });
+      await indexedDB.updateThreadName({ threadId, threadName: null });  
+      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, null);
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({ threadId, positionY: currentThreadPositionY });
 
     /** Create new thread (PostgresDB) */
-    const newThreadId = uuidV4();
-    const newThread = await postgresDB.addThread({ id: newThreadId, userId, agentId });
+    const newThread = await postgresDB.addThread({ agentId });
     if (!newThread) return;
 
     /** Add new thread (IndexedDB) */
-    const updatedNewThread = { ...newThread, positionY: 0 };
-    await indexedDB.addThread({ thread: updatedNewThread });
+    await indexedDB.addThread({ id: newThread.id, agentId, createdAt: newThread.createdAt, updatedAt: newThread.updatedAt });
 
     /** Add query to the 'body' property of the new thread (IndexedDB, PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addQuery({
-      threadId: newThreadId, requestBody, responseBody
+      threadId: newThread.id, requestBody, responseBody
     });
-    const query ={
+    const reqres ={
       requestId: newRequestId,
       requestBody,
       responseId: newResponseId,
       responseBody,
-      isNew: true,
-      inferredAgentType
+      inferredAgentType,
+      isNew: true
     }
-    await indexedDB.addQuery({ threadId: newThreadId, query });
+    await indexedDB.addReqRes({ threadId: newThread.id, reqres });
 
-    /** Create and update 'title' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
-    const newThreadTitle = await openai.createThreadTitle({ question: requestBody, answer: responseBody });
-    await postgresDB.updateThreadTitle({ threadId: newThreadId, threadTitle: newThreadTitle });
-    await indexedDB.updateThreadTitle({ threadId: newThreadId, threadTitle: newThreadTitle });
+    /** Create and update 'name' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
+    const newThreadName = await openai.createThreadName({ question: requestBody, answer: responseBody });
+    await postgresDB.updateThreadName({ threadId: newThread.id, threadName: newThreadName });
+    await indexedDB.updateThreadName({ threadId: newThread.id, threadName: newThreadName });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.addTab(teamName, agentName, {
-      id: newThreadId, teamId, agentId, title: newThreadTitle, isActive: true
+    tabsStorage.addTab(workspaceName, agentName, {
+      id: newThread.id, workspaceId, agentId, name: newThreadName, isActive: true
     });
     
-    navigate(`/${teamName}/${agentName}/${newThreadId}`);
+    navigate(`/${workspaceName}/${agentName}/${newThread.id}`);
   };
   
   return threadBodyLength > 1 && (
@@ -106,6 +102,6 @@ const MoveButton = ({
       <Icons.Move />
     </Button>
   );
-};
+});
 
 export default MoveButton;

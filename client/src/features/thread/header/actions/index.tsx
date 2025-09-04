@@ -7,13 +7,13 @@ import ShareThreadButton from './ShareThreadButton';
 
 interface Props {
   userId: string;
-  threadId: string;
-  currentIsBookmarked: boolean;
-  teamName: string;
+  workspaceName: string;
   agentName: string;
+  threadId: string;
+  isBookmarked: boolean;
 }
 
-const Actions = ({ userId, threadId, currentIsBookmarked, teamName, agentName }: Props) => {
+const Actions = ({ userId, workspaceName, agentName, threadId, isBookmarked }: Props) => {
   return (
     <div style={{ display: 'flex', flexDirection: 'row', gap: '0.375rem', justifyContent: 'end', alignItems: 'start'}}>
       <ShareThreadButton userId={userId} threadId={threadId} />
@@ -24,8 +24,12 @@ const Actions = ({ userId, threadId, currentIsBookmarked, teamName, agentName }:
           </Button>
         </Dropdown.Trigger>
         <Dropdown.Content align='end' sideOffset={4}>
-          {!currentIsBookmarked && <BookmarkThreadButton threadId={threadId} currentIsBookmarked={currentIsBookmarked} />}
-          <DeleteThreadDialog threadId={threadId} teamName={teamName} agentName={agentName} />
+          {!isBookmarked && <BookmarkThreadButton threadId={threadId} isBookmarked={isBookmarked} />}
+          <DeleteThreadDialog
+            workspaceName={workspaceName}
+            agentName={agentName}
+            threadId={threadId}
+          />
         </Dropdown.Content>
       </Dropdown.Root>
     </div>

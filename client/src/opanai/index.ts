@@ -1,10 +1,10 @@
 import createResponse from 'src/opanai/createResponse';
-import createThreadTitle from 'src/opanai/createThreadTitle';
+import createThreadName from 'src/opanai/createThreadName';
 import inferAgentType from 'src/opanai/inferAgentType';
 
 export const openai = {
   createResponse,
-  createThreadTitle,
+  createThreadName,
   inferAgentType
 };
 

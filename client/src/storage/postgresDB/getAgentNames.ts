@@ -17,8 +17,11 @@ const getAgentNames = async ({ workspaceId }: Props): Promise<string[]> => {
     
     const data: { message: string, data: string[] | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as string[];
+    if (!Array.isArray(data.data) || data.data.length === 0) {
+      throw new Error(`Incorrect data format in the postgresDB.getAgentNames(). Expected non-empty '[]`);
+    }
     
+    return data.data as string[];
   } catch (error) {
     throw new Error(`Failed to fetch agents data (PostgresDB): ${error}`);
   }

@@ -21,12 +21,12 @@ const tabsStorage = {
       return null;
     }
   },
-  update: (workspaceName: string, agentName: string, workspaceId: string, agentId: string, threadId: string, name: string | null) => {
+  update: (workspaceId: string, workspaceName: string, agentId: string, agentName: string, threadId: string, threadName: string | null) => {
     try {
       const getSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
       if (getSavedTabs) {
         const remainingTabs = JSON.parse(getSavedTabs).filter((tab: Tab) => tab.id !== threadId);
-        const updatedTab: Tab = { id: threadId, workspaceId, agentId, name, isActive: true };
+        const updatedTab: Tab = { id: threadId, workspaceId, agentId, name: threadName, isActive: true };
         const updatedTabs = [...remainingTabs, updatedTab] as Tab[];
 
         localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(updatedTabs));

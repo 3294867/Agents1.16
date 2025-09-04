@@ -1,39 +1,37 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import hooks from 'src/hooks';
 import PauseRunButton from './PauseRunButton';
 import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
 import MoveButton from './MoveButton';
 import ChangeAgentButton from './ChangeAgentButton';
-import { AgentModel, AgentType, Query } from 'src/types';
+import { AgentModel, AgentType, ReqRes } from 'src/types';
 import styles from './Question.module.css';
 
 interface Props {
-  userId: string;
-  teamId: string;
-  teamName: string;
+  workspaceId: string;
+  workspaceName: string;
   agentId: string;
   agentName: string;
   agentType: AgentType;
   agentModel: AgentModel;
   threadId: string;
   threadBodyLength: number;
-  query: Query;
+  reqres: ReqRes;
 }
 
-const Question = ({
-  userId,
-  teamId,
-  teamName,
+const Question = memo(({
+  workspaceId,
+  workspaceName,
   agentId,
   agentName,
   agentType,
   agentModel,
   threadId,
-  query,
-  threadBodyLength
+  threadBodyLength,
+  reqres
 }: Props) => {
-  const { requestId, requestBody, responseId, responseBody, isNew, inferredAgentType } = query;
+  const { requestId, requestBody, responseId, responseBody, inferredAgentType, isNew } = reqres;
   const [input, setInput] = useState(requestBody);
   const [isEditing, setIsEditing] = useState(false);
   const { textareaRef, progressBarLength } = hooks.features.useHandleQuestion({ input, isEditing });
@@ -41,10 +39,14 @@ const Question = ({
   return (
     <div className={styles.container}>
       <div className={styles.actionButtons}>
-        <EditButton requestId={requestId} responseId={responseId} setIsEditing={setIsEditing} />
+        <EditButton
+          requestId={requestId}
+          responseId={responseId}
+          setIsEditing={setIsEditing}
+        />
         <DeleteButton
-          teamId={teamId}
-          teamName={teamName}
+          workspaceId={workspaceId}
+          workspaceName={workspaceName}
           threadId={threadId}
           requestId={requestId}
           responseId={responseId}
@@ -53,9 +55,8 @@ const Question = ({
           agentName={agentName}
         />
         <MoveButton
-          userId={userId}
-          teamId={teamId}
-          teamName={teamName}
+          workspaceId={workspaceId}
+          workspaceName={workspaceName}
           agentId={agentId}
           agentName={agentName}
           threadId={threadId}
@@ -81,33 +82,27 @@ const Question = ({
           />
           <div style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', display: 'flex' }}>
             <ChangeAgentButton
-              userId={userId}
-              teamId={teamId}
-              teamName={teamName}
+              workspaceId={workspaceId}
+              workspaceName={workspaceName}
               currentAgentId={agentId}
-              currentAgentType={agentType}
               currentAgentName={agentName}
-              inferredAgentType={inferredAgentType}
+              currentAgentType={agentType}
               threadId={threadId}
-              requestId={requestId}
-              requestBody={requestBody}
-              responseId={responseId}
-              responseBody={responseBody}
+              reqres={reqres}
               isEditing={isEditing}
-              isNew={isNew}
             />
             <PauseRunButton
-              teamId={teamId}
-              teamName={teamName}
-              threadId={threadId}
+              workspaceId={workspaceId}
+              workspaceName={workspaceName}
               agentId={agentId}
               agentName={agentName}
               agentModel={agentModel}
+              threadId={threadId}
               requestId={requestId}
               responseId={responseId}
-              input={input}
-              isNew={isNew}
               inferredAgentType={inferredAgentType}
+              isNew={isNew}
+              input={input}
               isEditing={isEditing}
               setIsEditing={setIsEditing}
             />
@@ -117,6 +112,6 @@ const Question = ({
       </div>
     </div>
   );
-};
+});
 
 export default Question;

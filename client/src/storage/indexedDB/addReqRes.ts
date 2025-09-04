@@ -1,29 +1,27 @@
 import { db } from './initialize';
 import dispatchEvent from 'src/events/dispatchEvent';
-import { Query } from 'src/types';
+import { ReqRes } from 'src/types';
 
 interface Props {
   threadId: string;
-  query: Query;
+  reqres: ReqRes;
 }
 
 /** Adds new query to the body of the thread (IndexedDB) */
-const addQuery = async ({ threadId, query }: Props): Promise<void> => {
+const addReqRes = async ({ threadId, reqres }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
     if (!savedThread) throw new Error('Thread not found');
     const threadBodyArray = Array.isArray(savedThread.body) ? savedThread.body : [];
     const updatedThread = await db.threads.update(threadId, {
-      body: [...threadBodyArray, query]
+      body: [...threadBodyArray, reqres]
     });
-    if (updatedThread === 0) throw new Error('Failed to add query to the body of the thread (IndexedDB)');
+    if (updatedThread === 0) throw new Error('Failed to add reqres to the body of the thread (IndexedDB)');
 
-    /** Dispatch queryAdded event (Events) */
-    dispatchEvent.queryAdded(threadId, query);
-
+    dispatchEvent.reqresAdded(threadId, reqres);
   } catch (error) {
-    console.error('Failed to add query to the body of the thread (IndexedDB): ', error);
+    console.error('Failed to add reqres to the body of the thread (IndexedDB): ', error);
   }
 };
 
-export default addQuery;
+export default addReqRes;

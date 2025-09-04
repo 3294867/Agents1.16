@@ -1,10 +1,10 @@
-import { Agent, AgentType } from 'src/types';
+import { AddAgent, AgentType } from 'src/types';
 
 interface Props {
   agentType: AgentType;
 }
 
-const getAvailableAgentByType = async ({ agentType }: Props): Promise<Agent> => {
+const getAvailableAgentByType = async ({ agentType }: Props): Promise<AddAgent> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/get-available-agent-by-type`, {
       method: 'POST',
@@ -17,12 +17,15 @@ const getAvailableAgentByType = async ({ agentType }: Props): Promise<Agent> => 
       throw new Error(`Failed to fetch available agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: Agent | null } = await response.json();
+    const data: { message: string, data: AddAgent | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as Agent;
+    if (Object.keys(data.data).length === 0) {
+      throw new Error(`Incorrect format od available agent. Expected non-empty '{}`);
+    }
     
+    return data.data as AddAgent;
   } catch (error) {
-    throw new Error(`Failed to fetch available agent (PostgresDB): ${error}`);
+    throw new Error(`Failed to fetch available agent by type (PostgresDB): ${error}`);
   }
 };
 

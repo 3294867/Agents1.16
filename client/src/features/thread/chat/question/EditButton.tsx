@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, memo, SetStateAction } from 'react';
 import Button from 'src/components/button';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
@@ -9,7 +9,7 @@ interface Props {
   setIsEditing: Dispatch<SetStateAction<boolean>>;
 }
 
-const EditButton = ({ requestId, responseId, setIsEditing }: Props) => {
+const EditButton = memo(({ requestId, responseId, setIsEditing }: Props) => {
   const handleClick = () => {
     const update = () => {
       return new Promise<void>((resolve) => {
@@ -26,6 +26,6 @@ const EditButton = ({ requestId, responseId, setIsEditing }: Props) => {
       <Icons.Edit />
     </Button>
   );
-};
+});
 
 export default EditButton;

@@ -20,16 +20,16 @@ const ProtectedApp = () => {
       path: '/',
       element: <Layout userId={userId} />,
       children: [
-        { index: true, element: <Navigate to="/personal/general" /> },
+        { path: '/', element: <Navigate to='personal' /> },
         {
           path: ':workspaceName',
-          element: <Workspace userId={userId} />,
+          element: <Workspace />,
           children: [
             {
               path: ':agentName',
-              element: <Agent userId={userId} />,
+              element: <Agent />,
               children: [
-                { path: ':threadId', element: <Thread userId={userId} /> }
+                { path: ':threadId', element: <Thread /> }
               ]
             }
           ]

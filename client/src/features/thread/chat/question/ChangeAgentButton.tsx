@@ -1,46 +1,33 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { v4 as uuidV4 } from 'uuid';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import openai from 'src/opanai';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import dispatchEvent from 'src/events/dispatchEvent';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
 import Button from 'src/components/button';
-import { Agent, AgentType } from 'src/types';
+import { AddAgent, AgentType, ReqRes } from 'src/types';
 
 interface Props {
-  userId: string;
-  teamId: string;
-  teamName: string;
+  workspaceId: string;
+  workspaceName: string;
   currentAgentId: string;
-  currentAgentType: AgentType;
-  inferredAgentType: AgentType;
   currentAgentName: string;
+  currentAgentType: AgentType;
   threadId: string;
-  requestId: string;
-  requestBody: string;
-  responseId: string;
-  responseBody: string;
-  isNew: boolean;
+  reqres: ReqRes;
   isEditing: boolean;
 }
 
-const ChangeAgentButton = ({
-  userId,
-  teamId,
-  teamName,
+const ChangeAgentButton = memo(({
+  workspaceId,
+  workspaceName,
   currentAgentId,
-  currentAgentType,
-  inferredAgentType,
   currentAgentName,
+  currentAgentType,
   threadId,
-  requestId,
-  requestBody,
-  responseId,
-  responseBody,
-  isNew,
+  reqres,
   isEditing
 }: Props) => {
   const navigate = useNavigate();
@@ -48,121 +35,94 @@ const ChangeAgentButton = ({
   
   const handleClick = async () => {
     /** Remove query from the 'body' property of the current thread (IndexedDB, PostgresDB) */
-    await indexedDB.deleteQuery({ threadId, requestId });
-    await postgresDB.deleteQuery({ threadId, requestId, responseId });
+    await indexedDB.deleteQuery({ threadId, requestId: reqres.requestId });
+    await postgresDB.deleteQuery({ threadId, requestId: reqres.requestId, responseId: reqres.responseId });
     
     /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
-    const firstQuery = await indexedDB.getFirstQuery({ threadId });
-    if (firstQuery) {
-      const threadTitle = await openai.createThreadTitle({
-        question: firstQuery.requestBody,
-        answer: firstQuery.responseBody
+    const firstReqRes = await indexedDB.getFirstQuery({ threadId });
+    if (firstReqRes) {
+      const threadName = await openai.createThreadName({
+        question: firstReqRes.requestBody,
+        answer: firstReqRes.responseBody
       });
 
-      await postgresDB.updateThreadTitle({ threadId, threadTitle });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle });
-      tabsStorage.update( teamName, teamId, currentAgentName, currentAgentId, threadId, threadTitle );
+      await postgresDB.updateThreadName({ threadId, threadName });
+      await indexedDB.updateThreadName({ threadId, threadName });
+      tabsStorage.update( workspaceId, workspaceName, currentAgentId, currentAgentName, threadId, threadName );
     } else {
-      await postgresDB.updateThreadTitle({ threadId, threadTitle: null });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle: null });
-      tabsStorage.update( teamName, teamId, currentAgentName, currentAgentId, threadId, null );
+      await postgresDB.updateThreadName({ threadId, threadName: null });
+      await indexedDB.updateThreadName({ threadId, threadName: null });
+      tabsStorage.update( workspaceId, workspaceName, currentAgentId, currentAgentName, threadId, null );
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
-    await indexedDB.updateThreadPositionY({
-      threadId,
-      positionY: currentThreadPositionY
-    });
+    await indexedDB.updateThreadPositionY({ threadId, positionY: currentThreadPositionY });
 
     /** Load or create new agent */
-    let newAgent: Agent | null;
-    const savedAgent = await indexedDB.getAgentByType({ userId, agentType: inferredAgentType});
+    let newAgentData: { id: string, name: string } | null = null;
+    const savedAgent = await indexedDB.getAgentByType({ agentType: reqres.inferredAgentType});
     if (savedAgent) {
-      newAgent = savedAgent;
+      newAgentData = { id: savedAgent.id, name: savedAgent.name };
     } else {
-      const availableAgentPostgres = await postgresDB.getAvailableAgentByType({ agentType: inferredAgentType })
-      const agent = {
-        id: uuidV4(),
-        type: availableAgentPostgres.type,
-        model: availableAgentPostgres.model,
-        userId,
-        teamId,
-        teamName,
-        name: availableAgentPostgres.name,
-        systemInstructions: availableAgentPostgres.systemInstructions,
-        stack: availableAgentPostgres.stack,
-        temperature: availableAgentPostgres.temperature,
-        webSearch: availableAgentPostgres.webSearch,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      const agentPostgres: Agent = await postgresDB.addAgent({ agent });
-      await indexedDB.addAgent({ agent: agentPostgres });
-      newAgent = agentPostgres;
+      const availableAgentPostgres: AddAgent = await postgresDB.getAvailableAgentByType({ agentType: reqres.inferredAgentType })
+      const { id: newAgentId, name: newAgentName } = await postgresDB.addAgent({ workspaceId, agentData: availableAgentPostgres });
+      newAgentData = { id: newAgentId, name: newAgentName };
     }
     
     /** Create new thread (PostgresDB) */
-    const newThreadId = uuidV4();
-    const newThread = await postgresDB.addThread({
-      id: newThreadId, userId, agentId: newAgent.id
-    });
-    if (!newThread) return;
+    const newThread = await postgresDB.addThread({ agentId: newAgentData.id });
 
     /** Add new thread (IndexedDB) */
-    const updatedNewThread = { ...newThread, positionY: 0 };
-    await indexedDB.addThread({ thread: updatedNewThread });
-
-    /** Dispatch agentAdded event (Events) */
-    dispatchEvent.agentAdded(newAgent);
+    await indexedDB.addThread({ ...newThread, agentId: newAgentData.id });
 
     /** Add query to the 'body' property of the new thread (IndexedDB, PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addQuery({
-      threadId: newThreadId, requestBody, responseBody
+      threadId: newThread.id, requestBody: reqres.requestBody, responseBody: reqres.responseBody
     });
-    const query ={
+    const newReqRes ={
       requestId: newRequestId,
-      requestBody,
+      requestBody: reqres.requestBody,
       responseId: newResponseId,
-      responseBody,
+      responseBody: reqres.responseBody,
+      inferredAgentType: reqres.inferredAgentType,
       isNew: true,
-      inferredAgentType
     }
-    await indexedDB.addQuery({ threadId: newThreadId, query });
+    await indexedDB.addReqRes({ threadId: newThread.id, reqres: newReqRes });
 
     /** Create and update 'title' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
-    const newThreadTitle = await openai.createThreadTitle({
-      question: requestBody,
-      answer: responseBody
+    const newThreadName = await openai.createThreadName({
+      question: reqres.requestBody,
+      answer: reqres.responseBody
     });
-    await postgresDB.updateThreadTitle({
-      threadId: newThreadId,
-      threadTitle: newThreadTitle
+    await postgresDB.updateThreadName({
+      threadId: newThread.id,
+      threadName: newThreadName
     });
-    await indexedDB.updateThreadTitle({
-      threadId: newThreadId,
-      threadTitle: newThreadTitle
+    await indexedDB.updateThreadName({
+      threadId: newThread.id,
+      threadName: newThreadName
     });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.addTab(teamName, newAgent.name, {
-      id: newThreadId, teamId, agentId: newAgent.id, title: newThreadTitle, isActive: true
+    tabsStorage.addTab(workspaceName, newAgentData.name, {
+      id: newThread.id, workspaceId, agentId: newAgentData.id, name: newThreadName, isActive: true
     });
     
-    navigate(`/${teamName}/${newAgent.name}/${newThreadId}`);
+    navigate(`/${workspaceName}/${newAgentData.name}/${newThread.id}`);
   };
   
-  const buttonVariant = isEditing ? 'ghost' : isNew ? 'ghost' : 'outline';
+  const buttonVariant = isEditing ? 'ghost' : reqres.isNew ? 'ghost' : 'outline';
   
-  return currentAgentType !== inferredAgentType && (
+  return currentAgentType !== reqres.inferredAgentType && (
     <Button
       onClick={handleClick}
       size='sm'
       variant={buttonVariant}
       style={{ borderRadius: '999px' }}
     >
-      Open in {utils.capitalizeFirstLetter(String(inferredAgentType))} Agent
+      Open in {utils.capitalizeFirstLetter(String(reqres.inferredAgentType))} Agent
     </Button>
   )
-};
+});
 
 export default ChangeAgentButton;

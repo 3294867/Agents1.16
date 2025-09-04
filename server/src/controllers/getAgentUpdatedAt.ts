@@ -22,10 +22,10 @@ const getAgentUpdatedAt = async (req: Request, res: Response): Promise<void> => 
 
     res.status(200).json({
       message: "Agent updatedAt fetched",
-      data: { agentUpdatedAt: getAgentUpdatedAt.rows[0].updated_at }
+      data: getAgentUpdatedAt.rows[0].updated_at
     });
-  } catch (error: any) {
-    console.error("Failed to get agent updated at: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to get agent updated at: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

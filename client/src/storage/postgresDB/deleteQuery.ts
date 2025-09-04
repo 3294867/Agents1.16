@@ -17,9 +17,8 @@ const deleteQuery = async ({ threadId, requestId, responseId }: Props): Promise<
       throw new Error(`Failed to delete query (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string } = await response.json();
+    const data: { message: string, data: null } = await response.json();
     if (data.message !== 'Query deleted') throw new Error(data.message);
-
   } catch (error) {
     throw new Error(`Failed to delete query (PostgresDB): ${error}`);
   }

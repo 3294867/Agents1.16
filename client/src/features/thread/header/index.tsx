@@ -1,22 +1,33 @@
-import Title from './Title';
+import { memo } from 'react';
 import Actions from './actions';
+import Name from './Name';
 
 interface Props {
   userId: string;
-  threadId: string;
-  threadTitle: string | null;
-  isBookmarked: boolean;
-  teamName: string;
+  workspaceName: string;
   agentName: string;
+  threadId: string;
+  threadName: string | null;
+  threadIsBookmarked: boolean;
 }
 
-const Header = ({ userId, threadId, threadTitle, isBookmarked, teamName, agentName }: Props) => {
+const Header = memo(({ userId, workspaceName, agentName, threadId, threadName, threadIsBookmarked }: Props) => {
   return (
-    <div style={{ display: 'flex', alignItems: 'start', justifyContent: threadTitle === null ? 'end' : 'space-between' }}>
-      <Title threadId={threadId} threadTitle={threadTitle} isBookmarked={isBookmarked} />
-      <Actions userId={userId} threadId={threadId} currentIsBookmarked={isBookmarked} teamName={teamName} agentName={agentName} />
+    <div style={{ display: 'flex', alignItems: 'start', justifyContent: threadName === null ? 'end' : 'space-between' }}>
+      <Name
+        threadId={threadId}
+        threadName={threadName}
+        threadIsBookmarked={threadIsBookmarked}
+      />
+      <Actions
+        userId={userId}
+        workspaceName={workspaceName}
+        agentName={agentName}
+        threadId={threadId}
+        isBookmarked={threadIsBookmarked}
+      />
     </div>
   );
-};
+});
 
 export default Header;

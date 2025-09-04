@@ -97,13 +97,13 @@ const deleteQuery = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`COMMIT`);
 
     utils.sendResponse(res, 200, 'Query deleted');
-  } catch (error: any) {
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error("Rollback error: ", rollbackError.stack || rollbackError);
+    } catch (rollbackError) {
+      console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to delete query: ", error.stack || error);
+    console.error("Failed to delete query: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

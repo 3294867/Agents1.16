@@ -6,9 +6,11 @@ interface Props {
 }
 
 const Layout = ({ userId }: Props) => {
+  const outletContext = { userId };
+  
   return (
     <div style={{ backgroundColor: 'var(--background)' }}>
-      <Outlet context={userId} />
+      <Outlet context={outletContext} />
       <Toaster
         position='top-center'
         toastOptions={{

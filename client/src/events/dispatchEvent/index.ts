@@ -1,7 +1,5 @@
 import agentAdded from './agentAdded';
-import threadTitleUpdated from './threadTitleUpdated';
 import tabsUpdated from './tabsUpdated';
-import queryAdded from './queryAdded';
 import queryDeleted from './queryDeleted';
 import queryUpdated from './queryUpdated';
 import queryIsNewUpdated from './queryIsNewUpdated';
@@ -10,12 +8,14 @@ import responsePaused from './responsePaused';
 import progressBarLengthUpdated from './progressBarLengthUpdated';
 import threadIsBookmarkedUpdated from './threadIsBookmarkedUpdated';
 import threadUpdated from './threadUpdated';
+import threadNameUpdated from './threadNameUpdated';
+import reqresAdded from './queryAdded';
 
 const dispatchEvent = {
   agentAdded,
-  threadTitleUpdated,
+  threadNameUpdated,
   tabsUpdated,
-  queryAdded,
+  reqresAdded,
   queryDeleted,
   queryUpdated,
   queryIsNewUpdated,

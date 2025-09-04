@@ -10,10 +10,7 @@ const updateThread = async ({ thread }: Props): Promise<void> => {
   try {
     const updatedThread = await db.threads.update(thread.id, { ...thread });
     if (updatedThread === 0) throw new Error('Failed to update thread');
-
-    /** Dispatch queryUpdated event (Events) */
     dispatchEvent.threadUpdated(thread.id, thread);
-
   } catch (error) {
     console.error('Failed to update thread (IndexedDB): ', error);
   }

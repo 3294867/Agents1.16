@@ -6,14 +6,14 @@ import Button from 'src/components/button';
 
 interface Props {
   threadId: string;
-  currentIsBookmarked: boolean;
+  isBookmarked: boolean;
 }
 
-const BookmarkThreadButton = ({ threadId, currentIsBookmarked }: Props) => {
+const BookmarkThreadButton = ({ threadId, isBookmarked }: Props) => {
   const handleClick = async () => {
-    await postgresDB.updatedThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: !currentIsBookmarked });
-    dispatchEvent.threadIsBookmarkedUpdated(threadId, !currentIsBookmarked);
+    await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
+    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked });
+    dispatchEvent.threadIsBookmarkedUpdated(threadId, isBookmarked);
   };
   
   return (
@@ -24,7 +24,7 @@ const BookmarkThreadButton = ({ threadId, currentIsBookmarked }: Props) => {
       onClick={handleClick}
       style={{ width: '100%' }}
       data-thread-id={threadId}
-      data-is-bookmarked={currentIsBookmarked.toString()}
+      data-is-bookmarked={isBookmarked.toString()}
     >
       <Icons.BookmarkOutlined style={{ marginRight: '0.5rem' }}/>
       Bookmark

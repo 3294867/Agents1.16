@@ -32,10 +32,10 @@ const createResponse = async (req: Request, res: Response): Promise<void> => {
 
     res.status(201).json({
       message: "Response created",
-      data: { response: apiResponse.output_text }
+      data: apiResponse.output_text
     });
-  } catch (error: any) {
-    console.error("Failed to create response: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to create response: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

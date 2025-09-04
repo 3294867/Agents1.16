@@ -89,7 +89,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse(res, 404, "Failed to fetch root agents ids");
     }
-    const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
+    const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
     
     const getRootGeneralAgent = await pool.query(`
       SELECT name, type, model, system_instructions, stack, temperature, web_search
@@ -159,13 +159,13 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
 
     req.session.userId = addUser.rows[0].id;
     res.json({ success: true, userId: addUser.rows[0].id });
-  } catch (error: any) {
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error("Rollback error: ", rollbackError.stack || error);
+    } catch (rollbackError) {
+      console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to create user: ", error.stack || error);
+    console.error("Failed to create user: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

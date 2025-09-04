@@ -15,15 +15,18 @@ const getAgent = async ({ workspaceId, agentName }: Props): Promise<Agent> => {
     
     if (!response.ok) {
       const errorText = await response.text();
-      throw new Error(`Failed to fetch workspace agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
+      throw new Error(`Failed to fetch agent (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
     const data: { message: string, data: Agent | null } = await response.json();
     if (!data.data) throw new Error(data.message);
-    return data.data as Agent;
+    if (Object.keys(data.data).length === 0) {
+      throw new Error(`Incorrect format data in postgresDB.getAgent(). Expected non-empty '{}`);
+    }
     
+    return data.data as Agent;
   } catch (error) {
-    throw new Error(`Failed to fetch workspace agent (PostgresDB): ${error}`);
+    throw new Error(`Failed to fetch agent (PostgresDB): ${error}`);
   }
 };
 

@@ -25,10 +25,10 @@ const inferAgentType = async (req: Request, res: Response): Promise<void> => {
     
   res.status(200).json({
     message: "Agent type inferred",
-    data: { agentType: inferAgentType }
+    data: inferAgentType.output_text
   });
-  } catch (error: any) {
-    console.error("Failed to infer agent type: ", error.stack || error);
+  } catch (error) {
+    console.error("Failed to infer agent type: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

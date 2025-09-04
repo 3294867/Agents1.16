@@ -3,8 +3,7 @@ interface Props {
   responseBody: string;
 }
 
-/** Updates response body on edited question (PostgresDB) */
-const updateResponseBody = async ({ responseId, responseBody }: Props): Promise<string> => {
+const updateResponseBody = async ({ responseId, responseBody }: Props): Promise<void> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/update-response-body`, {
       method: 'POST',
@@ -17,10 +16,8 @@ const updateResponseBody = async ({ responseId, responseBody }: Props): Promise<
       throw new Error(`Failed to update response body (PostgresDB): ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: string | null } = await response.json();
-    if (!data.data) throw new Error(data.message);
-    return data.data as string;
-
+    const data: { message: string, data: null } = await response.json();
+    if (data.message !== 'Response body updated') throw new Error(data.message);
   } catch (error) {
     throw new Error(`Failed to update response body (PostgresDB): ${error}`);
   }

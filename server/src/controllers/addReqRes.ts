@@ -9,7 +9,7 @@ interface RequestBody {
   responseBody: string;
 }
 
-const addQuery = async (req: Request, res: Response): Promise<void> => {
+const addReqRes = async (req: Request, res: Response): Promise<void> => {
   const { threadId, requestBody, responseBody }: RequestBody = req.body;
 
   const validationError = await utils.validate.addQuery(threadId, requestBody, responseBody);
@@ -96,15 +96,15 @@ const addQuery = async (req: Request, res: Response): Promise<void> => {
         responseId: addResponse.rows[0].id
       }
     });
-  } catch (error: any) {
+  } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
-    } catch (rollbackError: any) {
-      console.error("Rollback error: ", rollbackError.stack || error);
+    } catch (rollbackError) {
+      console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to add query: ", error.stack || error);
+    console.error("Failed to add query: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };
 
-export default addQuery;
+export default addReqRes;

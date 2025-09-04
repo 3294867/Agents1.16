@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Dropdown from 'src/components/dropdown';
@@ -9,7 +10,7 @@ interface Props {
   setAgentModel: (model: AgentModel) => void;
 };
 
-const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
+const AgentModelDropdown = memo(({ agentModel, setAgentModel }: Props) => {
   return (
     <Dropdown.Root>
       <Dropdown.Trigger asChild>
@@ -36,6 +37,6 @@ const AgentModelDropdown = ({ agentModel, setAgentModel }: Props) => {
       </Dropdown.Content>
     </Dropdown.Root>
   );
-};
+});
 
 export default AgentModelDropdown;

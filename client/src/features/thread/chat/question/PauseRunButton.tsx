@@ -1,47 +1,48 @@
+import { memo } from 'react';
 import openai from 'src/opanai';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
+import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './PauseRunButton.module.css';
-import Button from 'src/components/button';
 
 interface Props {
-  teamId: string;
-  teamName: string;
-  threadId: string;
+  workspaceId: string;
+  workspaceName: string;
   agentId: string;
   agentName: string;
   agentModel: AgentModel;
+  threadId: string;
   requestId: string;
   responseId: string;
-  input: string;
-  isNew: boolean;
   inferredAgentType: AgentType;
+  isNew: boolean;
+  input: string;
   isEditing: boolean;
   setIsEditing: (isEditing: boolean) => void;
 }
 
-const PauseRunButton = ({
-  teamId,
-  teamName,
-  threadId,
+const PauseRunButton = memo(({
+  workspaceId,
+  workspaceName,
   agentId,
   agentName,
   agentModel,
+  threadId,
   requestId,
   responseId,
-  input,
-  isNew,
   inferredAgentType,
+  isNew,
+  input,
   isEditing,
   setIsEditing,
 }: Props) => {
   const handlePause = () => {
     setIsEditing(true);
-    dispatchEvent.responsePaused(requestId);
+    dispatchEvent.responsePaused(requestId, responseId);
   };
 
   const handleRun = async () => {
@@ -62,11 +63,11 @@ const PauseRunButton = ({
     dispatchEvent.queryUpdated(threadId, query);
     
     if (queryIndex === 0) {
-      const newThreadTitle = await openai.createThreadTitle({ question: input, answer: response});
-      await postgresDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
-      await indexedDB.updateThreadTitle({ threadId, threadTitle: newThreadTitle });
-      tabsStorage.update(teamId, teamName, agentName, agentId, threadId, newThreadTitle);
-      dispatchEvent.threadTitleUpdated(threadId, newThreadTitle);
+      const newThreadName = await openai.createThreadName({ question: input, answer: response});
+      await postgresDB.updateThreadName({ threadId, threadName: newThreadName });
+      await indexedDB.updateThreadName({ threadId, threadName: newThreadName });
+      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, newThreadName);
+      dispatchEvent.threadNameUpdated(threadId, newThreadName);
     }
   };
   
@@ -87,6 +88,6 @@ const PauseRunButton = ({
       )}
     </div>
   );
-};
+});
 
 export default PauseRunButton;
