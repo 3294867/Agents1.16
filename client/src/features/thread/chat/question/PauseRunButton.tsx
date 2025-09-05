@@ -2,20 +2,15 @@ import { memo } from 'react';
 import openai from 'src/opanai';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
+import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
-import { AgentModel, AgentType } from 'src/types';
+import { AgentType } from 'src/types';
 import styles from './PauseRunButton.module.css';
 
 interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  agentId: string;
-  agentName: string;
-  agentModel: AgentModel;
-  threadId: string;
   requestId: string;
   responseId: string;
   inferredAgentType: AgentType;
@@ -26,12 +21,6 @@ interface Props {
 }
 
 const PauseRunButton = memo(({
-  workspaceId,
-  workspaceName,
-  agentId,
-  agentName,
-  agentModel,
-  threadId,
   requestId,
   responseId,
   inferredAgentType,
@@ -40,6 +29,15 @@ const PauseRunButton = memo(({
   isEditing,
   setIsEditing,
 }: Props) => {
+  const {
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    agentModel,
+    threadId
+  } = hooks.features.useThreadContext();
+  
   const handlePause = () => {
     setIsEditing(true);
     dispatchEvent.responsePaused({ requestId, responseId });

@@ -1,32 +1,30 @@
 import { memo } from 'react';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 import dispatchEvent from 'src/events/dispatchEvent';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 
 interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  threadId: string;
   requestId: string;
   responseId: string;
-  threadBodyLength: number;
-  agentId: string,
-  agentName: string,
 }
 
 const DeleteButton = memo(({
-  workspaceId,
-  workspaceName,
-  threadId,
   requestId,
   responseId,
-  threadBodyLength,
-  agentName,
-  agentId
 }: Props) => {
+  const {
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    threadId,
+    threadBodyLength
+  } = hooks.features.useThreadContext();
+  
   const handleClick = async () => {
     /** Update thread body (PostgresDB, IndexedDB) */
     await postgresDB.deleteReqRes({ threadId, requestId, responseId });

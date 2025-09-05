@@ -5,32 +5,14 @@ import EditButton from './EditButton';
 import DeleteButton from './DeleteButton';
 import MoveButton from './MoveButton';
 import ChangeAgentButton from './ChangeAgentButton';
-import { AgentModel, AgentType, ReqRes } from 'src/types';
+import { ReqRes } from 'src/types';
 import styles from './Question.module.css';
 
 interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  agentId: string;
-  agentName: string;
-  agentType: AgentType;
-  agentModel: AgentModel;
-  threadId: string;
-  threadBodyLength: number;
   reqres: ReqRes;
 }
 
-const Question = memo(({
-  workspaceId,
-  workspaceName,
-  agentId,
-  agentName,
-  agentType,
-  agentModel,
-  threadId,
-  threadBodyLength,
-  reqres
-}: Props) => {
+const Question = memo(({ reqres }: Props) => {
   const { requestId, requestBody, responseId, responseBody, inferredAgentType, isNew } = reqres;
   const [input, setInput] = useState(requestBody);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,22 +27,10 @@ const Question = memo(({
           setIsEditing={setIsEditing}
         />
         <DeleteButton
-          workspaceId={workspaceId}
-          workspaceName={workspaceName}
-          threadId={threadId}
           requestId={requestId}
           responseId={responseId}
-          threadBodyLength={threadBodyLength}
-          agentId={agentId}
-          agentName={agentName}
         />
         <MoveButton
-          workspaceId={workspaceId}
-          workspaceName={workspaceName}
-          agentId={agentId}
-          agentName={agentName}
-          threadId={threadId}
-          threadBodyLength={threadBodyLength}
           requestId={requestId}
           requestBody={requestBody}
           responseId={responseId}
@@ -82,22 +52,10 @@ const Question = memo(({
           />
           <div style={{ position: 'absolute', bottom: '0.5rem', right: '0.5rem', display: 'flex' }}>
             <ChangeAgentButton
-              workspaceId={workspaceId}
-              workspaceName={workspaceName}
-              currentAgentId={agentId}
-              currentAgentName={agentName}
-              currentAgentType={agentType}
-              threadId={threadId}
               reqres={reqres}
               isEditing={isEditing}
             />
             <PauseRunButton
-              workspaceId={workspaceId}
-              workspaceName={workspaceName}
-              agentId={agentId}
-              agentName={agentName}
-              agentModel={agentModel}
-              threadId={threadId}
               requestId={requestId}
               responseId={responseId}
               inferredAgentType={inferredAgentType}

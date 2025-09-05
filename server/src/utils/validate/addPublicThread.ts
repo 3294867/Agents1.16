@@ -1,7 +1,11 @@
 import utils from '..';
 import { pool } from '../..';
 
-const addPublicThread = async (threadId: string): Promise<string | null> => {
+interface Props {
+  threadId: string;
+}
+
+const addPublicThread = async ({ threadId }: Props): Promise<string | null> => {
   if (!threadId) {
     return "Missing required fields: threadId";
   }

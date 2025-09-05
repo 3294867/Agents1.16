@@ -1,6 +1,11 @@
 import utils from '..';
 
-const updateRequestBody = (requestId: string, requestBody: string): string | null => {
+interface Props {
+  requestId: string;
+  requestBody: string;
+}
+
+const updateRequestBody = ({ requestId, requestBody }: Props): string | null => {
   if (!requestId || !requestBody) {
     return "Missing required fields: requestId, requestBody";
   }

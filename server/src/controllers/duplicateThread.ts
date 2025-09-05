@@ -11,8 +11,8 @@ interface RequestBody {
 const duplicateThread = async (req: Request, res: Response): Promise<void> => {
   const { userId, workspaceId, publicThreadId }: RequestBody = req.body;
 
-  const validationError = await utils.validate.duplicateThread(userId, workspaceId, publicThreadId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = await utils.validate.duplicateThread({ userId, workspaceId, publicThreadId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`);
@@ -25,7 +25,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     `, [ publicThreadId ]);
     if (getRootAgentId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get root agent id");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get root agent id" });
     }
 
     const getRootAgentType = await pool.query(`
@@ -35,7 +35,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     `, [ getRootAgentId.rows[0].agent_id ]);
     if (getRootAgentType.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent type");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get agent type" });
     }
 
     /** Get agent id from the user */
@@ -47,7 +47,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     `, [ userId ]);
     if (getAgentIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get user agent");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get user agent" });
     }
     const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
     
@@ -69,7 +69,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       `);
       if (getRootUserId.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to get root user id");
+        return utils.sendResponse({ res, status: 404, message: "Failed to get root user id" });
       }
         
       const getRootAgentIds = await pool.query(`
@@ -79,7 +79,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       `, [ getRootUserId.rows[0].id ]); 
       if (getRootAgentIds.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to get user agent");
+        return utils.sendResponse({ res, status: 404, message: "Failed to get user agent" });
       }
       const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
       
@@ -90,7 +90,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       `, [ rootAgentIds, getRootAgentType.rows[0].type ]);
       if (getRootAgent.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to get agent id");
+        return utils.sendResponse({ res, status: 404, message: "Failed to get agent id" });
       }
       
       const addAgent = await pool.query(`
@@ -124,7 +124,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       ]);
       if (addAgent.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 503, "Failed to add agent");
+        return utils.sendResponse({ res, status: 503, message: "Failed to add agent" });
       }
 
       /** Assign new agent id */
@@ -139,7 +139,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     `, [ publicThreadId ]);
     if (getPublicThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get public thread");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get public thread" });
     }
 
     const duplicateThread = await pool.query(`
@@ -160,7 +160,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     ]);
     if (duplicateThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to duplicate thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to duplicate thread" });
     }
 
     /** Add row into agent_thread join table */
@@ -171,7 +171,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     `, [ agentId, duplicateThread.rows[0].id ]);
     if (addAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add agent thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add agent thread" });
     }
     
     await pool.query(`COMMIT`);
@@ -187,7 +187,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to duplicate thread: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

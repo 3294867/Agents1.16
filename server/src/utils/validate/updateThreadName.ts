@@ -1,6 +1,11 @@
 import utils from '..';
 
-const updateThreadName = (threadId: string, threadName: string): string | null => {
+interface Props {
+  threadId: string;
+  threadName: string;
+}
+
+const updateThreadName = ({ threadId, threadName }: Props): string | null => {
   if (!threadId || !threadName) {
     return "Missing required fields: threadId, threadName";
   }

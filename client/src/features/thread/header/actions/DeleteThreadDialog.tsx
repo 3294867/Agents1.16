@@ -1,6 +1,8 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
+import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import Dialog from 'src/components/dialog';
 import Button from 'src/components/button';
@@ -9,14 +11,9 @@ import Heading from 'src/components/heading';
 import Paragraph from 'src/components/paragraph';
 import styles from './DeleteThreadDialog.module.css';
 
-interface Props {
-  workspaceName: string;
-  agentName: string;
-  threadId: string;
-}
-
-const DeleteThreadDialog = ({ workspaceName, agentName, threadId,  }: Props) => {
+const DeleteThreadDialog = memo(() => {
   const navigate = useNavigate();
+  const { workspaceName, agentName, threadId } = hooks.features.useThreadContext();
 
   const handleClick = async () => {
     await postgresDB.deleteThread({ threadId });
@@ -58,6 +55,6 @@ const DeleteThreadDialog = ({ workspaceName, agentName, threadId,  }: Props) => 
       </Dialog.Content>
     </Dialog.Root>
   );
-};
+});
 
 export default DeleteThreadDialog;

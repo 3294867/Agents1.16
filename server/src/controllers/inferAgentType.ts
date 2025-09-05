@@ -9,8 +9,8 @@ interface RequestBody {
 const inferAgentType = async (req: Request, res: Response): Promise<void> => {
   const { input }: RequestBody = req.body;
 
-  const validationError = utils.validate.inferAgentType(input);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.inferAgentType({ input });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
   const inferAgentType = await client.responses.create({
@@ -21,7 +21,7 @@ const inferAgentType = async (req: Request, res: Response): Promise<void> => {
       Return only agent type in lower case.
     `,
   });
-  if (!inferAgentType.output_text) return utils.sendResponse(res, 503, "Failed to infer agent type");
+  if (!inferAgentType.output_text) return utils.sendResponse({ res, status: 503, message: "Failed to infer agent type" });
     
   res.status(200).json({
     message: "Agent type inferred",
@@ -29,7 +29,7 @@ const inferAgentType = async (req: Request, res: Response): Promise<void> => {
   });
   } catch (error) {
     console.error("Failed to infer agent type: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

@@ -1,6 +1,10 @@
 import utils from '..';
 
-const deleteThread = (threadId: string): string | null => {
+interface Props {
+  threadId: string;
+}
+
+const deleteThread = ({ threadId }: Props): string | null => {
   if (!threadId) {
     return "Missing required fields: threadId";
   }

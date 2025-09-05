@@ -1,6 +1,11 @@
 import utils from '..';
 
-const updateThreadIsBookmarked = (threadId: string, isBookmarked: boolean): string | null => {
+interface Props {
+  threadId: string;
+  isBookmarked: boolean;
+}
+
+const updateThreadIsBookmarked = ({ threadId, isBookmarked}: Props): string | null => {
   if (!threadId || !isBookmarked) {
     return "Missing required fields: threadId, isBookmarked";
   }

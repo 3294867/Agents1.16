@@ -1,8 +1,11 @@
-import utils from '..';
 import constants from '../../constants';
 import { AgentType } from '../../types';
 
-const getAvailableAgentByType = (agentType: AgentType, ): string | null => {
+interface Props {
+  agentType: AgentType;
+}
+
+const getAvailableAgentByType = ({ agentType }: Props): string | null => {
   if (!agentType) {
     return "Missing required fields: agentType";
   }

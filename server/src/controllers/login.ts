@@ -17,8 +17,8 @@ interface RequestBody {
 const login = async (req: Request, res: Response): Promise<void> => {
   const { name, password }: RequestBody = req.body;
 
-  const validationError = utils.validate.login(name, password);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.login({ name, password });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getUser = await pool.query(`
@@ -26,10 +26,10 @@ const login = async (req: Request, res: Response): Promise<void> => {
       FROM users
       WHERE name = $1::text;
     `, [ name ]);
-    if (getUser.rows.length === 0) return utils.sendResponse(res, 401,"Invalid name");
+    if (getUser.rows.length === 0) return utils.sendResponse({ res, status: 401, message: "Invalid name" });
     
     const match = password === getUser.rows[0].password;
-    if (!match) return utils.sendResponse(res, 401, "Invalid password");
+    if (!match) return utils.sendResponse({ res, status: 401, message: "Invalid password" });
 
     req.session.userId = getUser.rows[0].id;
     res.status(200).json({
@@ -38,7 +38,7 @@ const login = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to login: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

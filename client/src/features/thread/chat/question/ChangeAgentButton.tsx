@@ -7,30 +7,23 @@ import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
 import Button from 'src/components/button';
-import { AddAgent, AgentType, ReqRes } from 'src/types';
+import { AddAgent, ReqRes } from 'src/types';
 
 interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  currentAgentId: string;
-  currentAgentName: string;
-  currentAgentType: AgentType;
-  threadId: string;
   reqres: ReqRes;
   isEditing: boolean;
 }
 
-const ChangeAgentButton = memo(({
-  workspaceId,
-  workspaceName,
-  currentAgentId,
-  currentAgentName,
-  currentAgentType,
-  threadId,
-  reqres,
-  isEditing
-}: Props) => {
+const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
   const navigate = useNavigate();
+  const {
+    workspaceId,
+    workspaceName,
+    agentId: currentAgentId,
+    agentName: currentAgentName,
+    agentType: currentAgentType,
+    threadId
+  } = hooks.features.useThreadContext();
   const currentThreadPositionY = hooks.features.useHandleThreadPostionY();
   
   const handleClick = async () => {

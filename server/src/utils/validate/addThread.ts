@@ -1,6 +1,10 @@
 import utils from '..';
 
-const addThread = (agentId: string): string | null => {
+interface Props {
+  agentId: string;
+}
+
+const addThread = ({ agentId }: Props ): string | null => {
   if (!agentId) {
     return "Missing required fields: agentId";
   }

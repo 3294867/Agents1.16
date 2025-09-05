@@ -5,7 +5,6 @@ import hooks from 'src/hooks';
 import { AgentType } from 'src/types';
 
 interface AnswerProps {
-  threadId: string;
   requestId: string;
   responseId: string;
   responseBody: string;
@@ -13,7 +12,8 @@ interface AnswerProps {
   isNew: boolean;
 }
 
-const Answer = memo(({ threadId, requestId, responseId, responseBody, inferredAgentType, isNew }: AnswerProps) => {
+const Answer = memo(({ requestId, responseId, responseBody, inferredAgentType, isNew }: AnswerProps) => {
+  const { threadId } = hooks.features.useThreadContext();
   const copy = hooks.features.useHandleAnimatedParagraph({
     threadId,
     requestId,

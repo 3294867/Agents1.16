@@ -18,8 +18,8 @@ interface RequestBody {
 const signUp = async (req: Request, res: Response): Promise<void> => {
   const { name, password, apiKey }: RequestBody = req.body;
 
-  const validationError = utils.validate.signup(name, password, apiKey);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.signup({ name, password, apiKey });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`); 
@@ -31,7 +31,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ name ]);
     if (getExistingUser.rows.length === 1) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 409, "User exists");
+      return utils.sendResponse({ res, status: 409, message: "User exists" });
     }
     
     const saltRounds = 12;
@@ -45,7 +45,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ name, hashedPassword, apiKey ]);
     if (addUser.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add user");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add user" });
     }
 
     /** Workspace */
@@ -56,7 +56,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `);
     if (addWorkspace.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add workspace");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add workspace" });
     }
 
     const addWorkspaceUser = await pool.query(`
@@ -66,7 +66,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ addWorkspace.rows[0].id, addUser.rows[0].id ]);
     if (addWorkspaceUser.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add workspace user");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add workspace user" });
     }
 
     /** Agent */
@@ -77,7 +77,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `);
     if (getRootUserId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to fetch root user id");
+      return utils.sendResponse({ res, status: 404, message: "Failed to fetch root user id" });
     }
 
     const getRootAgentIds = await pool.query(`
@@ -87,7 +87,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ getRootUserId.rows[0].id ]);
     if (getRootAgentIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to fetch root agents ids");
+      return utils.sendResponse({ res, status: 404, message: "Failed to fetch root agents ids" });
     }
     const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
     
@@ -98,7 +98,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ rootAgentIds ]);
     if (getRootGeneralAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to fetch agent data");
+      return utils.sendResponse({ res, status: 404, message: "Failed to fetch agent data" });
     }
     
     const addGeneralAgent = await pool.query(`
@@ -132,7 +132,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     ]);
     if (addGeneralAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add general agent");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add general agent" });
     }
 
     const addUserAgent = await pool.query(`
@@ -142,7 +142,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ addUser.rows[0].id, addGeneralAgent.rows[0].id ]);
     if (addUserAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add user agent");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add user agent" });
     }
 
     const addWorkspaceAgent = await pool.query(`
@@ -152,7 +152,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
     `, [ addWorkspace.rows[0].id, addGeneralAgent.rows[0].id ]);
     if (addWorkspaceAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add workspace agent");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add workspace agent" });
     }
     
     await pool.query(`COMMIT`);
@@ -166,7 +166,7 @@ const signUp = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to create user: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

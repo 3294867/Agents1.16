@@ -2,6 +2,7 @@ import { memo, useState } from 'react';
 import openai from 'src/opanai';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import AgentModelDropdown from './AgentModelDropdown';
 import Button from 'src/components/button';
@@ -10,17 +11,16 @@ import { AgentModel, AgentType } from 'src/types';
 import Icons from 'src/assets/icons';
 import styles from './Form.module.css';
 
-interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  agentId: string;
-  agentName: string;
-  agentModel: AgentModel;
-  threadId: string;
-  threadBodyLength: number;
-}
-
-const Form = memo(({ workspaceId, workspaceName, agentId, agentName, agentModel: initialAgentModel, threadId, threadBodyLength }: Props) => {
+const Form = memo(() => {
+  const {
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    agentModel: initialAgentModel,
+    threadId,
+    threadBodyLength
+  } = hooks.features.useThreadContext();
   const [input, setInput] = useState<string>('');
   const [agentModel, setAgentModel] = useState<AgentModel>(initialAgentModel);
 

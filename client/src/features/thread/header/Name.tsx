@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { motion } from 'framer-motion';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
@@ -5,14 +6,10 @@ import dispatchEvent from 'src/events/dispatchEvent';
 import Heading from 'src/components/heading';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
+import hooks from 'src/hooks';
 
-interface NameProps {
-  threadId: string;
-  threadName: string | null;
-  threadIsBookmarked: boolean;
-}
-
-const Name = ({ threadId, threadName, threadIsBookmarked }: NameProps) => {
+const Name = memo(() => {
+  const { threadName, threadIsBookmarked } = hooks.features.useThreadContext();
   if (!threadName) return null;
   
   return (
@@ -25,28 +22,24 @@ const Name = ({ threadId, threadName, threadIsBookmarked }: NameProps) => {
       <Heading variant='h3' style={{ width: '100%' }}>
         {threadName}
       </Heading>
-      {threadIsBookmarked && <BookmarkButton threadId={threadId} isBookmarked={threadIsBookmarked} />}
+      {threadIsBookmarked && <BookmarkButton />}
     </motion.div>
   );
-};
+});
 
 export default Name;
 
-interface BookmarkButtonProps {
-  threadId: string;
-  isBookmarked: boolean;
-}
-
-const BookmarkButton = ({ threadId, isBookmarked }: BookmarkButtonProps) => {
+const BookmarkButton = memo(() => {
+  const { threadId, threadIsBookmarked } = hooks.features.useThreadContext();
   const handleClick = async () => {
-    await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
-    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked });
-    dispatchEvent.threadIsBookmarkedUpdated({ threadId, isBookmarked });
+    await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked: threadIsBookmarked });
+    await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked: threadIsBookmarked });
+    dispatchEvent.threadIsBookmarkedUpdated({ threadId, isBookmarked: threadIsBookmarked });
   };
   
   return (
     <Button onClick={handleClick} variant='ghost' size='icon'>
-      {isBookmarked ? <Icons.BookmarkFilled /> : <Icons.BookmarkOutlined />}
+      {threadIsBookmarked ? <Icons.BookmarkFilled /> : <Icons.BookmarkOutlined />}
     </Button>
   );
-};
+});

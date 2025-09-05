@@ -10,8 +10,8 @@ interface RequestBody {
 const updateRequestBody = async (req: Request, res: Response): Promise<void> => {
   const { requestId, requestBody }: RequestBody = req.body;
 
-  const validationError = utils.validate.updateRequestBody(requestId, requestBody);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.updateRequestBody({ requestId, requestBody });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const updateRequest = await pool.query(`
@@ -20,12 +20,12 @@ const updateRequestBody = async (req: Request, res: Response): Promise<void> => 
       WHERE id = $2::uuid
       RETURNING id;
     `, [ requestBody, requestId ]);
-    if (updateRequest.rows.length === 0) return utils.sendResponse(res, 503, "Failed to update request body");
+    if (updateRequest.rows.length === 0) return utils.sendResponse({ res, status: 503, message: "Failed to update request body" });
 
-    utils.sendResponse(res, 200, "Request body updated");
+    utils.sendResponse({ res, status: 200, message: "Request body updated" });
   } catch (error) {
     console.error("Failed to update request body: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

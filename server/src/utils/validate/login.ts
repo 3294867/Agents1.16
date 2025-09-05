@@ -1,4 +1,9 @@
-const login = (name: string, password: string ): string | null => {
+interface Props {
+  name: string;
+  password: string;
+}
+
+const login = ({ name, password }: Props ): string | null => {
   if (!name) {
     return "Name is required";
   }

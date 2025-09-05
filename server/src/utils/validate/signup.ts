@@ -1,4 +1,10 @@
-const signup = (name: string, password: string, apiKey: string ): string | null => {
+interface Props {
+  name: string;
+  password: string;
+  apiKey: string; 
+}
+
+const signup = ({ name, password, apiKey }: Props): string | null => {
   if (!name) {
     return "Name is required";
   }

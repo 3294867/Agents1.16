@@ -10,12 +10,6 @@ import Icons from 'src/assets/icons';
 import { AgentType } from 'src/types';
 
 interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  agentId: string;
-  agentName: string;
-  threadId: string;
-  threadBodyLength: number;
   requestId: string;
   requestBody: string;
   responseId: string;
@@ -24,12 +18,6 @@ interface Props {
 }
 
 const MoveButton = memo(({
-  workspaceId,
-  workspaceName,
-  agentId,
-  agentName,
-  threadId,
-  threadBodyLength,
   requestId,
   requestBody,
   responseId,
@@ -37,7 +25,15 @@ const MoveButton = memo(({
   inferredAgentType
 }: Props) => {
   const navigate = useNavigate();
-  const currentThreadPositionY = hooks.features.useHandleThreadPostionY();
+  const {
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    threadId,
+    threadBodyLength,
+    threadPositionY
+  } = hooks.features.useThreadContext();
   
   const handleClick = async () => {
     /** Remove reqres from the 'body' property of the current thread (IndexedDB, PostgresDB) */
@@ -61,7 +57,7 @@ const MoveButton = memo(({
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
-    await indexedDB.updateThreadPositionY({ threadId, positionY: currentThreadPositionY });
+    await indexedDB.updateThreadPositionY({ threadId, positionY: threadPositionY });
 
     /** Create new thread (PostgresDB) */
     const newThread = await postgresDB.addThread({ agentId });

@@ -11,8 +11,8 @@ interface RequestBody {
 const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
   const { requestId, responseId }: RequestBody = req.body;
 
-  const validatationError = utils.validate.deleteReqRes(requestId, responseId);
-  if (validatationError) return utils.sendResponse(res, 400, validatationError);
+  const validationError = utils.validate.deleteReqRes({ requestId, responseId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`);
@@ -24,7 +24,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ requestId ]);
     if (getThreadId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get thread id");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get thread id" });
     }
 
     /** Delete request */
@@ -35,7 +35,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ requestId ]);
     if (deleteRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete request");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete request" });
     }
 
     const deleteThreadRequest = await pool.query(`
@@ -45,7 +45,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ getThreadId.rows[0].thread_id ]);
     if (deleteThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread request");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete thread request" });
     }
 
     /** Delete response */
@@ -56,7 +56,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ responseId ]);
     if (deleteResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete response");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete response" });
     }
 
     const deleteThreadResponse = await pool.query(`
@@ -66,7 +66,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ getThreadId.rows[0].thread_id ]);
     if (deleteThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread response");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete thread response" });
     }
     
     /** Update thread */
@@ -77,7 +77,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ getThreadId.rows[0].thread_id ]);
     if (getThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get thread body");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get thread body" });
     }
     
     const filteredThreadBody: ReqResPG[] = getThreadBody.rows[0].body
@@ -91,12 +91,12 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ JSON.stringify(filteredThreadBody), getThreadId.rows[0].thread_id ]);
     if (updateThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to update thread body");
+      return utils.sendResponse({ res, status: 503, message: "Failed to update thread body" });
     }
 
     await pool.query(`COMMIT`);
 
-    utils.sendResponse(res, 200, 'Reqres deleted');
+    utils.sendResponse({ res, status: 200, message: 'Reqres deleted' });
   } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
@@ -104,7 +104,7 @@ const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to delete reqres: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

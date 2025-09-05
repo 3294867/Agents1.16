@@ -10,8 +10,8 @@ interface RequestBody {
 const getAvailableAgentByType = async (req: Request, res: Response): Promise<void> => {
   const { agentType }: RequestBody = req.body;
 
-  const validationError = utils.validate.getAvailableAgentByType(agentType);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.getAvailableAgentByType({ agentType });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getRootUserId = await pool.query(`
@@ -19,7 +19,7 @@ const getAvailableAgentByType = async (req: Request, res: Response): Promise<voi
       FROM users
       WHERE name = 'root'::text;
     `);
-    if (getRootUserId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get root user id");
+    if (getRootUserId.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get root user id" });
     
     const getAgentIds = await pool.query(`
       SELECT agent_id
@@ -47,7 +47,7 @@ const getAvailableAgentByType = async (req: Request, res: Response): Promise<voi
     });
   } catch (error) {
     console.error("Failed to fetch available agent: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

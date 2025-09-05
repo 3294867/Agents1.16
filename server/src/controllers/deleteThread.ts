@@ -9,8 +9,8 @@ interface RequestBody {
 const deleteThread = async (req: Request, res: Response): Promise<void> => {
   const { threadId }: RequestBody = req.body;
 
-  const validationError = utils.validate.deleteThread(threadId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.deleteThread({ threadId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`);
@@ -22,7 +22,7 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (deleteThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete thread" });
     }
 
     const deleteAgentThread = await pool.query(`
@@ -32,7 +32,7 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (deleteAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete agent thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete agent thread" });
     }
 
     const deleteThreadRequest = await pool.query(`
@@ -42,7 +42,7 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (deleteThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread request");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete thread request" });
     }
 
     const deleteThreadResponse = await pool.query(`
@@ -52,12 +52,12 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (deleteThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to delete thread response");
+      return utils.sendResponse({ res, status: 503, message: "Failed to delete thread response" });
     }
 
     await pool.query(`COMMIT`);
 
-    utils.sendResponse(res, 200, "Thread deleted");
+    utils.sendResponse({ res, status: 200, message: "Thread deleted" });
   } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
@@ -65,7 +65,7 @@ const deleteThread = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to delete thread: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

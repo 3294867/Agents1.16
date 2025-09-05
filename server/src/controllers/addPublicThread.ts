@@ -10,8 +10,8 @@ interface RequestBody {
 const addPublicThread = async (req: Request, res: Response): Promise<void> => {
   const { threadId } = req.body as RequestBody;
 
-  const validationError = await utils.validate.addPublicThread(threadId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = await utils.validate.addPublicThread({ threadId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`);
@@ -24,7 +24,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (getAgentId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent id");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get agent id" });
     }
 
     const getAgentType = await pool.query(`
@@ -34,7 +34,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ getAgentId.rows[0].agent_id ]);
     if (getAgentType.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent type");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get agent type" });
     }
     
     /** Get root agent id */
@@ -45,7 +45,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `);
     if (getRootUserId.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get root user id");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get root user id" });
     }
 
     const getRootAgentIds = await pool.query(`
@@ -55,7 +55,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ getRootUserId.rows[0].id ]);
     if (getRootAgentIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent ids");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get agent ids" });
     }
     const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
@@ -66,7 +66,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ rootAgentIds, getAgentType.rows[0].type ]);
     if (getRootAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get agent");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get agent" });
     }
 
     /** Add thread for the root */
@@ -77,7 +77,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ] );
     if (getThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get thread");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get thread" });
     }
 
     const addRootThread = await pool.query(`
@@ -87,7 +87,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ getThread.rows[0].name ]);
     if (addRootThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to add root thread");
+      return utils.sendResponse({ res, status: 404, message: "Failed to add root thread" });
     }
 
     /** Add row to agent_thread join table */
@@ -98,7 +98,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ getRootAgent.rows[0].id, addRootThread.rows[0].id ]);
     if (addAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add agent thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add agent thread" });
     }
 
     /** Add requests and responses for the root*/
@@ -111,7 +111,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ item.request_id ]);
       if (getRequestBody.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to get request");
+        return utils.sendResponse({ res, status: 404, message: "Failed to get request" });
       }
 
       const addRootRequest = await pool.query(`
@@ -121,7 +121,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ getRequestBody.rows[0].body ]); 
       if (addRootRequest.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 503, "Failed to add request");
+        return utils.sendResponse({ res, status: 503, message: "Failed to add request" });
       }
 
       /** Add row to thread_request join table */
@@ -132,7 +132,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ addRootThread.rows[0].id, addRootRequest.rows[0].id ]);
       if (addThreadRequest.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 503, "Failed to add thread request");
+        return utils.sendResponse({ res, status: 503, message: "Failed to add thread request" });
       }
 
       const getResponseBody = await pool.query(`
@@ -142,7 +142,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ item.response_id ]);
       if (getResponseBody.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to get response");
+        return utils.sendResponse({ res, status: 404, message: "Failed to get response" });
       }
 
       const addRootResponse = await pool.query(`
@@ -152,7 +152,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ getResponseBody.rows[0].body ]);
       if (addRootResponse.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 503, "Failed to add response");
+        return utils.sendResponse({ res, status: 503, message: "Failed to add response" });
       }
 
       /** Add row to thread_response join table */
@@ -163,7 +163,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       `, [ addRootThread.rows[0].id, addRootResponse.rows[0].id ]);
       if (addThreadResponse.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 503, "Failed to add thread response");
+        return utils.sendResponse({ res, status: 503, message: "Failed to add thread response" });
       }
 
       threadBody.push({ request_id: addRootRequest.rows[0].id, response_id: addRootResponse.rows[0].id });
@@ -178,7 +178,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     `, [ JSON.stringify(threadBody), addRootThread.rows[0].id ]);
     if (updateRootThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to update thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to update thread" });
     }
 
     await pool.query(`COMMIT`);
@@ -197,7 +197,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to add public thread: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

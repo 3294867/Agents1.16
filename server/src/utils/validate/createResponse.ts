@@ -2,7 +2,13 @@ import utils from '..';
 import constants from '../../constants';
 import { AgentModel } from '../../types';
 
-const createResponse = async (agentId: string, input: string, agentModel?: AgentModel): Promise<string | null> => {
+interface Props {
+  agentId: string;
+  input: string;
+  agentModel?: AgentModel;
+}
+
+const createResponse = async ({ agentId, input, agentModel }: Props): Promise<string | null> => {
   if (!agentId || !input) {
     return "Missing required fields: agentId, input";
   }

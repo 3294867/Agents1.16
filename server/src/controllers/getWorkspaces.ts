@@ -10,8 +10,8 @@ interface RequestBody {
 const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
   const { userId }: RequestBody = req.body;
 
-  const validationError = utils.validate.getWorkspaces(userId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.getWorkspaces({ userId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getWorkspaces = await pool.query(`
@@ -34,7 +34,7 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
       GROUP BY w.id, wu.user_role
       ORDER BY w.created_at DESC;
     `, [ userId ]);
-    if (getWorkspaces.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces");
+    if (getWorkspaces.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get workspaces" });
 
     const workspaces: WorkspaceFE[] = [];
     for (const item of getWorkspaces.rows) {
@@ -56,7 +56,7 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to fetch workspaces: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

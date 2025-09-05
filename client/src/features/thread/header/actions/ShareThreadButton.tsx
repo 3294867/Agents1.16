@@ -1,19 +1,16 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { v4 as uuidV4 } from 'uuid';
 import { toast } from 'sonner';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 import dispatchEvent from 'src/events/dispatchEvent';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
 
-interface Props {
-  userId: string;
-  threadId: string;
-}
-
-const ShareThreadButton = ({ userId, threadId }: Props) => {
+const ShareThreadButton = memo(() => {
+  const { userId, threadId } = hooks.features.useThreadContext();
   const [agentName, setAgentName] = useState<string | null>(null);
   const [sharedThreadId, setSharedThreadId] = useState<string | null>(null);
   const [isLinkCreated, setIsLinkCreated] = useState(false);
@@ -83,6 +80,6 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
       </Tooltip.Content>
     </Tooltip.Root>
   );
-};
+});
 
 export default ShareThreadButton;

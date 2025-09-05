@@ -1,31 +1,14 @@
 import { memo } from 'react';
 import Actions from './actions';
 import Name from './Name';
+import hooks from 'src/hooks';
 
-interface Props {
-  userId: string;
-  workspaceName: string;
-  agentName: string;
-  threadId: string;
-  threadName: string | null;
-  threadIsBookmarked: boolean;
-}
-
-const Header = memo(({ userId, workspaceName, agentName, threadId, threadName, threadIsBookmarked }: Props) => {
+const Header = memo(() => {
+  const { threadName } = hooks.features.useThreadContext();
   return (
     <div style={{ display: 'flex', alignItems: 'start', justifyContent: threadName === null ? 'end' : 'space-between' }}>
-      <Name
-        threadId={threadId}
-        threadName={threadName}
-        threadIsBookmarked={threadIsBookmarked}
-      />
-      <Actions
-        userId={userId}
-        workspaceName={workspaceName}
-        agentName={agentName}
-        threadId={threadId}
-        isBookmarked={threadIsBookmarked}
-      />
+      <Name />
+      <Actions />
     </div>
   );
 });

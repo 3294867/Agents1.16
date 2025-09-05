@@ -13,13 +13,15 @@ import useHandleThreadPostionY from './useHandleThreadPostionY';
 import useHandleAgentsDropdown from './useHandleAgentsDropdown';
 import useWorkspaceContext from './useWorkspaceContext';
 import useAgentContext from './useAgentContext';
+import useThreadContext from './useThreadContext';
 
 const features = {
-  useHandleWorkspace,
   useWorkspaceContext,
-  useHandleAgent,
+  useHandleWorkspace,
   useAgentContext,
+  useHandleAgent,
   useHandleAddAgentDialog,
+  useThreadContext,
   useHandleThread,
   useHandleTabs,
   useHandleBreakpoint,

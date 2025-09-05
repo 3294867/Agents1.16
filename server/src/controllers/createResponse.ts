@@ -12,8 +12,8 @@ interface RequestBody {
 const createResponse = async (req: Request, res: Response): Promise<void> => {
   const { agentId, input, agentModel }: RequestBody = req.body;
 
-  const validationError = await utils.validate.createResponse(agentId, input, agentModel);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = await utils.validate.createResponse({ agentId, input, agentModel });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getAgent = await pool.query(`
@@ -21,14 +21,14 @@ const createResponse = async (req: Request, res: Response): Promise<void> => {
       FROM agents
       WHERE id = $1::uuid;
     `, [ agentId ]);
-    if (getAgent.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent");
+    if (getAgent.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get agent" });
 
     const apiResponse = await client.responses.create({
       model: agentModel ?? getAgent.rows[0].model,
       input,
       instructions: getAgent.rows[0].system_instructions
     });
-    if (!apiResponse.output_text) return utils.sendResponse(res, 503, "Failed to get response");
+    if (!apiResponse.output_text) return utils.sendResponse({ res, status: 503, message: "Failed to get response" });
 
     res.status(201).json({
       message: "Response created",
@@ -36,7 +36,7 @@ const createResponse = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to create response: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

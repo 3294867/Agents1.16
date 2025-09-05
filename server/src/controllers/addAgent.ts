@@ -11,8 +11,8 @@ interface RequestBody {
 const addAgent = async (req: Request, res: Response): Promise<void> => {
   const { workspaceId, agentData }: RequestBody = req.body;
 
-  const validationError = utils.validate.addAgent(workspaceId, agentData);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.addAgent({ workspaceId, agentData });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     await pool.query(`BEGIN`);
@@ -48,7 +48,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
     ]);
     if (addAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add agent");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add agent" });
     }
 
     const addWorkspaceAgent = await pool.query(`
@@ -58,7 +58,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
     `,[ workspaceId, addAgent.rows[0].id ]);
     if (addWorkspaceAgent.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add workspace agent");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add workspace agent" });
     }
 
     const getWorkspaceUserIds = await pool.query(`
@@ -68,7 +68,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
     `, [ workspaceId ]);
     if (getWorkspaceUserIds.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get workspace user ids");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get workspace user ids" });
     }
     const userIds: string[] = getWorkspaceUserIds.rows.map((i: { user_id: string }) => i.user_id);
 
@@ -80,7 +80,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
       `, [ item, addAgent.rows[0].id ]);
       if (addUserAgent.rows.length === 0) {
         await pool.query(`ROLLBACK`);
-        return utils.sendResponse(res, 404, "Failed to add user agent");
+        return utils.sendResponse({ res, status: 404, message: "Failed to add user agent" });
       }
     }
     
@@ -100,7 +100,7 @@ const addAgent = async (req: Request, res: Response): Promise<void> => {
       console.error('Rollback error: ', rollbackError);
     }
     console.error("Failed to add agent: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

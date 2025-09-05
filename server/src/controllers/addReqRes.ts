@@ -12,8 +12,9 @@ interface RequestBody {
 const addReqRes = async (req: Request, res: Response): Promise<void> => {
   const { threadId, requestBody, responseBody }: RequestBody = req.body;
 
-  const validationError = await utils.validate.addReqRes(threadId, requestBody, responseBody);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = await utils.validate.addReqRes({ threadId, requestBody, responseBody });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
+
   
   try {
     await pool.query(`BEGIN`);
@@ -26,7 +27,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ requestBody ]);
     if (addRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add request");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add request" });
     }
 
     const addThreadRequest = await pool.query(`
@@ -36,7 +37,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId, addRequest.rows[0].id ]);
     if (addThreadRequest.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add thread request");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add thread request" });
     }
 
     /** Response */
@@ -47,7 +48,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ responseBody ]);
     if (addResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add response");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add response" });
     }
 
     const addThreadResponse = await pool.query(`
@@ -57,7 +58,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId, addResponse.rows[0].id ]);
     if (addThreadResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add thread response");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add thread response" });
     }
 
     /** Thread */
@@ -68,7 +69,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ threadId ]);
     if (getThreadBody.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 404, "Failed to get thread");
+      return utils.sendResponse({ res, status: 404, message: "Failed to get thread" });
     }
 
     const newThreadBody: ReqResPG[] = [
@@ -84,7 +85,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     `, [ JSON.stringify(newThreadBody), threadId ]);
     if (updateThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to update thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to update thread" });
     }
 
     await pool.query(`COMMIT`);
@@ -103,7 +104,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError);
     }
     console.error("Failed to add reqres: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

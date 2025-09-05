@@ -1,7 +1,12 @@
 import utils from '..';
 import { AddAgent } from '../../types';
 
-const addAgent = (workspaceId: string, agentData: AddAgent): string | null => {
+interface Props {
+  workspaceId: string;
+  agentData: AddAgent;
+}
+
+const addAgent = ({ workspaceId, agentData }: Props): string | null => {
   if (!workspaceId || Object.keys(agentData).length === 0) {
     return "Missing required fields: userId, workspaceId, agentData";
   }

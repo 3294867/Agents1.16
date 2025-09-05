@@ -1,6 +1,7 @@
 import { useOutletContext, useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Error from 'src/components/error';
+import ThreadContext from './ThreadContext';
 import Header from './header';
 import Chat from './chat';
 import Form from './form';
@@ -29,36 +30,33 @@ const Thread = () => {
   if (isLoading) return <Loading />;
   if (!workspaceName || !agentName || !threadId || !thread) return <Error error='Something went wrong. Try again later.' />;
 
+  const threadContext = {
+    userId,
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    agentType,
+    agentModel,
+    threadId: thread.id,
+    threadName: thread.name,
+    threadBody: thread.body,
+    threadBodyLength: thread.body.length,
+    threadIsBookmarked: thread.isBookmarked,
+    threadIsShared: thread.isShared,
+    threadIsActive: thread.isActive,
+    threadPositionY: thread.positionY,
+    isMobile
+  };
+
   return (
     <main id='thread' className={styles.main}>
-      {/* <Header
-        userId={userId}
-        workspaceName={workspaceName}
-        agentName={agentName}
-        threadId={threadId}
-        threadName={thread.name}
-        threadIsBookmarked={thread.isBookmarked}
-      />
-      <Chat
-        workspaceId={workspaceId}
-        workspaceName={workspaceName}
-        agentId={agentId}
-        agentName={agentName}
-        agentType={agentType}
-        agentModel={agentModel}
-        threadId={threadId}
-        threadBody={thread.body}
-      />
-      <SideNavigation threadBody={thread.body} />
-      <Form
-        workspaceId={workspaceId}
-        workspaceName={workspaceName}
-        agentId={agentId}
-        agentName={agentName}
-        agentModel={agentModel}
-        threadId={threadId}
-        threadBodyLength={thread.body.length}
-      /> */}
+      <ThreadContext.Provider value={threadContext}>
+        <Header />
+        <Chat />
+        <SideNavigation />
+        <Form />
+      </ThreadContext.Provider>
     </main>
   );
 };

@@ -9,8 +9,8 @@ interface RequestBody {
 const getWorkspacesUpdatedAt = async (req: Request, res: Response): Promise<void> => {
   const { userId } = req.body as RequestBody;
 
-  const validationError = utils.validate.getWorkspacesUpdatedAt(userId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.getWorkspacesUpdatedAt({ userId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getWorkspaceIds = await pool.query(`
@@ -18,7 +18,7 @@ const getWorkspacesUpdatedAt = async (req: Request, res: Response): Promise<void
       FROM workspace_user
       WHERE user_id = $1::uuid;
     `, [ userId ]);
-    if (getWorkspaceIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces ids");
+    if (getWorkspaceIds.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get workspaces ids" });
     const workspaceIds: string[] = getWorkspaceIds.rows.map((i: { workspace_id: string }) => i.workspace_id);
 
     const getWorkspacesData = await pool.query(`
@@ -26,7 +26,7 @@ const getWorkspacesUpdatedAt = async (req: Request, res: Response): Promise<void
       FROM workspaces
       WHERE id = ANY($1::uuid[]);
     `, [ workspaceIds ]);
-    if (getWorkspacesData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get workspaces data");
+    if (getWorkspacesData.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get workspaces data" });
 
     const workspacesData: { id: string, updatedAt: Date }[] = [];
     for (const item of getWorkspacesData.rows) {
@@ -43,7 +43,7 @@ const getWorkspacesUpdatedAt = async (req: Request, res: Response): Promise<void
     });
   } catch (error) {
     console.error("Failed to fetch workspaces data: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

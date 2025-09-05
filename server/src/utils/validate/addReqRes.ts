@@ -1,7 +1,13 @@
 import utils from '..';
 import { pool } from '../..';
 
-const addReqRes = async (threadId: string, requestBody: string, responseBody: string): Promise<string | null> => {
+interface Props {
+  threadId: string;
+  requestBody: string;
+  responseBody: string;
+}
+
+const addReqRes = async ({ threadId, requestBody, responseBody }: Props): Promise<string | null> => {
   if (!threadId || !requestBody || !responseBody) {
     return "Missing required fields: threadId, requestBody, responseBody";
   }

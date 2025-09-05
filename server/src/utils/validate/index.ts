@@ -8,7 +8,7 @@ import createThreadTitle from './createThreadTitle';
 import deleteReqRes from './deleteReqRes';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
-import getAgentIdByName from './getAgentIdByName';
+import getAgentId from './getAgentId';
 import getAgentUpdatedAt from './getAgentUpdatedAt';
 import getAvailableAgentByType from './getAvailableAgentByType';
 import getThread from './getThread';
@@ -23,8 +23,7 @@ import updateRequestBody from './updateRequestBody';
 import updateResponseBody from './updateResponseBody';
 import updateThreadIsBookmarked from './updateThreadIsBookmarked';
 import updateThreadName from './updateThreadName';
-import getWorkspaceAgents from './getWorkspaceAgents';
-import getAgent from './getWorkspaceAgent';
+import getAgent from './getAgent';
 import getAgentNames from './getAgentNames';
 import getAvailableAgents from './getAvailableAgents';
 
@@ -36,10 +35,9 @@ const validate = {
   createResponse,
   deleteReqRes,
   deleteThread,
-  getAgentIdByName,
+  getAgentId,
   duplicateThread,
   createThreadTitle,
-  getWorkspaceAgents,
   getAgentUpdatedAt,
   getAvailableAgentByType,
   getWorkspaceId,

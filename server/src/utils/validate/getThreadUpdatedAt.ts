@@ -1,6 +1,10 @@
 import utils from '..';
 
-const getThreadUpdatedAt = (threadId: string ): string | null => {
+interface Props {
+  threadId: string;
+}
+
+const getThreadUpdatedAt = ({ threadId }: Props): string | null => {
   if (!threadId) {
     return "Missing required fields: threadId";
   }

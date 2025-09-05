@@ -11,8 +11,8 @@ interface RequestBody {
 const getAvailableAgents = async (req: Request, res: Response): Promise<void> => {
   const { workspaceId }: RequestBody = req.body;
 
-  const validationError = utils.validate.getAvailableAgents(workspaceId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.getAvailableAgents({ workspaceId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
   
   try {
     /** Existing agent types */
@@ -21,7 +21,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       FROM workspace_agent
       WHERE workspace_id = $1::uuid;
     `, [ workspaceId ]);
-    if (getExistingAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get existing agent ids");
+    if (getExistingAgentIds.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get existing agent ids" });
     const existingAgentIds: string[] = getExistingAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getExistingAgentTypes = await pool.query(`
@@ -29,7 +29,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       FROM agents
       WHERE id = ANY($1::uuid[]);
     `, [ existingAgentIds ]);
-    if (getExistingAgentTypes.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get existing agent types");
+    if (getExistingAgentTypes.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get existing agent types" });
 
     const existingAgentTypes: AgentType[] = getExistingAgentTypes.rows.map((i: { type: AgentType }) => i.type);
     let remainingAgentTypes = constants.data.agentTypes;
@@ -43,7 +43,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       FROM users
       WHERE name = 'root'::text;
     `);
-    if (getRootUserId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get root user id");
+    if (getRootUserId.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get root user id" });
     
     const getRootAgentIds = await pool.query(`
       SELECT agent_id
@@ -51,7 +51,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       WHERE user_id = $1::uuid;
     `, [ getRootUserId.rows[0].id ]);
     const rootAgentIds = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
-    if (getRootAgentIds.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get root agent ids")
+    if (getRootAgentIds.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get root agent ids" });
     
     /** Available agents */
     const getAvailableAgentsData = await pool.query(`
@@ -60,7 +60,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
       WHERE type = ANY($1::text[])
         AND id = ANY($2::uuid[]); 
     `, [ remainingAgentTypes, rootAgentIds ]);
-    if (getAvailableAgentsData.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get available agents data")
+    if (getAvailableAgentsData.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get available agents data" });
 
     const availableAgentsData: AddAgent[] = [];
     for (const item of getAvailableAgentsData.rows) {
@@ -82,7 +82,7 @@ const getAvailableAgents = async (req: Request, res: Response): Promise<void> =>
     });
   } catch (error) {
     console.error("Failed to get available agents: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

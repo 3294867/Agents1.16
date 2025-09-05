@@ -1,6 +1,11 @@
 import utils from '..';
 
-const deleteReqRes = (requestId: string, responseId: string): string | null => {
+interface Props {
+  requestId: string;
+  responseId: string;
+}
+
+const deleteReqRes = ({ requestId, responseId }: Props): string | null => {
   if (!requestId || !responseId) {
     return "Missing required fields: requestId, responseId";
   }

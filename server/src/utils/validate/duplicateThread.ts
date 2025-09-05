@@ -1,7 +1,13 @@
 import utils from '..';
 import { pool } from '../..';
 
-const duplicateThread = async (userId: string, workspaceId: string, publicThreadId: string): Promise<string | null> => {
+interface Props {
+  userId: string;
+  workspaceId: string;
+  publicThreadId: string;
+}
+
+const duplicateThread = async ({ userId, workspaceId, publicThreadId }: Props): Promise<string | null> => {
   if (!userId || !workspaceId || !publicThreadId) {
     return "Missing required fields: userId, workspaceId, publicThreadId";
   }

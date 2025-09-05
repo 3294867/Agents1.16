@@ -3,14 +3,10 @@ import { motion } from 'framer-motion';
 import Button from 'src/components/button';
 import constants from 'src/constants';
 import hooks from 'src/hooks';
-import { ReqRes } from 'src/types';
 import styles from './SideNav.module.css';
 
-interface Props {
-  threadBody: ReqRes[];
-}
-
-const SideNavigation = memo(({ threadBody }: Props) => {
+const SideNavigation = memo(() => {
+  const { threadBody } = hooks.features.useThreadContext();
   const { isVisible, chatWidth } = hooks.features.useHandleSideNav({ threadBodyLength: threadBody.length });
 
   const handleScrollToQuestion = (id: string) => {

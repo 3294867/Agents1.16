@@ -10,8 +10,8 @@ interface RequestBody {
 const getThread = async (req: Request, res: Response): Promise<void> => {
   const { threadId } = req.body as RequestBody;
 
-  const validationError = utils.validate.getThread(threadId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.getThread({ threadId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
   try {
     const getThread = await pool.query(`
@@ -19,13 +19,13 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
       FROM threads
       WHERE id = $1::uuid;
     `, [ threadId ]);
-    if (getThread.rows.length === 0) return utils.sendResponse(res, 404, "Failed to fetch thread");
+    if (getThread.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to fetch thread" });
 
     const getAgentId = await pool.query(`
       SELECT agent_id FROM agent_thread
       WHERE thread_id = $1::uuid;
     `, [ threadId ]);
-    if (getAgentId.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get agent id");
+    if (getAgentId.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get agent id" });
 
     const thread: ThreadFE = {
       id: getThread.rows[0].id,
@@ -55,7 +55,7 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
           FROM requests
           WHERE id = $1::uuid;
         `, [ i.requestId ]);
-        if (getRequestBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get request body");
+        if (getRequestBody.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get request body" });
         
         const inferAgentType = await client.responses.create({
           model: "gpt-3.5-turbo",
@@ -65,14 +65,14 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
             Return only agent type in lower case.
           `,
         });
-        if (!inferAgentType.output_text) return utils.sendResponse(res, 503, "Failed to infer agent type");
+        if (!inferAgentType.output_text) return utils.sendResponse({ res, status: 503, message: "Failed to infer agent type" });
         
         const getResponseBody = await pool.query(`
           SELECT body
           FROM responses
           WHERE id = $1::uuid;
         `, [ i.responseId ]);
-        if (getResponseBody.rows.length === 0) return utils.sendResponse(res, 404, "Failed to get response body");
+        if (getResponseBody.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get response body" });
 
         return {
           requestId: i.requestId,
@@ -93,7 +93,7 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
     });
   } catch (error) {
     console.error("Failed to fetch thread: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

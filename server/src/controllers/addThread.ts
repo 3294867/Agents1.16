@@ -9,8 +9,9 @@ interface RequestBody {
 const addThread = async (req: Request, res: Response): Promise<void> => {
   const { agentId }: RequestBody = req.body;
 
-  const validationError = utils.validate.addThread(agentId);
-  if (validationError) return utils.sendResponse(res, 400, validationError);
+  const validationError = utils.validate.addThread({ agentId });
+  if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
+
 
   try {
     await pool.query(`BEGIN`);
@@ -22,7 +23,7 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
     `);
     if (addThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add thread" });
     }
 
     const addAgentThread = await pool.query(`
@@ -32,7 +33,7 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
     `, [ agentId, addThread.rows[0].id ]);
     if (addAgentThread.rows.length === 0) {
       await pool.query(`ROLLBACK`);
-      return utils.sendResponse(res, 503, "Failed to add agent thread");
+      return utils.sendResponse({ res, status: 503, message: "Failed to add agent thread" });
     }
 
     await pool.query(`COMMIT`);
@@ -52,7 +53,7 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
       console.error("Rollback error: ", rollbackError );
     }
     console.error("Failed to add thread: ", error);
-    utils.sendResponse(res, 500, "Internal server error");
+    utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
 

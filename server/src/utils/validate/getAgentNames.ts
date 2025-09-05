@@ -1,6 +1,10 @@
 import utils from '..';
 
-const getAgentNames = (workspaceId: string): string | null => {
+interface Props {
+  workspaceId: string;
+}
+
+const getAgentNames = ({ workspaceId }: Props): string | null => {
   if (!workspaceId) {
     return "Missing required fields: workspaceId";
   }
