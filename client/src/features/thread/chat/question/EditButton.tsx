@@ -13,12 +13,12 @@ const EditButton = memo(({ requestId, responseId, setIsEditing }: Props) => {
   const handleClick = () => {
     const update = () => {
       return new Promise<void>((resolve) => {
-        dispatchEvent.responsePaused(requestId, responseId);
+        dispatchEvent.responsePaused({ requestId, responseId });
         setIsEditing(true);
         resolve();
       });
     };
-    update().then(() => dispatchEvent.editingQuestion(requestId));
+    update().then(() => dispatchEvent.editingQuestion({ requestId }));
   };
   
   return (

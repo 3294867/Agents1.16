@@ -1,6 +1,11 @@
 import { Thread } from 'src/types';
 
-const threadUpdated = (threadId: string, thread: Thread) => {
+interface Props {
+  threadId: string;
+  thread: Thread;
+}
+
+const threadUpdated = ({ threadId, thread }: Props) => {
   const event = new CustomEvent('threadUpdated', {
     detail: { threadId, thread }
   });

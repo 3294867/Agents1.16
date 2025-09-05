@@ -4,7 +4,7 @@ import addReqRes from './addReqRes';
 import addThread from './addThread';
 import createResponse from './createResponse';
 import createThreadName from './createThreadName';
-import deleteQuery from './deleteQuery';
+import deleteReqRes from './deleteReqRes';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
 import getAgentId from './getAgentId';
@@ -36,7 +36,7 @@ const controllers = {
   addThread,
   createResponse,
   createThreadName,
-  deleteQuery,
+  deleteReqRes,
   deleteThread,
   duplicateThread,
   getAgentId,

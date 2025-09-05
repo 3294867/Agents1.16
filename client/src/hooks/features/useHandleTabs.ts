@@ -16,7 +16,7 @@ const useHandleTabs = ({ workspaceName, agentName }: Props): { tabs: Tab[] | nul
     if (!workspaceName || !agentName) return;
 
     try {
-      const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
+      const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
       if (loadSavedTabs !== null) setTabs(loadSavedTabs);
 
     } catch (error) {
@@ -30,7 +30,7 @@ const useHandleTabs = ({ workspaceName, agentName }: Props): { tabs: Tab[] | nul
     
     const handleTabsUpdated = (event: CustomEvent) => {
       if (event.detail.agentName === agentName) {
-        const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
+        const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
         if (loadSavedTabs !== null) setTabs(loadSavedTabs);
       }
     };
@@ -44,7 +44,7 @@ const useHandleTabs = ({ workspaceName, agentName }: Props): { tabs: Tab[] | nul
     if (!workspaceName || !agentName) return;
     
     const handleThreadNameUpdated = () => {
-      const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
+      const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
       if (loadSavedTabs) setTabs(loadSavedTabs);
     };
 

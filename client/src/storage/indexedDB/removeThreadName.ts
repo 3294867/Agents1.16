@@ -10,7 +10,7 @@ const removeThreadName = async ({ threadId }: Props): Promise<void> => {
     const updatedThread = await db.threads.update(threadId, { name: null });
     if (updatedThread === 0) throw new Error('Failed to remove thread title');
 
-    dispatchEvent.threadNameUpdated(threadId, null);
+    dispatchEvent.threadNameUpdated({ threadId, threadName: null });
     
   } catch (error) {
     console.error('Failed to remove thread title (IndexedDB): ', error);

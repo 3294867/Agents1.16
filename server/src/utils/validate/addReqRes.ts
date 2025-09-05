@@ -1,7 +1,7 @@
 import utils from '..';
 import { pool } from '../..';
 
-const addQuery = async (threadId: string, requestBody: string, responseBody: string): Promise<string | null> => {
+const addReqRes = async (threadId: string, requestBody: string, responseBody: string): Promise<string | null> => {
   if (!threadId || !requestBody || !responseBody) {
     return "Missing required fields: threadId, requestBody, responseBody";
   }
@@ -10,10 +10,14 @@ const addQuery = async (threadId: string, requestBody: string, responseBody: str
     return "Incorrect format of userId. Expected UUID_V4";
   }
 
-  const selectedThread = await pool.query(`SELECT id FROM threads WHERE id = $1::uuid;`, [ threadId ]);
+  const selectedThread = await pool.query(`
+    SELECT id
+    FROM threads
+    WHERE id = $1::uuid;
+  `, [ threadId ]);
   if (selectedThread.rows.length === 0) return "Thread does not exist"; 
 
   return null;
 };
 
-export default addQuery;
+export default addReqRes;

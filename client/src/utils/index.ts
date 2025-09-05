@@ -1,11 +1,13 @@
-import { utils as components } from './components/index';
+import components from './components/index';
+import features from './features';
 import capitalizeFirstLetter from './capitalizeFirstLetter';
 import cn from './cn';
 
 const utils = {
+  components,
+  features,
   cn,
   capitalizeFirstLetter,
-  components
 };
 
 export default utils;

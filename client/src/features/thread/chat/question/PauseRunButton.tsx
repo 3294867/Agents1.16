@@ -42,7 +42,7 @@ const PauseRunButton = memo(({
 }: Props) => {
   const handlePause = () => {
     setIsEditing(true);
-    dispatchEvent.responsePaused(requestId, responseId);
+    dispatchEvent.responsePaused({ requestId, responseId });
   };
 
   const handleRun = async () => {
@@ -51,7 +51,7 @@ const PauseRunButton = memo(({
     const response = await openai.createResponse({ agentId, agentModel, input });
     await postgresDB.updateRequestBody({ requestId, requestBody: input });
     await postgresDB.updateResponseBody({ responseId, responseBody: response });
-    const query = {
+    const reqres = {
       requestId,
       requestBody: input,
       responseId,
@@ -59,15 +59,15 @@ const PauseRunButton = memo(({
       isNew: true,
       inferredAgentType
     };
-    const queryIndex = await indexedDB.updateQuery({ threadId, query });
-    dispatchEvent.queryUpdated(threadId, query);
+    const reqresIndex = await indexedDB.updateReqRes({ threadId, reqres });
+    dispatchEvent.reqresUpdated({ threadId, reqres });
     
-    if (queryIndex === 0) {
+    if (reqresIndex === 0) {
       const newThreadName = await openai.createThreadName({ question: input, answer: response});
       await postgresDB.updateThreadName({ threadId, threadName: newThreadName });
       await indexedDB.updateThreadName({ threadId, threadName: newThreadName });
-      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, newThreadName);
-      dispatchEvent.threadNameUpdated(threadId, newThreadName);
+      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName: newThreadName });
+      dispatchEvent.threadNameUpdated({ threadId, threadName: newThreadName });
     }
   };
   

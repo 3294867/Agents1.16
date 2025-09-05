@@ -4,15 +4,15 @@ import AddWorkspaceDialog from './AddWorkspaceDialog';
 import Button from 'src/components/button';
 import Tooltip from 'src/components/tooltip';
 import styles from './WorkspacesMenu.module.css';
-import { Workspace } from 'src/types';
+import hooks from 'src/hooks';
 
-interface Props {
-  userId: string;
-  currentWorkspaceName: string;
-  workspaces: Workspace[];
-}
-
-const WorkspacesMenu = memo(({ userId, currentWorkspaceName, workspaces }: Props) => {
+const WorkspacesMenu = memo(() => {
+  const {
+    userId,
+    workspaceName: currentWorkspaceName,
+    workspaces
+  } = hooks.features.useWorkspaceContext();
+  
   return (
     <div className={styles.container}>
       {workspaces.map(w => (

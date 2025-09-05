@@ -1,16 +1,11 @@
+import { memo } from 'react';
 import { useParams } from 'react-router-dom';
 import hooks from 'src/hooks';
 import Tab from './Tab';
 import AddTab from './AddTab';
 
-interface Props {
-  workspaceId: string;
-  workspaceName: string;
-  agentId: string;
-  agentName: string;
-}
-
-const Tabs = ({ workspaceId, workspaceName, agentId, agentName }: Props) => {
+const Tabs = memo(() => {
+  const { workspaceName, agentName } = hooks.features.useAgentContext();
   const { threadId: currentThreadId } = useParams();
   const { tabs, currentThreadPositionY } = hooks.features.useHandleTabs({ workspaceName, agentName });
   if (!tabs || !currentThreadId) return null;
@@ -20,8 +15,6 @@ const Tabs = ({ workspaceId, workspaceName, agentId, agentName }: Props) => {
       {tabs.map(t => (
         <Tab
           key={t.id}
-          workspaceName={workspaceName}
-          agentName={agentName}
           tab={t}
           tabs={tabs}
           currentThreadId={currentThreadId}
@@ -29,16 +22,12 @@ const Tabs = ({ workspaceId, workspaceName, agentId, agentName }: Props) => {
         />
       ))}
       <AddTab
-        workspaceId={workspaceId}
-        workspaceName={workspaceName}
-        agentId={agentId}
-        agentName={agentName}
         tabs={tabs}
         currentThreadId={currentThreadId}
         currentThreadPositionY={currentThreadPositionY}
       />
     </div>
   );
-};
+});
 
 export default Tabs;

@@ -8,20 +8,20 @@ interface Props {
   inferredAgentType: AgentType;
 }
 
-/** Updates query on pause (IndexedDB) */
+/** Updates reqres on pause (IndexedDB) */
 const pauseResponse = async ({ threadId, requestId, responseBody, inferredAgentType }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
     const threadBodyArray = Array.isArray(savedThread?.body) ? savedThread.body : [];
     if (!savedThread) throw new Error('Thread not found');
 
-    const savedQuery = threadBodyArray.find(q => q.requestId === requestId);
-    if (!savedQuery) throw new Error('Query not found')
+    const savedReqRes = threadBodyArray.find(q => q.requestId === requestId);
+    if (!savedReqRes) throw new Error('Reqres not found')
       
-    const updatedQuery = {
-      requestId: savedQuery.requestId,
-      requestBody: savedQuery.requestBody,
-      responseId: savedQuery.responseId,
+    const updatedReqRes = {
+      requestId: savedReqRes.requestId,
+      requestBody: savedReqRes.requestBody,
+      responseId: savedReqRes.responseId,
       responseBody,
       isNew: false,
       inferredAgentType
@@ -30,13 +30,13 @@ const pauseResponse = async ({ threadId, requestId, responseBody, inferredAgentT
     const filteredThreadBodyArray = threadBodyArray.filter(q => q.requestId !== requestId);
       
     const updatedThread = await db.threads.update(threadId, {
-      body: [...filteredThreadBodyArray, updatedQuery]
+      body: [...filteredThreadBodyArray, updatedReqRes]
     });
     if (updatedThread === 0) throw new Error('Failed to update thread');
 
 
   } catch (error) {
-    console.error('Failed to add query (IndexedDB): ', error);
+    console.error('Failed to add reqres (IndexedDB): ', error);
   }
 };
 

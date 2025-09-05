@@ -5,11 +5,8 @@ import Button from 'src/components/button';
 import Dropdown from 'src/components/dropdown';
 import Icons from 'src/assets/icons';
 
-interface Props {
-  userId: string;
-}
-
-const Account = memo(({ userId }: Props) => {
+const Account = memo(() => {
+  const { userId } = hooks.features.useWorkspaceContext();
   const { logout } = hooks.components.useAuthContext();
   const navigate = useNavigate();
 

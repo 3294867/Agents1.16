@@ -1,7 +1,9 @@
 import getHeadingTag from './getHeadingTag';
 import getContentPositioningClass from './getContentPositioningClass/getContentPositioningClass';
 
-export const utils = {
+const components = {
   getContentPositioningClass,
   getHeadingTag
 };
+
+export default components;

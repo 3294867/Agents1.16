@@ -1,21 +1,20 @@
 import { db } from './initialize';
-import { Query } from 'src/types';
+import { ReqRes } from 'src/types';
 
 interface Props {
   threadId: string;
-  query: Query;
+  reqres: ReqRes;
 }
 
-/** Updates query in the thread body on edited question (IndexedDB) */
-const updateQuery = async ({ threadId, query }: Props): Promise<number | null> => {
+const updateReqRes = async ({ threadId, reqres }: Props): Promise<number | null> => {
   try {
     const savedThread = await db.threads.get(threadId);
     if (!savedThread) throw new Error('Thread not found');
     
     const threadBodyArray = Array.isArray(savedThread.body) ? savedThread.body : [];
-    const queryIndex = threadBodyArray.findIndex(q => q.requestId === query.requestId);
-    const updatedBody: Query[] = threadBodyArray.map((q, idx) =>
-      idx === queryIndex ? query : q
+    const reqresIndex = threadBodyArray.findIndex(i => i.requestId === reqres.requestId);
+    const updatedBody: ReqRes[] = threadBodyArray.map((item, idx) =>
+      idx === reqresIndex ? reqres : item
     );
     
     const updatedThread = await db.threads.update(threadId, {
@@ -23,11 +22,11 @@ const updateQuery = async ({ threadId, query }: Props): Promise<number | null> =
     });
     if (updatedThread === 0) throw new Error('Failed to update thread');
 
-    return queryIndex;
+    return reqresIndex;
   } catch (error) {
-    console.error('Failed to add query (IndexedDB): ', error);
+    console.error('Failed to add reqres (IndexedDB): ', error);
     return null;
   }
 };
 
-export default updateQuery;
+export default updateReqRes;

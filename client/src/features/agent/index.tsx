@@ -7,15 +7,17 @@ import Button from 'src/components/button';
 import hooks from 'src/hooks';
 import Icons from 'src/assets/icons';
 import styles from './Agent.module.css';
+import AgentContext from './AgentContext';
 
 interface OutletContext {
   userId: string;
   workspaceId: string;
   workspaceName: string;
+  isMobile: boolean;
 }
 
 const Agent = () => {
-  const { userId, workspaceId, workspaceName } = useOutletContext<OutletContext>();
+  const { userId, workspaceId, workspaceName, isMobile } = useOutletContext<OutletContext>();
   const { agentName } = useParams();
   const { agent, error, isLoading } = hooks.features.useHandleAgent({ workspaceName, agentName });
 
@@ -23,6 +25,15 @@ const Agent = () => {
   if (isLoading) return <Loading />;
   if (!workspaceName || !agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
 
+  const agentContext = {
+    userId,
+    workspaceId,
+    workspaceName,
+    agentId: agent.id,
+    agentName,
+    isMobile
+  };
+  
   const outletContext = {
     userId,
     workspaceId,
@@ -30,28 +41,22 @@ const Agent = () => {
     agentId: agent.id,
     agentName,
     agentType: agent.type,
-    agentModel: agent.model
-  }
+    agentModel: agent.model,
+    isMobile
+  };
   
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <div className={styles.wrapper}>
-          <AgentsDropdown
-            workspaceId={agent.workspaceId}
-            workspaceName={workspaceName}
-            agentName={agentName}
-          />
-          <div className={styles.separator} />
-          <Tabs
-            workspaceId={agent.workspaceId}
-            workspaceName={workspaceName}
-            agentId={agent.id}
-            agentName={agent.name}
-          />
-        </div>
-        <Actions userId={userId} agentId={agent.id} />
-      </header>
+      <AgentContext.Provider value={agentContext}>
+        <header className={styles.header}>
+          <div className={styles.wrapper}>
+            <AgentsDropdown />
+            <div className={styles.separator} />
+            <Tabs />
+          </div>
+          <Actions />
+        </header>
+      </AgentContext.Provider>
       <Outlet context={outletContext} />
     </div>
   );

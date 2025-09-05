@@ -41,7 +41,7 @@ const BookmarkButton = ({ threadId, isBookmarked }: BookmarkButtonProps) => {
   const handleClick = async () => {
     await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
     await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked });
-    dispatchEvent.threadIsBookmarkedUpdated(threadId, isBookmarked);
+    dispatchEvent.threadIsBookmarkedUpdated({ threadId, isBookmarked });
   };
   
   return (

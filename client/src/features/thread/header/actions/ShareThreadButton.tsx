@@ -23,10 +23,10 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
     const { agentType: publicThreadAgentType, threadId: publicThreadId } = await postgresDB.addPublicThread({ threadId });
     setSharedThreadId(publicThreadId);
     
-    const agentIDB = await indexedDB.getAgentByType({ userId, agentType: publicThreadAgentType});
+    const agentIDB = await indexedDB.getAgentByType({ agentType: publicThreadAgentType });
     
     if (!agentIDB) {
-      const agentPostgres = await postgresDB.getAgentByType({ userId, agentType: publicThreadAgentType});
+      const agentPostgres = await postgresDB.getAgentByType({ agentType: publicThreadAgentType});
       if (!agentPostgres) {
         const getAvailableAgentByType = await postgresDB.getAvailableAgentByType({ agentType: publicThreadAgentType });
         
@@ -45,7 +45,7 @@ const ShareThreadButton = ({ userId, threadId }: Props) => {
         }});
 
         await indexedDB.addAgent({ agent: addAgent });
-        dispatchEvent.agentAdded(addAgent);
+        dispatchEvent.agentAdded({ agent: addAgent });
         setAgentName(addAgent.name);
         return;
       }

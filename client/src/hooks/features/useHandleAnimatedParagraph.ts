@@ -28,11 +28,11 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
           if (i < responseBody.length) {
             setCopy(responseBody.slice(0, i + 1));
             const adjustment = responseBody.length < 400 ? .3 : 0
-            progressBarLength.update(String(i/responseBody.length + adjustment));
+            progressBarLength.update({ length: String(i/responseBody.length + adjustment) });
             i++;
           } else {
             clearInterval(timer);
-            progressBarLength.update('0');
+            progressBarLength.update({ length: '0' });
             resolve();
           }
         }, 12);
@@ -40,7 +40,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
     };
 
     animate().then(() => {
-      indexedDB.updateQueryIsNewProp({
+      indexedDB.updateReqResIsNew({
         threadId, responseId, isNew: false
       });
     });
@@ -50,40 +50,40 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
 
   /** Trim answer on pause (Events) */
   useEffect(() => {
-    const handleQueryPaused = (event: CustomEvent) => {
+    const handleResponsePaused = (event: CustomEvent) => {
       if (event.detail.requestId === requestId) {
         const update = async () => {
           setIsPaused(true);
-          progressBarLength.update('0');
-          const updateResponseBody = await postgresDB.updateResponseBody({
+          progressBarLength.update({ length: '0' });
+          await postgresDB.updateResponseBody({
             responseId: event.detail.responseId,
             responseBody: copy
           });
           await indexedDB.pauseResponse({
             threadId,
             requestId,
-            responseBody: updateResponseBody,
+            responseBody: copy,
             inferredAgentType
           });
         };
         update();
       }
     };
-    window.addEventListener('responsePaused', handleQueryPaused as EventListener);
-    return () => window.removeEventListener('responsePaused', handleQueryPaused as EventListener);
+    window.addEventListener('responsePaused', handleResponsePaused as EventListener);
+    return () => window.removeEventListener('responsePaused', handleResponsePaused as EventListener);
   }, [threadId, requestId, copy, inferredAgentType]);
 
   /** Update copy on updated question (UI) */
   useEffect(() => {
-    const handleQueryUpdated = (event: CustomEvent) => {
-      if (event.detail.query.requestId === requestId) {
+    const handleReqResUpdated = (event: CustomEvent) => {
+      if (event.detail.reqres.requestId === requestId) {
         setCopy('');
         setIsPaused(false);
       }
     };
 
-    window.addEventListener('queryUpdated', handleQueryUpdated as EventListener);
-    return () => window.removeEventListener('queryUpdated', handleQueryUpdated as EventListener);
+    window.addEventListener('reqresUpdated', handleReqResUpdated as EventListener);
+    return () => window.removeEventListener('reqresUpdated', handleReqResUpdated as EventListener);
   }, [requestId]);
 
   return copy;

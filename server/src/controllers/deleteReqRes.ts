@@ -8,10 +8,10 @@ interface RequestBody {
   responseId: string;
 }
 
-const deleteQuery = async (req: Request, res: Response): Promise<void> => {
+const deleteReqRes = async (req: Request, res: Response): Promise<void> => {
   const { requestId, responseId }: RequestBody = req.body;
 
-  const validatationError = utils.validate.deleteQuery(requestId, responseId);
+  const validatationError = utils.validate.deleteReqRes(requestId, responseId);
   if (validatationError) return utils.sendResponse(res, 400, validatationError);
 
   try {
@@ -96,16 +96,16 @@ const deleteQuery = async (req: Request, res: Response): Promise<void> => {
 
     await pool.query(`COMMIT`);
 
-    utils.sendResponse(res, 200, 'Query deleted');
+    utils.sendResponse(res, 200, 'Reqres deleted');
   } catch (error) {
     try {
       await pool.query(`ROLLBACK`);
     } catch (rollbackError) {
       console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to delete query: ", error);
+    console.error("Failed to delete reqres: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };
 
-export default deleteQuery;
+export default deleteReqRes;

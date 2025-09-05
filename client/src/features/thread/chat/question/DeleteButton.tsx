@@ -29,15 +29,15 @@ const DeleteButton = memo(({
 }: Props) => {
   const handleClick = async () => {
     /** Update thread body (PostgresDB, IndexedDB) */
-    await postgresDB.deleteQuery({ threadId, requestId, responseId });
-    await indexedDB.deleteQuery({ threadId, requestId });
+    await postgresDB.deleteReqRes({ threadId, requestId, responseId });
+    await indexedDB.deleteReqRes({ threadId, requestId });
 
     if (threadBodyLength == 1) {
       /** Remove thread name (IndexedDB, PostgresDB, localStorage) */
       await indexedDB.removeThreadName({ threadId });
       await postgresDB.removeThreadName({ threadId });
-      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, null);
-      dispatchEvent.threadNameUpdated(threadId, null);
+      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName: null});
+      dispatchEvent.threadNameUpdated({ threadId, threadName: null });
     }
   };
   

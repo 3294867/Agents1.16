@@ -1,21 +1,18 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import postgresDB from 'src/storage/postgresDB';
+import hooks from 'src/hooks';
 import utils from 'src/utils';
 import Heading from 'src/components/heading';
 import Dialog from 'src/components/dialog';
-import { AddAgent } from 'src/types';
-import hooks from 'src/hooks';
 import Error from 'src/components/error';
-import styles from './AgentThumbnails.module.css'
 import Icons from 'src/assets/icons';
+import { AddAgent } from 'src/types';
+import styles from './AgentThumbnails.module.css'
 
-interface Props {
-  workspaceId: string;
-  workspaceName: string;
-}
-
-const AgentThumbnails = ({ workspaceId, workspaceName }: Props) => {
+const AgentThumbnails = memo(() => {
   const navigate = useNavigate();
+  const { workspaceId, workspaceName } = hooks.features.useAgentContext();
   const { availableAgents, error, isLoading } = hooks.features.useHandleAddAgentDialog({ workspaceId });
 
   if (isLoading) return <Loading />;
@@ -56,7 +53,7 @@ const AgentThumbnails = ({ workspaceId, workspaceName }: Props) => {
       })}
     </div>
   );
-};
+});
 
 export default AgentThumbnails;
 

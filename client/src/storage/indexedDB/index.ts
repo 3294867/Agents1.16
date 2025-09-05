@@ -10,13 +10,13 @@ import addThread from 'src/storage/indexedDB/addThread';
 import deleteThread from 'src/storage/indexedDB/deleteThread';
 import updateThreadName from 'src/storage/indexedDB/updateThreadName';
 import addReqRes from 'src/storage/indexedDB/addReqRes';
-import updateQuery from 'src/storage/indexedDB/updateQuery';
-import deleteQuery from 'src/storage/indexedDB/deleteQuery';
-import updateQueryIsNewProp from 'src/storage/indexedDB/updateQueryIsNewProp';
+import updateReqRes from 'src/storage/indexedDB/updateReqRes';
+import deleteReqRes from 'src/storage/indexedDB/deleteReqRes';
+import updateReqResIsNew from 'src/storage/indexedDB/updateReqResIsNew';
 import updateThreadPositionY from 'src/storage/indexedDB/updateThreadPositionY';
 import updateThreadIsBookmarked from 'src/storage/indexedDB/updateThreadIsBookmarked';
 import pauseResponse from 'src/storage/indexedDB/pauseResponse';
-import getFirstQuery from 'src/storage/indexedDB/getFirstQuery';
+import getFirstReqRes from 'src/storage/indexedDB/getFirstReqRes';
 import updateThread from 'src/storage/indexedDB/updateThread';
 import getWorkspaces from 'src/storage/indexedDB/getWorkspaces';
 import getAgentId from 'src/storage/indexedDB/getAgentId';
@@ -40,13 +40,13 @@ const indexedDB = {
   updateThreadName,
   removeThreadName,
   addReqRes,
-  updateQuery,
-  deleteQuery,
-  updateQueryIsNewProp,
+  updateReqRes,
+  deleteReqRes,
+  updateReqResIsNew,
   updateThreadPositionY,
   updateThreadIsBookmarked,
   pauseResponse,
-  getFirstQuery,
+  getFirstReqRes,
   updateThread,
 };
 

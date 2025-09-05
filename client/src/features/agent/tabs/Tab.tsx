@@ -1,5 +1,7 @@
+import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
+import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import dispatchEvent from 'src/events/dispatchEvent';
 import utils from 'src/utils';
@@ -8,16 +10,15 @@ import { Tab as TabType} from 'src/types';
 import styles from './Tab.module.css';
 
 interface Props {
-  workspaceName: string;
-  agentName: string;
   tab: TabType;
   tabs: TabType[];
   currentThreadId: string;
   currentThreadPositionY: number;
 }
 
-const Tab = ({ workspaceName, agentName, tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
+const Tab = memo(({ tab, tabs, currentThreadId, currentThreadPositionY }: Props) => {
   const navigate = useNavigate();
+  const { workspaceName, agentName } = hooks.features.useAgentContext();
   
   const handleSelectTab = async (threadId: string, agentId: string) => {
     /** Update tabs (localStorage) */
@@ -25,10 +26,10 @@ const Tab = ({ workspaceName, agentName, tab, tabs, currentThreadId, currentThre
       ? { ...t, isActive: t.id === threadId }
       : t
     );
-    tabsStorage.save(workspaceName, agentName, updatedTabs);
+    tabsStorage.save({ workspaceName, agentName, tabs: updatedTabs });
 
     /** Dispatch tabsUpdated event (Events) */
-    dispatchEvent.tabsUpdated(agentName);
+    dispatchEvent.tabsUpdated({ agentName });
 
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
@@ -49,10 +50,10 @@ const Tab = ({ workspaceName, agentName, tab, tabs, currentThreadId, currentThre
     if (updatedTabs.length > 0 && removedTab.isActive) {
       updatedTabs[updatedTabs.length - 1].isActive = true;
     }
-    tabsStorage.save(workspaceName, agentName, updatedTabs);
+    tabsStorage.save({ workspaceName, agentName, tabs: updatedTabs });
 
     /** Dispatch tabsUpdated event (Events) */
-    dispatchEvent.tabsUpdated(agentName);
+    dispatchEvent.tabsUpdated({ agentName });
 
     /** Update positionY of the current thread (IndexedDB) */
     await indexedDB.updateThreadPositionY({
@@ -86,6 +87,6 @@ const Tab = ({ workspaceName, agentName, tab, tabs, currentThreadId, currentThre
       )}
     </a>
   );
-};
+});
 
 export default Tab;

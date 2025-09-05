@@ -5,41 +5,46 @@ import Sidebar from 'src/features/workspace/sidebar';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
 import styles from './Workspace.module.css';
+import WorkspaceContext from './WorkspaceContext';
+import utils from 'src/utils';
 
 interface OutletContext {
   userId: string;
+  isMobile: boolean;
 }
 
 const Workspace = () => {
-  const { userId } = useOutletContext<OutletContext>();
+  const { userId, isMobile } = useOutletContext<OutletContext>();
   const { workspaceName } = useParams();
   const { workspaces, error, isLoading } = hooks.features.useHandleWorkspace({ userId, workspaceName });
-  const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
   if (!userId || !workspaceName || !workspaces) return <Error error='Something went wrong. Try again later.' />;
 
-  const workspaceId = workspaces
-    .filter(i => i.name === workspaceName)
-    .map(i => i.id)[0];
+  const workspaceId = utils.features.getWorkspaceId({ workspaceName, workspaces });
+
+  const workspaceContext = {
+    userId,
+    workspaceName,
+    workspaces,
+    isMobile
+  };
 
   const outletContext = {
     userId,
     workspaceId,
-    workspaceName
-  }
+    workspaceName,
+    isMobile
+  };
 
   return (
     <div className={styles.container}>
-      <Sidebar
-        userId={userId}
-        currentWorkspaceName={workspaceName}
-        workspaces={workspaces}
-        isMobile={isMobile}
-      />
+      <WorkspaceContext.Provider value={workspaceContext}>
+        <Sidebar />
+      </WorkspaceContext.Provider>
       <Outlet context={outletContext} />
-    </div> 
+    </div>
   );
 };
 

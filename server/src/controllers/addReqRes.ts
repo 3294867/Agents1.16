@@ -12,7 +12,7 @@ interface RequestBody {
 const addReqRes = async (req: Request, res: Response): Promise<void> => {
   const { threadId, requestBody, responseBody }: RequestBody = req.body;
 
-  const validationError = await utils.validate.addQuery(threadId, requestBody, responseBody);
+  const validationError = await utils.validate.addReqRes(threadId, requestBody, responseBody);
   if (validationError) return utils.sendResponse(res, 400, validationError);
   
   try {
@@ -90,7 +90,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     await pool.query(`COMMIT`);
 
     res.status(201).json({
-      message: "Query added",
+      message: "Reqres added",
       data: {
         requestId: addRequest.rows[0].id,
         responseId: addResponse.rows[0].id
@@ -102,7 +102,7 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
     } catch (rollbackError) {
       console.error("Rollback error: ", rollbackError);
     }
-    console.error("Failed to add query: ", error);
+    console.error("Failed to add reqres: ", error);
     utils.sendResponse(res, 500, "Internal server error");
   }
 };

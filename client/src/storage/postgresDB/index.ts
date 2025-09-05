@@ -1,4 +1,4 @@
-import { postgresDB as auth } from "src/storage/postgresDB/auth/index";
+import auth from "src/storage/postgresDB/auth/index";
 import getWorkspaces from 'src/storage/postgresDB/getWorkspaces';
 import getAgentId from 'src/storage/postgresDB/getAgentId';
 import addAgent from 'src/storage/postgresDB/addAgent';
@@ -10,7 +10,7 @@ import addPublicThread from 'src/storage/postgresDB/addPublicThread';
 import duplicateThread from 'src/storage/postgresDB/duplicateThread';
 import deleteThread from 'src/storage/postgresDB/deleteThread';
 import addReqRes from 'src/storage/postgresDB/addReqRes';
-import deleteQuery from 'src/storage/postgresDB/deleteQuery';
+import deleteReqRes from 'src/storage/postgresDB/deleteReqRes';
 import updateRequestBody from 'src/storage/postgresDB/updateRequestBody';
 import updateResponseBody from 'src/storage/postgresDB/updateResponseBody';
 import updateThreadName from 'src/storage/postgresDB/updateThreadName';
@@ -39,7 +39,7 @@ const postgresDB = {
   duplicateThread,
   deleteThread,
   addReqRes,
-  deleteQuery,
+  deleteReqRes,
   updateRequestBody,
   updateResponseBody,
   updateThreadName,

@@ -13,7 +13,7 @@ import useHandleDropdownFocusOnOpen from './useHandleDropdownFocusOnOpen';
 import useHandleDropdownTabKey from './useHandleDropdownTabKey';
 import useHandleTriggerSize from './useHandleTriggerSize';
 
-export const hooks = {
+const components = {
   useAuthContext,
   useDialogContext,
   useDropdownContext,
@@ -29,3 +29,5 @@ export const hooks = {
   useHandleDropdownTabKey,
   useHandleTriggerSize,
 };
+
+export default components;

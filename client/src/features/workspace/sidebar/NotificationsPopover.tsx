@@ -2,12 +2,11 @@ import { memo } from 'react';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Popover from 'src/components/popover';
+import hooks from 'src/hooks';
 
-interface Props {
-  userId: string;
-}
-
-const NotificationsPopover = memo(({ userId }: Props) => {
+const NotificationsPopover = memo(() => {
+  const { userId } = hooks.features.useWorkspaceContext();
+  
   return (
     <Popover.Root>
       <Popover.Trigger asChild>

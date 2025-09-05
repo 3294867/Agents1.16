@@ -1,14 +1,12 @@
+import hooks from 'src/hooks';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Dropdown from 'src/components/dropdown';
 import styles from './Actions.module.css'
 
-interface Props {
-  userId: string;
-  agentId: string;
-}
-
-const Actions = ({ userId, agentId }: Props) => {
+const Actions = () => {
+  const { userId, agentId } = hooks.features.useAgentContext();
+  
   return (
     <div className={styles.container}>
       <Button variant='outline' size='icon'>

@@ -52,7 +52,7 @@ const Form = memo(({ workspaceId, workspaceName, agentId, agentName, agentModel:
       await indexedDB.updateThreadName({ threadId, threadName });
 
       /** Update tabs (localStorage) */
-      tabsStorage.update(workspaceId, workspaceName, agentId, agentName, threadId, threadName);
+      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName });
     }
 
     /** Update thread body (IndexedDB) */

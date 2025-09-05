@@ -21,7 +21,7 @@ const DeleteThreadDialog = ({ workspaceName, agentName, threadId,  }: Props) => 
   const handleClick = async () => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(workspaceName, agentName, threadId);
+    tabsStorage.remove({ workspaceName, agentName, threadId });
     navigate(`/${workspaceName}/${agentName}`);
   };
 

@@ -1,6 +1,10 @@
 import { Agent } from 'src/types';
 
-const agentAdded =  (agent: Agent) => {
+interface Props {
+  agent: Agent;
+}
+
+const agentAdded = ({ agent }: Props) => {
   const event = new CustomEvent('agentAdded', {
     detail: { agent }
   });

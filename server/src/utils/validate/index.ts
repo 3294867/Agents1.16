@@ -1,11 +1,11 @@
 import inferAgentType from './inferAgentType';
 import addAgent from './addAgent';
 import addPublicThread from './addPublicThread';
-import addQuery from './addQuery';
+import addReqRes from './addReqRes';
 import addThread from './addThread';
 import createResponse from './createResponse';
 import createThreadTitle from './createThreadTitle';
-import deleteQuery from './deleteQuery';
+import deleteReqRes from './deleteReqRes';
 import deleteThread from './deleteThread';
 import duplicateThread from './duplicateThread';
 import getAgentIdByName from './getAgentIdByName';
@@ -31,10 +31,10 @@ import getAvailableAgents from './getAvailableAgents';
 const validate = {
   addAgent,
   addPublicThread,
-  addQuery,
+  addReqRes,
   addThread,
   createResponse,
-  deleteQuery,
+  deleteReqRes,
   deleteThread,
   getAgentIdByName,
   duplicateThread,

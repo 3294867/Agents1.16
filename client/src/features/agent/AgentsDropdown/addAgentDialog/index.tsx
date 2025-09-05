@@ -5,12 +5,7 @@ import Dialog from 'src/components/dialog';
 import Heading from 'src/components/heading';
 import AgentThumbnails from './AgentThumbnails';
 
-interface AddAgentDialogProps {
-  workspaceId: string;
-  workspaceName: string;
-}
-
-const AddAgentDialog = memo(({ workspaceId, workspaceName }: AddAgentDialogProps) => {
+const AddAgentDialog = memo(() => {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -21,7 +16,7 @@ const AddAgentDialog = memo(({ workspaceId, workspaceName }: AddAgentDialogProps
       </Dialog.Trigger>
       <Dialog.Content>
         <Heading variant='h4'>Add Agent</Heading>
-        <AgentThumbnails workspaceId={workspaceId} workspaceName={workspaceName} />
+        <AgentThumbnails />
       </Dialog.Content>
     </Dialog.Root>
   )

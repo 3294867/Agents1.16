@@ -1,5 +1,5 @@
-import { hooks as components } from './components/index';
-import { hooks as features } from './features';
+import components from './components/index';
+import features from './features';
 
 const hooks = {
   features,

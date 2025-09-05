@@ -20,7 +20,7 @@ const useHandleDialogAriaAttributes = ({ mounted, dialogRef, titleId, descriptio
         paragraph.id = descriptionId;
       }
     }
-  }, [mounted, titleId, descriptionId]);
+  }, [mounted, dialogRef, titleId, descriptionId]);
 };
 
 export default useHandleDialogAriaAttributes;

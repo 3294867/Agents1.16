@@ -1,12 +1,14 @@
 import { Toaster } from 'sonner';
 import { Outlet } from 'react-router-dom';
+import hooks from 'src/hooks';
 
 interface Props {
   userId: string;
 }
 
 const Layout = ({ userId }: Props) => {
-  const outletContext = { userId };
+  const isMobile = hooks.features.useHandleBreakpoint({ windowInnerWidth: 480 });
+  const outletContext = { userId, isMobile };
   
   return (
     <div style={{ backgroundColor: 'var(--background)' }}>

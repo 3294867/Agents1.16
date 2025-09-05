@@ -31,12 +31,12 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
           const getAgentPGDB = await postgresDB.getAgent({ workspaceId: workspaceIdIDB, agentName });
           await indexedDB.addAgent({ agent: getAgentPGDB });
           
-          const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
+          const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
           if (!loadSavedTabs || loadSavedTabs.length === 0) {
             const { id, createdAt, updatedAt } = await postgresDB.addThread({ agentId: getAgentPGDB.id });
             await indexedDB.addThread({ id, agentId: getAgentPGDB.id, createdAt, updatedAt});
             const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentPGDB.id, name: null, isActive: true };
-            tabsStorage.addTab(workspaceName, agentName, newTab);
+            tabsStorage.add({ workspaceName, agentName, tab: newTab });
             navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
           } else {
             navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
@@ -46,12 +46,12 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
           return;
         }
 
-        const loadSavedTabs = tabsStorage.load(workspaceName, agentName);
+        const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
         if (!loadSavedTabs || loadSavedTabs.length === 0) {
           const { id, createdAt, updatedAt } = await postgresDB.addThread({ agentId: getAgentIDB.id });
           await indexedDB.addThread({ id, agentId: getAgentIDB.id, createdAt, updatedAt});
           const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentIDB.id, name: null, isActive: true };
-          tabsStorage.addTab(workspaceName, agentName, newTab);
+          tabsStorage.add({ workspaceName, agentName, tab: newTab });
           navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
         } else {
           navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });

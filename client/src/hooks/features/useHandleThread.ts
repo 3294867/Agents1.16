@@ -54,30 +54,30 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
     }
   },[thread]);
   
-  /** Update thread on queryAdded event (UI) */
+  /** Update thread on reqresAdded event (UI) */
   useEffect(() => {
-    const handleQueryAdded = (event: CustomEvent) => {
+    const handleReqResAdded = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
           if (!prevThread) return null;
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
           return {
             ...prevThread,
-            body: [...prevBody, event.detail.query]
+            body: [...prevBody, event.detail.reqres]
           };
         });
   
-        setNewRequestId(event.detail.query.requestId);
+        setNewRequestId(event.detail.reqres.requestId);
       }
     };
-    window.addEventListener('queryAdded', handleQueryAdded as EventListener);
+    window.addEventListener('reqresAdded', handleReqResAdded as EventListener);
 
-    return () => window.removeEventListener('queryAdded', handleQueryAdded as EventListener);
+    return () => window.removeEventListener('reqresAdded', handleReqResAdded as EventListener);
   },[threadId]);
 
-  /** Update thread on queryDeleted event (UI) */
+  /** Update thread on reqresDeleted event (UI) */
   useEffect(() => {
-    const handleQueryDeleted = (event: CustomEvent) => {
+    const handleReqResDeleted = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId) {
         setThread(prevThread => {
           if (!prevThread) return null;
@@ -90,21 +90,21 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         });
       }
     };
-    window.addEventListener('queryDeleted', handleQueryDeleted as EventListener);
+    window.addEventListener('reqresDeleted', handleReqResDeleted as EventListener);
 
-    return () => window.removeEventListener('queryDeleted', handleQueryDeleted as EventListener);
+    return () => window.removeEventListener('reqresDeleted', handleReqResDeleted as EventListener);
   },[threadId]);
 
-  /** Update thread on queryUpdated event (UI) */
+  /** Update thread on reqresUpdated event (UI) */
   useEffect(() => {
-    const handleQueryUpdated = (event: CustomEvent) => {
+    const handleReqResUpdated = (event: CustomEvent) => {
       if (threadId && event.detail.threadId === threadId ) {
         setThread(prevThread => {
           if (!prevThread) return null;
           const prevBody = Array.isArray(prevThread.body) ? prevThread.body : [];
-          const queryIndex = prevBody.findIndex(q => q.requestId === event.detail.query.requestId);
-          const updatedBody: ReqRes[] = prevBody.map((q, idx) =>
-            idx === queryIndex ? event.detail.query : q
+          const reqresIndex = prevBody.findIndex(i => i.requestId === event.detail.reqres.requestId);
+          const updatedBody: ReqRes[] = prevBody.map((item, idx) =>
+            idx === reqresIndex ? event.detail.reqres : item
           );
           return {
             ...prevThread,
@@ -112,16 +112,16 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
           };
         });
 
-        setNewRequestId(event.detail.query.requestId);
+        setNewRequestId(event.detail.reqres.requestId);
       }
     };
-    window.addEventListener('queryUpdated', handleQueryUpdated as EventListener);
+    window.addEventListener('reqresUpdated', handleReqResUpdated as EventListener);
     
-    return () => window.removeEventListener('queryUpdated', handleQueryUpdated as EventListener);
+    return () => window.removeEventListener('reqresUpdated', handleReqResUpdated as EventListener);
   },[threadId]);
   
 
-  /** Scroll to the new query (UI) */
+  /** Scroll to the new reqres (UI) */
   useEffect(() => {
     if (thread && newRequestId) {
       const question = document.getElementById(`question_${newRequestId}`);
@@ -138,18 +138,18 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   },[thread, newRequestId]);
 
 
-  /** Update thread on queryIsNewUpdated event (UI) */
+  /** Update thread on reqresIsNewUpdated event (UI) */
   useEffect(() => {
-    const handleQueryIsNewUpdated = (event: CustomEvent) => {
+    const handleReqResIsNewUpdated = (event: CustomEvent) => {
       if (!thread) return;
       if (threadId && event.detail.threadId === threadId) {
         const threadBody = Array.isArray(thread.body) ? thread.body : [];
-        const queryIndex = threadBody.findIndex(q => q.responseId === event.detail.responseId);
-        if (queryIndex === -1) return;
+        const reqresIndex = threadBody.findIndex(i => i.responseId === event.detail.responseId);
+        if (reqresIndex === -1) return;
   
         const isNew: boolean = event.detail.isNew;
-        const updatedThreadBody: ReqRes[] = threadBody.map((q, idx) =>
-          idx === queryIndex ? { ...q, isNew } : q
+        const updatedThreadBody: ReqRes[] = threadBody.map((item, idx) =>
+          idx === reqresIndex ? { ...item, isNew } : item
         );
   
         setThread(prevThread => {
@@ -161,9 +161,9 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
         });
       }
     };
-    window.addEventListener('queryIsNewUpdated', handleQueryIsNewUpdated as EventListener);
+    window.addEventListener('reqresIsNewUpdated', handleReqResIsNewUpdated as EventListener);
 
-    return () => window.removeEventListener('queryIsNewUpdated', handleQueryIsNewUpdated as EventListener);
+    return () => window.removeEventListener('reqresIsNewUpdated', handleReqResIsNewUpdated as EventListener);
   },[thread, threadId]);
 
   /** Update thread on threadNameUpdated event (UI) */

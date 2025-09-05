@@ -7,7 +7,7 @@ interface Props {
   reqres: ReqRes;
 }
 
-/** Adds new query to the body of the thread (IndexedDB) */
+/** Adds new reqres to the body of the thread (IndexedDB) */
 const addReqRes = async ({ threadId, reqres }: Props): Promise<void> => {
   try {
     const savedThread = await db.threads.get(threadId);
@@ -18,7 +18,7 @@ const addReqRes = async ({ threadId, reqres }: Props): Promise<void> => {
     });
     if (updatedThread === 0) throw new Error('Failed to add reqres to the body of the thread (IndexedDB)');
 
-    dispatchEvent.reqresAdded(threadId, reqres);
+    dispatchEvent.reqresAdded({ threadId, reqres });
   } catch (error) {
     console.error('Failed to add reqres to the body of the thread (IndexedDB): ', error);
   }

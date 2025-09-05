@@ -1,12 +1,11 @@
 import { db } from './initialize';
-import { Query } from 'src/types';
+import { ReqRes } from 'src/types';
 
 interface Props {
   threadId: string | undefined;
 }
 
-/** Fetches first query from the body of the thread (IndexedDB) */
-const getFirstQuery = async ({ threadId }: Props): Promise<Query | null> => {
+const getFirstReqRes = async ({ threadId }: Props): Promise<ReqRes | null> => {
   if (!threadId) throw new Error('Thread id is required.');
   
   try {
@@ -15,8 +14,8 @@ const getFirstQuery = async ({ threadId }: Props): Promise<Query | null> => {
     if (thread.body.length === 0) return null;
     return thread.body[0];
   } catch (error) {
-    throw new Error(`Failed to fetch first query from the body of the thread (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
+    throw new Error(`Failed to fetch first reqres from the body of the thread (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
   }
 };
 
-export default getFirstQuery;
+export default getFirstReqRes;

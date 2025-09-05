@@ -1,2 +1,0 @@
--- psql -U postgres -h localhost -d Agents -f query.sql
--- psql -U postgres -h localhost -d Agents -f schema.sql

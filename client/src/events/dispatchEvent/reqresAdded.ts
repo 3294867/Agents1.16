@@ -1,8 +1,13 @@
 import { ReqRes } from 'src/types';
 
-const reqresAdded =  (threadId: string, query: ReqRes) => {
+interface Props {
+  threadId: string;
+  reqres: ReqRes;
+}
+
+const reqresAdded =  ({ threadId, reqres}: Props) => {
   const event = new CustomEvent('reqresAdded', {
-    detail: { threadId, query }
+    detail: { threadId, reqres }
   });
   window.dispatchEvent(event);
 };

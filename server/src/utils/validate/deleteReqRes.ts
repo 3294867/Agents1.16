@@ -1,6 +1,6 @@
 import utils from '..';
 
-const deleteQuery = (requestId: string, responseId: string): string | null => {
+const deleteReqRes = (requestId: string, responseId: string): string | null => {
   if (!requestId || !responseId) {
     return "Missing required fields: requestId, responseId";
   }
@@ -16,4 +16,4 @@ const deleteQuery = (requestId: string, responseId: string): string | null => {
   return null;
 };
 
-export default deleteQuery;
+export default deleteReqRes;

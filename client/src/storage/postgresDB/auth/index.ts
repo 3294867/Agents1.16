@@ -3,9 +3,11 @@ import login from './login';
 import logout from './logout';
 import signUp from './signUp';
 
-export const postgresDB = {
+const auth = {
   getCurrentUser,
   login,
   signUp,
   logout
 };
+
+export default auth;

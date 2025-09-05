@@ -34,12 +34,12 @@ const ChangeAgentButton = memo(({
   const currentThreadPositionY = hooks.features.useHandleThreadPostionY();
   
   const handleClick = async () => {
-    /** Remove query from the 'body' property of the current thread (IndexedDB, PostgresDB) */
-    await indexedDB.deleteQuery({ threadId, requestId: reqres.requestId });
-    await postgresDB.deleteQuery({ threadId, requestId: reqres.requestId, responseId: reqres.responseId });
+    /** Remove reqres from the 'body' property of the current thread (IndexedDB, PostgresDB) */
+    await indexedDB.deleteReqRes({ threadId, requestId: reqres.requestId });
+    await postgresDB.deleteReqRes({ threadId, requestId: reqres.requestId, responseId: reqres.responseId });
     
     /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
-    const firstReqRes = await indexedDB.getFirstQuery({ threadId });
+    const firstReqRes = await indexedDB.getFirstReqRes({ threadId });
     if (firstReqRes) {
       const threadName = await openai.createThreadName({
         question: firstReqRes.requestBody,
@@ -48,11 +48,11 @@ const ChangeAgentButton = memo(({
 
       await postgresDB.updateThreadName({ threadId, threadName });
       await indexedDB.updateThreadName({ threadId, threadName });
-      tabsStorage.update( workspaceId, workspaceName, currentAgentId, currentAgentName, threadId, threadName );
+      tabsStorage.updateActive({ workspaceId, workspaceName, agentId: currentAgentId, agentName: currentAgentName, threadId, threadName });
     } else {
       await postgresDB.updateThreadName({ threadId, threadName: null });
       await indexedDB.updateThreadName({ threadId, threadName: null });
-      tabsStorage.update( workspaceId, workspaceName, currentAgentId, currentAgentName, threadId, null );
+      tabsStorage.updateActive({ workspaceId, workspaceName, agentId: currentAgentId, agentName: currentAgentName, threadId, threadName: null });
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
@@ -75,8 +75,8 @@ const ChangeAgentButton = memo(({
     /** Add new thread (IndexedDB) */
     await indexedDB.addThread({ ...newThread, agentId: newAgentData.id });
 
-    /** Add query to the 'body' property of the new thread (IndexedDB, PostgresDB) */
-    const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addQuery({
+    /** Add reqres to the 'body' property of the new thread (IndexedDB, PostgresDB) */
+    const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addReqRes({
       threadId: newThread.id, requestBody: reqres.requestBody, responseBody: reqres.responseBody
     });
     const newReqRes ={
@@ -104,9 +104,9 @@ const ChangeAgentButton = memo(({
     });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.addTab(workspaceName, newAgentData.name, {
+    tabsStorage.add({ workspaceName, agentName: newAgentData.name, tab: {
       id: newThread.id, workspaceId, agentId: newAgentData.id, name: newThreadName, isActive: true
-    });
+    }});
     
     navigate(`/${workspaceName}/${newAgentData.name}/${newThread.id}`);
   };

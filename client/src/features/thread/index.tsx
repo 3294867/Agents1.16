@@ -17,10 +17,11 @@ interface OutletContext {
   agentName: string;
   agentType: AgentType;
   agentModel: AgentModel;
+  isMobile: boolean;
 }
 
 const Thread = () => {
-  const { userId, workspaceId, workspaceName, agentId, agentName, agentType, agentModel } = useOutletContext<OutletContext>();
+  const { userId, workspaceId, workspaceName, agentId, agentName, agentType, agentModel, isMobile } = useOutletContext<OutletContext>();
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({ threadId });
 
@@ -30,7 +31,7 @@ const Thread = () => {
 
   return (
     <main id='thread' className={styles.main}>
-      <Header
+      {/* <Header
         userId={userId}
         workspaceName={workspaceName}
         agentName={agentName}
@@ -57,7 +58,7 @@ const Thread = () => {
         agentModel={agentModel}
         threadId={threadId}
         threadBodyLength={thread.body.length}
-      />
+      /> */}
     </main>
   );
 };

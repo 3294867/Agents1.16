@@ -21,7 +21,7 @@ router.post("/add-public-thread", controllers.addPublicThread);
 router.post("/duplicate-thread", controllers.duplicateThread);
 router.post("/delete-thread", controllers.deleteThread);
 router.post("/add-reqres", controllers.addReqRes);
-router.post("/delete-query", controllers.deleteQuery);
+router.post("/delete-reqres", controllers.deleteReqRes);
 router.post("/update-request-body", controllers.updateRequestBody);
 router.post("/update-response-body", controllers.updateResponseBody);
 router.post("/create-thread-name", controllers.createThreadName);

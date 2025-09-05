@@ -17,13 +17,13 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
   const handleBookmarkThread = async ({ threadId, isBookmarked} : { threadId: string; isBookmarked: boolean }) => {
     await postgresDB.updateThreadIsBookmarked({ threadId, isBookmarked });
     await indexedDB.updateThreadIsBookmarked({ threadId, isBookmarked});
-    dispatchEvent.threadIsBookmarkedUpdated(threadId, isBookmarked);
+    dispatchEvent.threadIsBookmarkedUpdated({ threadId, isBookmarked });
   };
 
   const handleDeleteThread = async ({ workspaceName, threadId, agentName }: { workspaceName: string, threadId: string, agentName: string}) => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.deleteTab(workspaceName, agentName, threadId);
+    tabsStorage.remove({ workspaceName, agentName, threadId });
     
     navigate(`/${workspaceName}/${agentName}`);
   };
@@ -57,7 +57,7 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
 
       setIsOpen(false);
     }
-  },[dropdownRef, isOpen]);
+  },[dropdownRef, isOpen, handleDeleteThread]);
   
   useEffect(() => {
     if (dropdownRef.current && isOpen) {

@@ -1,4 +1,3 @@
-import useHandleRedirect from './useHandleRedirect';
 import useHandleWorkspace from './useHandleWorkspace';
 import useHandleAgentLayout from './useHandleAgentLayout';
 import useHandleAgent from './useHandleAgent';
@@ -12,11 +11,14 @@ import useHandleTheme from './useHandleTheme';
 import useHandleThread from './useHandleThread';
 import useHandleThreadPostionY from './useHandleThreadPostionY';
 import useHandleAgentsDropdown from './useHandleAgentsDropdown';
+import useWorkspaceContext from './useWorkspaceContext';
+import useAgentContext from './useAgentContext';
 
-export const hooks = {
-  useHandleRedirect,
+const features = {
   useHandleWorkspace,
+  useWorkspaceContext,
   useHandleAgent,
+  useAgentContext,
   useHandleAddAgentDialog,
   useHandleThread,
   useHandleTabs,
@@ -29,3 +31,5 @@ export const hooks = {
   useHandleThreadPostionY,
   useHandleAgentsDropdown
 };
+
+export default features;
