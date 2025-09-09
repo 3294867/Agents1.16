@@ -15,7 +15,6 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
   const validationError = await utils.validate.addReqRes({ threadId, requestBody, responseBody });
   if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
-  
   try {
     await pool.query(`BEGIN`);
 

@@ -20,7 +20,7 @@ const Workspace = () => {
 
   if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!userId || !workspaceName || !workspaces) return <Error error='Something went wrong. Try again later.' />;
+  if (!userId || !workspaceName || !workspaces) return <Error error="Something went wrong. Try again later" />;
 
   const workspaceId = utils.features.getWorkspaceId({ workspaceName, workspaces });
 

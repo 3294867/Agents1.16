@@ -3,7 +3,7 @@ interface Props {
   answer: string;
 }
 
-const createThreadTitle = ({ question, answer }: Props): string | null => {
+const createThreadName = ({ question, answer }: Props): string | null => {
   if (!question || !answer) {
     return "Missing required fields: question, answer";
   }
@@ -11,4 +11,4 @@ const createThreadTitle = ({ question, answer }: Props): string | null => {
   return null;
 };
 
-export default createThreadTitle;
+export default createThreadName;

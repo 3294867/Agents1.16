@@ -45,7 +45,7 @@ export class CustomPGSessionStore extends Store {
       await pool.query(`
         DELETE
         FROM sessions 
-        WHERE sid = $1::uuid;
+        WHERE sid = $1::text;
       `, [ sid ]);
       callback();
     } catch (err) {
@@ -59,7 +59,7 @@ export class CustomPGSessionStore extends Store {
       await pool.query(`
         UPDATE sessions
         SET expires = $1::timestamp
-        WHERE sid = $2::uuid;
+        WHERE sid = $2::text;
       `, [ expires, sid ]);
       callback();
     } catch (err) {

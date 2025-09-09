@@ -176,8 +176,8 @@ FOR EACH ROW EXECUTE FUNCTION enforce_unique_agent_per_workspace();
 -- Seed Tables
 INSERT INTO users (id, name, password, api_key)
 VALUES 
-  ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, 'root', 'password', 'api_root'),
-  ('92dca7fc-739d-473d-8e95-d7bc506b0c72'::uuid, 'test', 'password', 'api_test');
+  ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, 'root', '$2b$12$fOoJbW5i2gEP.hzc0fII6.jXkNjmxtQ4tbYLLWPhJFze8oX./UE4G', 'api_root'),
+  ('92dca7fc-739d-473d-8e95-d7bc506b0c72'::uuid, 'test', '$2b$12$fOoJbW5i2gEP.hzc0fII6.jXkNjmxtQ4tbYLLWPhJFze8oX./UE4G', 'api_test');
 
 INSERT INTO workspaces (id, name, description)
 VALUES
@@ -200,7 +200,7 @@ VALUES
   ('f7e5617e-538b-487e-85f7-b6533a179011'::uuid, 'data-analyst', 'data-analyst', 'gpt-3.5-turbo', 'You are a data analyst', ARRAY['sql','python']::text[], 0.2, TRUE),
   ('b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid, 'copywriter', 'copywriter', 'gpt-3.5-turbo', 'You are a marketing copywriter', ARRAY['seo','content']::text[], 0.7, FALSE),
   ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops-helper', 'devops-helper', 'gpt-3.5-turbo', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
-  ('b967db53-048f-48f5-bef8-a9605c89712a'::uuid, 'incognito', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('b967db53-048f-48f5-bef8-a9605c89712a'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
   ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
 
 INSERT INTO user_agent (user_id, agent_id)
