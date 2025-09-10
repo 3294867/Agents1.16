@@ -13,9 +13,8 @@ const AgentsDropdown = memo(() => {
   const { workspaceId, workspaceName, agentName } = hooks.features.useAgentContext();
   const { agentNames, error, isLoading } = hooks.features.useHandleAgentsDropdown({ workspaceId });
 
-  if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!agentNames) return <Error error='Something went wrong. Try again later.' />;
+  if (error || !agentNames) return <Error error={error ?? 'Something went wrong. Try again later.'} />;
 
   const filteredAgentNames = agentNames.filter((i: string) => i !== agentName);
 
@@ -30,7 +29,7 @@ const AgentsDropdown = memo(() => {
       <Dropdown.Content sideOffset={16}>
         {filteredAgentNames.map((i: string) => (
           <Link key={i} prefetch='intent' to={`/${workspaceName}/${i}`}> 
-            <Button variant='dropdown' style={{ width: '100%', backgroundColor: i === agentName ? 'var(--background-dropdown-button-hover)' : '' }}>
+            <Button variant='dropdown' style={{ width: '100%' }}>
               {utils.capitalizeFirstLetter(i)}
             </Button>
           </Link>
@@ -44,10 +43,6 @@ const AgentsDropdown = memo(() => {
 
 export default AgentsDropdown;
 
-const Loading = () => {
-  return (
-    <Button variant='dropdown'>
-      <Icons.Loader className={styles.loader} />
-    </Button>
-  );
-};
+const Loading = memo(() => {
+  return <Button variant='outline' style={{ borderRadius: '9999px', minWidth: '6rem' }} />;
+});

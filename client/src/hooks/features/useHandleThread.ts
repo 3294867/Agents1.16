@@ -10,16 +10,16 @@ interface Props {
 const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
   const [ thread, setThread ] = useState<Thread | null>(null);
   const [ error, setError ] = useState<string | null>(null);
-  const [ isLoading, setIsLoading ] = useState<boolean>(false);
+  const [ isLoading, setIsLoading ] = useState<boolean>(true);
   const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
   
   /** Get thread */
   useEffect(() => {
     if (!threadId) {
-      setError('Missing thread id');
+      setError('All props are required: threadId');
+      setIsLoading(false);
       return;
     }
-    setIsLoading(true);
 
     const init = async () => {
       try {
@@ -30,18 +30,16 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
           const getThreadPGDB = await postgresDB.getThread({ threadId });
           await indexedDB.updateThread({ thread: getThreadPGDB });
           setThread(getThreadPGDB);
-          setIsLoading(false);
           return;
         }
-        
         setThread(getThreadIDB);
-        setIsLoading(false);
       } catch (error) {
-        throw new Error(`Failed to get thread: ${error}`);
+        setError(`Failed to get thread: ${error}`);
+      } finally {
+        setIsLoading(false);
       }
     };
     init();
-
   }, [threadId]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */

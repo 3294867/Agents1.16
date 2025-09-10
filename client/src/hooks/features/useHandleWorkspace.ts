@@ -13,17 +13,17 @@ const useHandleWorkspace = ({ userId, workspaceName }: Props): { workspaces: Wor
   const navigate = useNavigate();
   const [workspaces, setWorkspaces] = useState<Workspace[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    const getWorkspaces = async () => {
+    if (!userId || !workspaceName) {
+      setError('All props are required: userId, workspaceName');
+      setIsLoading(false);
+      return;
+    }
+    
+    const init = async () => {
       try {
-        if (!userId || !workspaceName) {
-          setError('Missing required fields: userId, workspaceName');
-          return;
-        }
-        setIsLoading(true);
-
         const getWorkspacesIDB = await indexedDB.getWorkspaces();
 
         const workspacesDataIDB: { id: string, updatedAt: Date}[] = [];
@@ -40,19 +40,18 @@ const useHandleWorkspace = ({ userId, workspaceName }: Props): { workspaces: Wor
           const getWorkspacesPGDB = await postgresDB.getWorkspaces({ userId });
           await indexedDB.addWorkspaces({ workspaces: getWorkspacesPGDB });
           setWorkspaces(getWorkspacesPGDB);
-          setIsLoading(false);
           return;
         }
 
         setWorkspaces(getWorkspacesIDB);
-        setIsLoading(false);
       } catch (error) {
-        throw new Error(`Failed to set workspaces: ${error}`);
+        setError(`Failed to set workspaces: ${error}`);
+      } finally {
+        setIsLoading(false);
+        navigate(`/${workspaceName}/general`);
       }
     };
-    getWorkspaces();
-    
-    navigate(`/${workspaceName}/general`);
+    init();
   },[userId, workspaceName]);
 
   return { workspaces, error, isLoading };

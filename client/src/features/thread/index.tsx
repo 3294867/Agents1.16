@@ -26,9 +26,8 @@ const Thread = () => {
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({ threadId });
 
-  if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!workspaceName || !agentName || !threadId || !thread) return <Error error='Something went wrong. Try again later.' />;
+  if (error || !workspaceName || !agentName || !threadId || !thread) return <Error error={error ?? 'Something went wrong. Try again later.'} />;
 
   const threadContext = {
     userId,

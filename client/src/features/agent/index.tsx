@@ -6,8 +6,8 @@ import Actions from './Actions';
 import Button from 'src/components/button';
 import hooks from 'src/hooks';
 import Icons from 'src/assets/icons';
-import styles from './Agent.module.css';
 import AgentContext from './AgentContext';
+import styles from './Agent.module.css';
 
 interface OutletContext {
   userId: string;
@@ -21,9 +21,8 @@ const Agent = () => {
   const { agentName } = useParams();
   const { agent, error, isLoading } = hooks.features.useHandleAgent({ workspaceName, agentName });
 
-  if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!workspaceName || !agentName || !agent) return <Error error='Something went wrong. Try again later.' />;
+  if (error || !workspaceName || !agentName || !agent) return <Error error={error ?? 'Something went wrong. Try again later.'} />;
 
   const agentContext = {
     userId,

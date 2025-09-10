@@ -4,9 +4,8 @@ import Error from 'src/components/error';
 import Sidebar from 'src/features/workspace/sidebar';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
-import styles from './Workspace.module.css';
 import WorkspaceContext from './WorkspaceContext';
-import utils from 'src/utils';
+import styles from './Workspace.module.css';
 
 interface OutletContext {
   userId: string;
@@ -18,11 +17,12 @@ const Workspace = () => {
   const { workspaceName } = useParams();
   const { workspaces, error, isLoading } = hooks.features.useHandleWorkspace({ userId, workspaceName });
 
-  if (error) return <Error error={error} />;
   if (isLoading) return <Loading />;
-  if (!userId || !workspaceName || !workspaces) return <Error error="Something went wrong. Try again later" />;
+  if (error || !userId || !workspaceName || !workspaces) return <Error error={error ?? 'Something went wrong. Try again later.'} />;
 
-  const workspaceId = utils.features.getWorkspaceId({ workspaceName, workspaces });
+  const workspaceId = workspaces
+    .filter(i => i.name === workspaceName)
+    .map(i => i.id)[0];
 
   const workspaceContext = {
     userId,

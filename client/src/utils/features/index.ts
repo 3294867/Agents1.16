@@ -1,8 +1,4 @@
-import getWorkspaceId from './getWorkspaceId';
-
-const features = {
-  getWorkspaceId
-};
+const features = {};
 
 export default features;
 

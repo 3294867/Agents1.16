@@ -14,17 +14,17 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
   const navigate = useNavigate();
   const [agent, setAgent] = useState<Agent | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   
   useEffect(() => {
-    try {
-      if (!workspaceName || !agentName) {
-        setError('All props are required: workspaceName, agentName');
-        return;
-      }
-      setIsLoading(true);
-
-      const init = async () => {
+    if (!workspaceName || !agentName) {
+      setError('All props are required: workspaceName, agentName');
+      setIsLoading(false);
+      return;
+    }
+    
+    const init = async () => {
+      try {
         const workspaceIdIDB = await indexedDB.getWorkspaceId({ workspaceName });
         const getAgentIDB = await indexedDB.getAgent({ workspaceId: workspaceIdIDB, agentName });
         if (!getAgentIDB) {
@@ -37,11 +37,12 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
             await indexedDB.addThread({ id, agentId: getAgentPGDB.id, createdAt, updatedAt});
             const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentPGDB.id, name: null, isActive: true };
             tabsStorage.add({ workspaceName, agentName, tab: newTab });
+            setIsLoading(false);
             navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
           } else {
+            setIsLoading(false);
             navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
           }
-          
           setAgent(getAgentPGDB);
           return;
         }
@@ -52,19 +53,19 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
           await indexedDB.addThread({ id, agentId: getAgentIDB.id, createdAt, updatedAt});
           const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentIDB.id, name: null, isActive: true };
           tabsStorage.add({ workspaceName, agentName, tab: newTab });
+          setIsLoading(false);
           navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
         } else {
+          setIsLoading(false);
           navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
         }
         
         setAgent(getAgentIDB);
-      };
-      init();
-
-      setIsLoading(false);
-    } catch (error) {
-      throw new Error(`Failed to fetch agent: ${error}`);
-    }
+      } catch (error) {
+        setError(`Failed to fetch agent: ${error}`);
+      }
+    };
+    init();
   }, [workspaceName, agentName]);
 
   return { agent, error, isLoading };
