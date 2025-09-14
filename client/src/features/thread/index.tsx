@@ -22,12 +22,15 @@ interface OutletContext {
 }
 
 const Thread = () => {
-  const { userId, workspaceId, workspaceName, agentId, agentName, agentType, agentModel, isMobile } = useOutletContext<OutletContext>();
+  const { userId, workspaceId, workspaceName, agentId, agentName, agentType, agentModel, isMobile }
+    = useOutletContext<OutletContext>();
   const { threadId } = useParams();
   const { thread, isLoading, error } = hooks.features.useHandleThread({ threadId });
 
   if (isLoading) return <Loading />;
-  if (error || !workspaceName || !agentName || !threadId || !thread) return <Error error={error ?? 'Something went wrong. Try again later.'} />;
+  if (error || !workspaceName || !agentName || !threadId || !thread) {
+    return <Error error={error ?? 'Something went wrong. Try again later.'} />;
+  }
 
   const threadContext = {
     userId,

@@ -10,8 +10,8 @@ const load = ({ workspaceName, agentName }: Props): Tab[] | null => {
     const getSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
     if (getSavedTabs) return JSON.parse(getSavedTabs);
     return null;
-  } catch (error) {
-    console.error('Failed to load tabs: ', error);
+  } catch (err) {
+    console.error('Failed to load tabs (tabsStorage): ', err);
     return null;
   }
 };

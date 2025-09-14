@@ -30,7 +30,6 @@ const PauseRunButton = memo(({
   setIsEditing,
 }: Props) => {
   const {
-    workspaceId,
     workspaceName,
     agentId,
     agentName,
@@ -64,8 +63,7 @@ const PauseRunButton = memo(({
       const newThreadName = await openai.createThreadName({ question: input, answer: response});
       await postgresDB.updateThreadName({ threadId, threadName: newThreadName });
       await indexedDB.updateThreadName({ threadId, threadName: newThreadName });
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName: newThreadName });
-      dispatchEvent.threadNameUpdated({ threadId, threadName: newThreadName });
+      tabsStorage.updateName({ workspaceName, agentName, tabId: threadId, tabName: newThreadName });
     }
   };
   

@@ -16,7 +16,7 @@ const createThreadName = async (req: Request, res: Response): Promise<void> => {
   try {
     const apiResponse = await client.responses.create({
       model: 'gpt-3.5-turbo',
-      input: `Return short title only for the following conversation: Question: ${question}; Answer: ${answer}.`,
+      input: `Return short title for the following conversation: Question: ${question}; Answer: ${answer}.`,
     });
     if (!apiResponse.output_text) return utils.sendResponse({ res, status: 503, message: "Failed to create thread name" });
 

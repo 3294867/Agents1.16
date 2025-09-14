@@ -1,31 +1,16 @@
 import { db } from './initialize';
-import constants from 'src/constants';
+import { Thread } from 'src/types';
 
 interface Props {
-  id: string;
-  agentId: string;
-  createdAt: Date;
-  updatedAt: Date;
+  thread: Thread;
 }
 
-const addThread = async ({ id, agentId, createdAt, updatedAt }: Props): Promise<void> => {
+const addThread = async ({ thread }: Props): Promise<void> => {
   try {
-    const thread = {
-      id,
-      name: null,
-      body: [],
-      isBookmarked: false,
-      isShared: false,
-      isActive: true,
-      agentId,
-      positionY: constants.initialPositionY,
-      createdAt,
-      updatedAt
-    };
-    const addThread = await db.threads.add(thread);
-    if (!addThread) throw new Error('Failed to add thread (IndexedDB)');
+    const addedThreadId = await db.threads.add(thread);
+    if (addedThreadId !== thread.id) throw new Error('Failed to add thread');
   } catch (error) {
-    throw new Error(`Failed to add thread (IndexedDB): ${error}`);
+    console.error('Failed to add thread (IndexedDB): ', error);
   }
 };
 

@@ -9,8 +9,8 @@ interface Props {
 const save = ({ workspaceName, agentName, tabs }: Props): void => {
   try {
     localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(tabs));
-  } catch (error) {
-    console.error('Failed to save tabs: ', error);
+  } catch (err) {
+    console.error('Failed to save tabs: ', err);
   }
 };
 

@@ -17,7 +17,7 @@ const Question = memo(({ reqres }: Props) => {
   const [input, setInput] = useState(requestBody);
   const [isEditing, setIsEditing] = useState(false);
   const { textareaRef, progressBarLength } = hooks.features.useHandleQuestion({ input, isEditing });
-  
+
   return (
     <div className={styles.container}>
       <div className={styles.actionButtons}>

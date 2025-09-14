@@ -67,7 +67,7 @@ const ShareThreadButton = memo(() => {
     <Tooltip.Root>
       <Tooltip.Trigger>
         <Button
-          onMouseEnter={handleMouseEnter}
+          // onMouseEnter={handleMouseEnter}
           onClick={handleClick}
           variant='outline'
           size='icon'

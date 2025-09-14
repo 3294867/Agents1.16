@@ -1,14 +1,16 @@
+import save from './save';
 import add from './add';
 import load from './load';
-import save from './save';
 import updateActive from './updateActive';
+import updateName from './updateName';
 import remove from './remove';
 
 const tabsStorage = {
   save,
+  add,
   load,
   updateActive,
-  add,
+  updateName,
   remove
 };
 

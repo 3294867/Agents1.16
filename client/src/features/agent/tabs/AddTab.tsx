@@ -4,7 +4,6 @@ import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
-import dispatchEvent from 'src/events/dispatchEvent';
 import constants from 'src/constants';
 import Button from 'src/components/button';
 import Icons from 'src/assets/icons';
@@ -13,32 +12,21 @@ import { Tab } from 'src/types';
 interface Props {
   tabs: Tab[];
   currentThreadId: string;
-  currentThreadPositionY: number;
 }
 
-const AddTab = memo(({ tabs, currentThreadId, currentThreadPositionY }: Props) => {
+const AddTab = memo(({ tabs, currentThreadId }: Props) => {
   const navigate = useNavigate();
   const { workspaceId, workspaceName, agentId, agentName } = hooks.features.useAgentContext();
   const isAddTabDisabled = tabs.length > constants.tabMaxLength;
 
   const handleAddTab = async () => {
     const threadData = await postgresDB.addThread({ agentId });
-
-    const updatedTabs: Tab[] = tabs.map(t => t.agentId === agentId
-      ? { ...t, isActive: false }
-      : t
-    );
     const newTab: Tab = { id: threadData.id, workspaceId, agentId, name: null, isActive: true };
-    updatedTabs.push(newTab);
-    tabsStorage.save({ workspaceName, agentName, tabs: updatedTabs });
-
-    dispatchEvent.tabsUpdated({ agentName });
-    
+    tabsStorage.add({ workspaceName, agentName, newTab });
     await indexedDB.updateThreadPositionY({
       threadId: currentThreadId,
-      positionY: currentThreadPositionY
+      positionY: window.scrollY
     });
-    
     navigate(`/${workspaceName}/${agentName}/${threadData.id}`);
   };
   

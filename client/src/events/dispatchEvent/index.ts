@@ -7,7 +7,6 @@ import editingQuestion from './editingQuestion';
 import responsePaused from './responsePaused';
 import progressBarLengthUpdated from './progressBarLengthUpdated';
 import threadIsBookmarkedUpdated from './threadIsBookmarkedUpdated';
-import threadUpdated from './threadUpdated';
 import threadNameUpdated from './threadNameUpdated';
 import reqresAdded from './reqresAdded';
 
@@ -22,8 +21,7 @@ const dispatchEvent = {
   editingQuestion,
   responsePaused,
   progressBarLengthUpdated,
-  threadIsBookmarkedUpdated,
-  threadUpdated
+  threadIsBookmarkedUpdated
 };
 
 export default dispatchEvent;

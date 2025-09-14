@@ -34,9 +34,9 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
           const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
           if (!loadSavedTabs || loadSavedTabs.length === 0) {
             const { id, createdAt, updatedAt } = await postgresDB.addThread({ agentId: getAgentPGDB.id });
-            await indexedDB.addThread({ id, agentId: getAgentPGDB.id, createdAt, updatedAt});
+            await indexedDB.addNewThread({ id, agentId: getAgentPGDB.id, createdAt, updatedAt});
             const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentPGDB.id, name: null, isActive: true };
-            tabsStorage.add({ workspaceName, agentName, tab: newTab });
+            tabsStorage.add({ workspaceName, agentName, newTab });
             setIsLoading(false);
             navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
           } else {
@@ -50,14 +50,15 @@ const useHandleAgent = ({ workspaceName, agentName }: Props): { agent: Agent | n
         const loadSavedTabs = tabsStorage.load({ workspaceName, agentName });
         if (!loadSavedTabs || loadSavedTabs.length === 0) {
           const { id, createdAt, updatedAt } = await postgresDB.addThread({ agentId: getAgentIDB.id });
-          await indexedDB.addThread({ id, agentId: getAgentIDB.id, createdAt, updatedAt});
+          await indexedDB.addNewThread({ id, agentId: getAgentIDB.id, createdAt, updatedAt});
           const newTab: Tab = { id, workspaceId: workspaceIdIDB, agentId: getAgentIDB.id, name: null, isActive: true };
-          tabsStorage.add({ workspaceName, agentName, tab: newTab });
+          tabsStorage.add({ workspaceName, agentName, newTab });
           setIsLoading(false);
           navigate(`/${workspaceName}/${agentName}/${id}`, { replace: true });
         } else {
           setIsLoading(false);
-          navigate(`/${workspaceName}/${agentName}/${loadSavedTabs[0].id}`, { replace: true });
+          const activeTabId = loadSavedTabs.filter((t: Tab) => t.isActive === true)[0].id;
+          navigate(`/${workspaceName}/${agentName}/${activeTabId}`, { replace: true });
         }
         
         setAgent(getAgentIDB);

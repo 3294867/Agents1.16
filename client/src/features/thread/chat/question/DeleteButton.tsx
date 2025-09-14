@@ -12,30 +12,23 @@ interface Props {
   responseId: string;
 }
 
-const DeleteButton = memo(({
-  requestId,
-  responseId,
-}: Props) => {
+const DeleteButton = memo(({ requestId, responseId }: Props) => {
   const {
-    workspaceId,
     workspaceName,
-    agentId,
     agentName,
     threadId,
     threadBodyLength
   } = hooks.features.useThreadContext();
   
   const handleClick = async () => {
-    /** Update thread body (PostgresDB, IndexedDB) */
     await postgresDB.deleteReqRes({ threadId, requestId, responseId });
     await indexedDB.deleteReqRes({ threadId, requestId });
 
     if (threadBodyLength == 1) {
-      /** Remove thread name (IndexedDB, PostgresDB, localStorage) */
-      await indexedDB.removeThreadName({ threadId });
       await postgresDB.removeThreadName({ threadId });
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName: null});
-      dispatchEvent.threadNameUpdated({ threadId, threadName: null });
+      await indexedDB.removeThreadName({ threadId });
+      tabsStorage.updateName({ workspaceName, agentName, tabId: threadId, tabName: null});
+      dispatchEvent.threadNameUpdated({ threadName: null });
     }
   };
   

@@ -49,11 +49,11 @@ const MoveButton = memo(({
       });
       await postgresDB.updateThreadName({ threadId, threadName });
       await indexedDB.updateThreadName({ threadId, threadName });
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName });
+      tabsStorage.updateName({ workspaceName, agentName, tabId: threadId, tabName: threadName });
     } else {
       await postgresDB.updateThreadName({ threadId, threadName: null });
       await indexedDB.updateThreadName({ threadId, threadName: null });  
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName: null });
+      tabsStorage.updateName({ workspaceName, agentName, tabId: threadId, tabName: null });
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
@@ -64,7 +64,7 @@ const MoveButton = memo(({
     if (!newThread) return;
 
     /** Add new thread (IndexedDB) */
-    await indexedDB.addThread({ id: newThread.id, agentId, createdAt: newThread.createdAt, updatedAt: newThread.updatedAt });
+    await indexedDB.addNewThread({ id: newThread.id, agentId, createdAt: newThread.createdAt, updatedAt: newThread.updatedAt });
 
     /** Add reqres to the 'body' property of the new thread (IndexedDB, PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addReqRes({
@@ -86,7 +86,7 @@ const MoveButton = memo(({
     await indexedDB.updateThreadName({ threadId: newThread.id, threadName: newThreadName });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.add({ workspaceName, agentName, tab: {
+    tabsStorage.add({ workspaceName, agentName, newTab: {
       id: newThread.id, workspaceId, agentId, name: newThreadName, isActive: true
     }});
     

@@ -4,28 +4,37 @@ import { Tab } from 'src/types';
 interface Props {
   workspaceName: string;
   agentName: string;
-  threadId: string;
+  tabId: string;
 }
 
-const remove = ({ workspaceName, agentName, threadId}: Props): void => {
+const remove = ({ workspaceName, agentName, tabId }: Props) => {
   try {
     const loadSavedTabs = localStorage.getItem(`${workspaceName}_${agentName}_tabs`);
     if (loadSavedTabs) {
-      const threadIndex = JSON.parse(loadSavedTabs).findIndex((t: Tab) => t.id === threadId);
+      const parsedSavedTabs = JSON.parse(loadSavedTabs);
+      let updatedTabs: Tab[] = [];
+      
+      const activeTabId = parsedSavedTabs
+        .filter((i: Tab) => i.isActive === true)
+        .map((i: Tab) => i.id)[0];
 
-      const remainingTabs = JSON.parse(loadSavedTabs)
-        .filter((t: Tab) => t.id !== threadId)
-        .map((t: Tab, idx: number) =>
-          idx === threadIndex - 1 ? { ...t, isActive: true } : t
-        );
-
-      const updatedTabs = [...remainingTabs] as Tab[];
-
+      if (tabId === activeTabId) {
+        updatedTabs = parsedSavedTabs
+          .filter((i: Tab) => i.id !== tabId)
+          .map((i: Tab, idx: number) => idx === parsedSavedTabs.length - 2
+            ? { ...i, isActive: true }
+            : { ...i, isActive: false }
+          )
+      } else {
+        updatedTabs = parsedSavedTabs
+          .filter((i: Tab) => i.id !== tabId)
+      }
+      
       localStorage.setItem(`${workspaceName}_${agentName}_tabs`, JSON.stringify(updatedTabs));
-      dispatchEvent.tabsUpdated({ agentName });
+      dispatchEvent.tabsUpdated();
     }
-  } catch (error) {
-    console.error(`Failed to udpate tabs: `, error);
+  } catch (err) {
+    console.error(`Failed to remove tab (tabsStorage): `, err);
   }
 };
 

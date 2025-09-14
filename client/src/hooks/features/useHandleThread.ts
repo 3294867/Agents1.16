@@ -28,7 +28,7 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   
         if (!getThreadIDB || new Date(getThreadIDB.updatedAt).getTime() !== new Date(getThreadPGDBUpdatedAt).getTime()) {
           const getThreadPGDB = await postgresDB.getThread({ threadId });
-          await indexedDB.updateThread({ thread: getThreadPGDB });
+          await indexedDB.addThread({ thread: getThreadPGDB });
           setThread(getThreadPGDB);
           return;
         }
@@ -168,15 +168,13 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
   useEffect(() => {
     const handleThreadNameUpdated = (event: CustomEvent) => {
       if (!thread) return;
-      if (threadId && event.detail.threadId === threadId) {
-        setThread(prevThread => {
-          if (!prevThread) return null;
-          return {
-            ...prevThread,
-            name: event.detail.threadName
-          }
-        });
-      }
+      setThread(prevThread => {
+        if (!prevThread) return null;
+        return {
+          ...prevThread,
+          name: event.detail.threadName
+        }
+      });
     };
     window.addEventListener('threadNameUpdated', handleThreadNameUpdated as EventListener);
 

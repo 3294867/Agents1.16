@@ -18,7 +18,7 @@ const DeleteThreadDialog = memo(() => {
   const handleClick = async () => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.remove({ workspaceName, agentName, threadId });
+    tabsStorage.remove({ workspaceName, agentName, tabId: threadId });
     navigate(`/${workspaceName}/${agentName}`);
   };
 

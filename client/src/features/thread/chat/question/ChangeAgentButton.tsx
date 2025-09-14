@@ -19,7 +19,6 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
   const {
     workspaceId,
     workspaceName,
-    agentId: currentAgentId,
     agentName: currentAgentName,
     agentType: currentAgentType,
     threadId
@@ -31,7 +30,7 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
     await indexedDB.deleteReqRes({ threadId, requestId: reqres.requestId });
     await postgresDB.deleteReqRes({ threadId, requestId: reqres.requestId, responseId: reqres.responseId });
     
-    /** Create and update 'title' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
+    /** Create and update 'name' property of the thread (OpenAI, IndexedDB, PostgresDB, localStorage) */
     const firstReqRes = await indexedDB.getFirstReqRes({ threadId });
     if (firstReqRes) {
       const threadName = await openai.createThreadName({
@@ -41,11 +40,11 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
 
       await postgresDB.updateThreadName({ threadId, threadName });
       await indexedDB.updateThreadName({ threadId, threadName });
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId: currentAgentId, agentName: currentAgentName, threadId, threadName });
+      tabsStorage.updateName({ workspaceName, agentName: currentAgentName, tabId: threadId, tabName: threadName });
     } else {
       await postgresDB.updateThreadName({ threadId, threadName: null });
       await indexedDB.updateThreadName({ threadId, threadName: null });
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId: currentAgentId, agentName: currentAgentName, threadId, threadName: null });
+      tabsStorage.updateName({ workspaceName, agentName: currentAgentName, tabId: threadId, tabName: null });
     }
 
     /** Update 'positionY' property of the current thread (IndexedDB) */
@@ -66,7 +65,7 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
     const newThread = await postgresDB.addThread({ agentId: newAgentData.id });
 
     /** Add new thread (IndexedDB) */
-    await indexedDB.addThread({ ...newThread, agentId: newAgentData.id });
+    await indexedDB.addNewThread({ ...newThread, agentId: newAgentData.id });
 
     /** Add reqres to the 'body' property of the new thread (IndexedDB, PostgresDB) */
     const { requestId: newRequestId, responseId: newResponseId } = await postgresDB.addReqRes({
@@ -82,7 +81,7 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
     }
     await indexedDB.addReqRes({ threadId: newThread.id, reqres: newReqRes });
 
-    /** Create and update 'title' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
+    /** Create and update 'name' property of the new thread (OpenAI, PostgresDB, IndexedDB) */
     const newThreadName = await openai.createThreadName({
       question: reqres.requestBody,
       answer: reqres.responseBody
@@ -97,7 +96,7 @@ const ChangeAgentButton = memo(({ reqres, isEditing }: Props) => {
     });
 
     /** Add tab for the new thread (localStorage) */
-    tabsStorage.add({ workspaceName, agentName: newAgentData.name, tab: {
+    tabsStorage.add({ workspaceName, agentName: newAgentData.name, newTab: {
       id: newThread.id, workspaceId, agentId: newAgentData.id, name: newThreadName, isActive: true
     }});
     

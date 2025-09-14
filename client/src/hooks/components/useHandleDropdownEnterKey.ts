@@ -23,7 +23,7 @@ const useHandleDropdownEnterKey = ({ dropdownRef, isOpen, setIsOpen }: Props): v
   const handleDeleteThread = async ({ workspaceName, threadId, agentName }: { workspaceName: string, threadId: string, agentName: string}) => {
     await postgresDB.deleteThread({ threadId });
     await indexedDB.deleteThread({ threadId });
-    tabsStorage.remove({ workspaceName, agentName, threadId });
+    tabsStorage.remove({ workspaceName, agentName, tabId: threadId });
     
     navigate(`/${workspaceName}/${agentName}`);
   };

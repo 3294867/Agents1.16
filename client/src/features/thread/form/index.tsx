@@ -13,7 +13,6 @@ import styles from './Form.module.css';
 
 const Form = memo(() => {
   const {
-    workspaceId,
     workspaceName,
     agentId,
     agentName,
@@ -43,7 +42,7 @@ const Form = memo(() => {
     setInput('');
 
     if (threadBodyLength === 0) {
-      /** Update thread title (OpenAI, PostgresDB, IndexedDB) */
+      /** Update 'name' property of the thread (OpenAI, PostgresDB, IndexedDB) */
       const threadName = await openai.createThreadName({
         question: input,
         answer: responseBody
@@ -52,7 +51,7 @@ const Form = memo(() => {
       await indexedDB.updateThreadName({ threadId, threadName });
 
       /** Update tabs (localStorage) */
-      tabsStorage.updateActive({ workspaceId, workspaceName, agentId, agentName, threadId, threadName });
+      tabsStorage.updateName({ workspaceName, agentName, tabId: threadId, tabName: threadName });
     }
 
     /** Update thread body (IndexedDB) */

@@ -1,11 +1,10 @@
 interface Props {
-  threadId: string;
   threadName: string | null;
 }
 
-const threadNameUpdated =  ({ threadId, threadName }: Props) => {
+const threadNameUpdated = ({ threadName }: Props) => {
   const event = new CustomEvent('threadNameUpdated', {
-    detail: { threadId, threadName }
+    detail: { threadName }
   });
   window.dispatchEvent(event);
 };
