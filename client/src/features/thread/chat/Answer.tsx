@@ -14,12 +14,15 @@ interface AnswerProps {
 
 const Answer = memo(({ requestId, responseId, responseBody, inferredAgentType, isNew }: AnswerProps) => {
   const { threadId } = hooks.features.useThreadContext();
+  const { progressBarLength, setProgressBarLength } = hooks.features.useChatContext();
   const copy = hooks.features.useHandleAnimatedParagraph({
     threadId,
     requestId,
     responseId,
     responseBody,
-    inferredAgentType
+    inferredAgentType,
+    progressBarLength,
+    setProgressBarLength
   });
   
   return isNew

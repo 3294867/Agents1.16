@@ -1,13 +1,12 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 interface Props {
   input: string;
   isEditing: boolean;
 }
 
-const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.RefObject<HTMLTextAreaElement | null>, progressBarLength: string } => {
+const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.RefObject<HTMLTextAreaElement | null> } => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const [progressBarLength, setProgressBarLength] = useState('0%');
 
   /** Auto-resize height of the textarea (UI) */
   useEffect(() => {
@@ -17,7 +16,7 @@ const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.Re
     }
   }, [input, isEditing]);
 
-  /** Focus textarea on edit question */
+  /** Focus textarea on edit question (UI) */
   useEffect(() => {
     const handleFocusTextArea = (event: CustomEvent) => {
       const textAreaElement = document.getElementById(`textarea_${event.detail.requestId}`) as HTMLTextAreaElement | null;
@@ -32,16 +31,7 @@ const useHandleQuestion = ({ input, isEditing }: Props): { textareaRef: React.Re
     return () => window.removeEventListener('editingQuestion', handleFocusTextArea as EventListener);
   },[])
 
-  /** Set length of the progress bar */
-  useEffect(() => {
-    const handleProgressBarLengthUpdated = (event: CustomEvent) => {
-      setProgressBarLength(`${event.detail.length * 100}%`);
-    };
-    window.addEventListener('progressBarLengthUpdated', handleProgressBarLengthUpdated as EventListener);
-    return () => window.removeEventListener('progressBarLengthUpdated', handleProgressBarLengthUpdated as EventListener);
-  },[progressBarLength]);
-
-  return { textareaRef, progressBarLength };
+  return { textareaRef };
 };
 
 export default useHandleQuestion;

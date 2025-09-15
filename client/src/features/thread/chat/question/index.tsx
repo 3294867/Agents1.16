@@ -16,7 +16,8 @@ const Question = memo(({ reqres }: Props) => {
   const { requestId, requestBody, responseId, responseBody, inferredAgentType, isNew } = reqres;
   const [input, setInput] = useState(requestBody);
   const [isEditing, setIsEditing] = useState(false);
-  const { textareaRef, progressBarLength } = hooks.features.useHandleQuestion({ input, isEditing });
+  const { progressBarLength } = hooks.features.useChatContext();
+  const { textareaRef } = hooks.features.useHandleQuestion({ input, isEditing });
 
   return (
     <div className={styles.container}>
@@ -66,7 +67,7 @@ const Question = memo(({ reqres }: Props) => {
             />
           </div>
         </div>
-        {isNew && <div style={{ width: progressBarLength }} className={styles.progressBar} />}
+        {isNew && <div style={{ width: `${progressBarLength * 100}%` }} className={styles.progressBar} />}
       </div>
     </div>
   );

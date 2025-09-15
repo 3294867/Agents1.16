@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import indexedDB from 'src/storage/indexedDB';
-import progressBarLength from 'src/storage/localStorage/progressBarLength';
 import postgresDB from 'src/storage/postgresDB';
 import { AgentType } from 'src/types';
 
@@ -10,10 +9,12 @@ interface Props {
   responseId: string;
   responseBody: string;
   inferredAgentType: AgentType;
+  progressBarLength: number;
+  setProgressBarLength: (progressBarLength: number) => void;
 }
 
 /** Handles animated paragraph (UI) */
-const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseBody, inferredAgentType }: Props): string => {
+const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseBody, inferredAgentType, setProgressBarLength }: Props): string => {
   const [copy, setCopy] = useState('');
   const [isPaused, setIsPaused] = useState(false);
 
@@ -28,11 +29,11 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
           if (i < responseBody.length) {
             setCopy(responseBody.slice(0, i + 1));
             const adjustment = responseBody.length < 400 ? .3 : 0
-            progressBarLength.update({ length: String(i/responseBody.length + adjustment) });
+            setProgressBarLength(i/responseBody.length + adjustment);
             i++;
           } else {
             clearInterval(timer);
-            progressBarLength.update({ length: '0' });
+            setProgressBarLength(0);
             resolve();
           }
         }, 12);
@@ -54,7 +55,7 @@ const useHandleAnimatedParagraph = ({ threadId, requestId, responseId, responseB
       if (event.detail.requestId === requestId) {
         const update = async () => {
           setIsPaused(true);
-          progressBarLength.update({ length: '0' });
+          setProgressBarLength(0);
           await postgresDB.updateResponseBody({
             responseId: event.detail.responseId,
             responseBody: copy

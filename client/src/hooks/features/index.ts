@@ -14,6 +14,7 @@ import useHandleAgentsDropdown from './useHandleAgentsDropdown';
 import useWorkspaceContext from './useWorkspaceContext';
 import useAgentContext from './useAgentContext';
 import useThreadContext from './useThreadContext';
+import useChatContext from './useChatContext';
 
 const features = {
   useWorkspaceContext,
@@ -23,6 +24,7 @@ const features = {
   useHandleAddAgentDialog,
   useThreadContext,
   useHandleThread,
+  useChatContext,
   useHandleTabs,
   useHandleBreakpoint,
   useHandleAgentLayout,
