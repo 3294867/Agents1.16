@@ -20,7 +20,7 @@ const getAvailableAgentByType = async ({ agentType }: Props): Promise<AddAgent> 
     const data: { message: string, data: AddAgent | null } = await response.json();
     if (!data.data) throw new Error(data.message);
     if (Object.keys(data.data).length === 0) {
-      throw new Error(`Incorrect format od available agent. Expected non-empty '{}`);
+      throw new Error(`Incorrect format od available agent. Expected non-empty '{}'`);
     }
     
     return data.data as AddAgent;

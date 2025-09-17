@@ -5,12 +5,12 @@ import constants from 'src/constants';
 import hooks from 'src/hooks';
 import styles from './SideNav.module.css';
 
-const SideNavigation = memo(() => {
+const SideNav = memo(() => {
   const { threadBody } = hooks.features.useThreadContext();
   const { isVisible, chatWidth } = hooks.features.useHandleSideNav({ threadBodyLength: threadBody.length });
 
-  const handleScrollToQuestion = (id: string) => {
-    const question = document.getElementById(`question_${id}`);
+  const handleScrollToQuestion = ({ requestId }: { requestId: string }) => {
+    const question = document.getElementById(`request_${requestId}`);
     if (!question) return;
 
     const rect = question.getBoundingClientRect();
@@ -22,7 +22,7 @@ const SideNavigation = memo(() => {
       behavior: 'smooth'
     });
   };
-  
+
   return isVisible && (
     <motion.div
       initial={{ opacity: 0 }}
@@ -36,7 +36,7 @@ const SideNavigation = memo(() => {
           variant='dropdown'
           size='sm'
           key={i.requestId}
-          onClick={() => handleScrollToQuestion(i.requestId)}
+          onClick={() => handleScrollToQuestion({ requestId: i.requestId })}
         >
           <span className={styles.questionText}>
             {i.requestBody}
@@ -47,4 +47,4 @@ const SideNavigation = memo(() => {
   );
 });
 
-export default SideNavigation;
+export default SideNav;

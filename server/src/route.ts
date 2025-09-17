@@ -11,8 +11,10 @@ router.post("/get-workspaces", controllers.getWorkspaces),
 router.post("/get-workspace-id", controllers.getWorkspaceId)
 router.post("/get-agent", controllers.getAgent);
 router.post("/get-agent-id", controllers.getAgentId);
-router.post("/add-agent", controllers.addAgent);
 router.post("/get-agent-names", controllers.getAgentNames);
+router.post("/get-agent-updated-at", controllers.getAgentUpdatedAt);
+router.post("/get-agent-by-type", controllers.getAgentByType);
+router.post("/add-agent", controllers.addAgent);
 router.get("/get-available-agents", controllers.getAvailableAgents);
 router.post("/get-available-agent-by-type", controllers.getAvailableAgentByType)
 router.post("/get-thread", controllers.getThread);
@@ -31,7 +33,6 @@ router.post("/update-thread-is-bookmarked", controllers.updateThreadIsBookmarked
 router.post("/create-response", controllers.createResponse);
 router.post("/infer-agent-type", controllers.inferAgentType);
 router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
-router.post("/get-agent-updated-at", controllers.getAgentUpdatedAt);
 router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);
 
 export default router;

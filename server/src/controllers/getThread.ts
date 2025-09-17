@@ -22,7 +22,8 @@ const getThread = async (req: Request, res: Response): Promise<void> => {
     if (getThread.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to fetch thread" });
 
     const getAgentId = await pool.query(`
-      SELECT agent_id FROM agent_thread
+      SELECT agent_id
+      FROM agent_thread
       WHERE thread_id = $1::uuid;
     `, [ threadId ]);
     if (getAgentId.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get agent id" });

@@ -5,12 +5,14 @@ interface Props {
   agentType: AgentType;
 }
 
-const getAgentByType = async ({ agentType }: Props): Promise<Agent | undefined> => {
+const getAgentByType = async ({ agentType }: Props): Promise<Agent | null> => {
   try {
     const agent = await db.agents.get({type: agentType});
-    return agent;
-  } catch (error) {
-    throw new Error(`Failed to fetch agent (IndexedDB): ${error instanceof Error ? error.name : 'Unknown error'}`);
+    if (agent) return agent;
+    return null;
+  } catch (err) {
+    console.error(`Failed to fetch agent (IndexedDB): ${err}`);
+    return null;
   }
 };
 

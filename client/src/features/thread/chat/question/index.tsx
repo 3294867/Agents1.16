@@ -39,7 +39,7 @@ const Question = memo(({ reqres }: Props) => {
           inferredAgentType={inferredAgentType}
         />
       </div>
-      <div id={`question_${requestId}`} className={styles.questionCard + (isNew ? ` ${styles.isNew}` : '')}>
+      <div id={`request_${requestId}`} className={styles.questionCard + (isNew ? ` ${styles.isNew}` : '')}>
         <div className={styles.inputRow + (isNew ? ` ${styles.isNew}` : '')}>
           <textarea
             id={`textarea_${requestId}`}

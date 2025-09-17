@@ -14,7 +14,11 @@ const addPublicThread = async ({ threadId }: Props): Promise<string | null> => {
     return "Incorrect format of threadId. Expected UUID_V4";
   }
 
-  const selectedThreadId = await pool.query(`SELECT id FROM threads WHERE id = $1::uuid;`);
+  const selectedThreadId = await pool.query(`
+    SELECT id
+    FROM threads
+    WHERE id = $1::uuid;
+  `, [ threadId ]);
   if (selectedThreadId.rows.length === 0) return "Thread does not exist";
 
   return null;

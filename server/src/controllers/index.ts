@@ -28,6 +28,7 @@ import getWorkspaces from './getWorkspaces';
 import getAgentUpdatedAt from './getAgentUpdatedAt';
 import getAgent from './getAgent';
 import getAgentNames from './getAgentNames';
+import getAgentByType from './getAgentByType';
 
 const controllers = {
   addAgent,
@@ -39,7 +40,10 @@ const controllers = {
   deleteReqRes,
   deleteThread,
   duplicateThread,
+  getAgent,
+  getAgentNames,
   getAgentId,
+  getAgentByType,
   getAgentUpdatedAt,
   getAvailableAgentByType,
   getAvailableAgents,
@@ -57,9 +61,7 @@ const controllers = {
   updateRequestBody,
   updateResponseBody,
   updateThreadIsBookmarked,
-  updateThreadName,
-  getAgent,
-  getAgentNames
+  updateThreadName
 };
 
 export default controllers;

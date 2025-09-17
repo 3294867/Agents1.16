@@ -5,7 +5,12 @@ interface Props {
   threadBodyLength: number;
 }
 
-const useHandleSideNav = ({ threadBodyLength }: Props): { isVisible: boolean, chatWidth: number } => {
+interface Return {
+  isVisible: boolean;
+  chatWidth: number;
+}
+
+const useHandleSideNav = ({ threadBodyLength }: Props): Return => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const [chatWidth, setChatWidth] = useState<number>(0);
   
@@ -18,8 +23,10 @@ const useHandleSideNav = ({ threadBodyLength }: Props): { isVisible: boolean, ch
       const chatHeight = chatElement.offsetHeight;
       const chatWidth = chatElement.offsetWidth;
       
-      if (threadBodyLength >= constants.queriesMinNumber && chatHeight > viewportHeight) {
+      if (threadBodyLength >= constants.reqresMinNumber && chatHeight > viewportHeight) {
         setIsVisible(true);
+      } else {
+        setIsVisible(false);
       }
 
       setChatWidth(chatWidth);

@@ -9,9 +9,7 @@ const addPublicThread = async ({ threadId }: Props): Promise<{ agentType: AgentT
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/add-public-thread`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        threadId
-      })
+      body: JSON.stringify({ threadId })
     })
     
     if (!response.ok) {

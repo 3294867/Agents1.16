@@ -22,6 +22,7 @@ import getWorkspaceId from 'src/storage/postgresDB/getWorkspaceId';
 import getAgent from 'src/storage/postgresDB/getAgent';
 import getAgentNames from 'src/storage/postgresDB/getAgentNames';
 import updateThreadIsBookmarked from 'src/storage/postgresDB/updateIsBookmarked';
+import getAgentByType from './getAgentByType';
 
 const postgresDB = {
   auth,
@@ -30,6 +31,9 @@ const postgresDB = {
   getWorkspacesUpdatedAt,
   getAgent,
   getAgentId,
+  getAgentUpdatedAt,
+  getAgentNames,
+  getAgentByType,
   addAgent,
   getAvailableAgents,
   getAvailableAgentByType,
@@ -45,9 +49,7 @@ const postgresDB = {
   updateThreadName,
   removeThreadName,
   updateThreadIsBookmarked,
-  getThreadUpdatedAt,
-  getAgentUpdatedAt,
-  getAgentNames
+  getThreadUpdatedAt
 };
 
 export default postgresDB;

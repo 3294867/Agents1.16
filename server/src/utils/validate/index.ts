@@ -26,6 +26,7 @@ import updateThreadName from './updateThreadName';
 import getAgent from './getAgent';
 import getAgentNames from './getAgentNames';
 import getAvailableAgents from './getAvailableAgents';
+import getAgentByType from './getAgentByType';
 
 const validate = {
   addAgent,
@@ -54,6 +55,7 @@ const validate = {
   updateThreadIsBookmarked,
   updateThreadName,
   getAgent,
+  getAgentByType,
   getAgentNames,
   getAvailableAgents
 };

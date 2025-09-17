@@ -60,7 +60,7 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     const rootAgentIds: string[] = getRootAgentIds.rows.map((i: { agent_id: string }) => i.agent_id);
 
     const getRootAgent = await pool.query(`
-      SELECT id, name
+      SELECT id
       FROM agents
       WHERE id = ANY($1::uuid[]) AND type = $2::text;
     `, [ rootAgentIds, getAgentType.rows[0].type ]);
@@ -186,8 +186,8 @@ const addPublicThread = async (req: Request, res: Response): Promise<void> => {
     res.status(201).json({
       message: "Public thread added",
       data: {
-        agentName: getRootAgent.rows[0].name,
-        threadId: addRootThread.rows[0].id,
+        agentType: getAgentType.rows[0].type,
+        threadId: addRootThread.rows[0].id
       },
     });
   } catch (error) {

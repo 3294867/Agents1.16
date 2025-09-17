@@ -4,8 +4,8 @@ import Error from 'src/components/error';
 import ThreadContext from './ThreadContext';
 import Header from './header';
 import Chat from './chat';
+import SideNav from './SideNav';
 import Form from './form';
-import SideNavigation from './SideNav';
 import Icons from 'src/assets/icons';
 import { AgentModel, AgentType } from 'src/types';
 import styles from './Thread.module.css'
@@ -56,7 +56,7 @@ const Thread = () => {
       <ThreadContext.Provider value={threadContext}>
         <Header />
         <Chat />
-        <SideNavigation />
+        <SideNav />
         <Form />
       </ThreadContext.Provider>
     </main>
