@@ -6,11 +6,11 @@
 .popoverContent {
   min-width: 10rem;
   position: absolute;
-  z-index: 1000;
+  z-index: 1001;
   display: flex;
   flex-direction: column;
-  padding: 1rem 1rem;
-  gap: 1rem;
+  padding: 0.25rem 0.25rem;
+  gap: 0.25rem;
   background-color: rgba(0, 0, 0);
   color: var(--text-primary);
   border: 1px solid var(--border);
@@ -36,8 +36,8 @@
 .popoverClose {
   position: absolute;
   cursor: pointer;
-  top: 1.25rem;
-  right: 1.25rem;
+  top: 0.5rem;
+  right: 0.5rem;
   border-radius: 2px;
   transition: color 0.3s ease;
 }

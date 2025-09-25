@@ -39,7 +39,7 @@ const Workspace = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.workspaceContainer}>
       <WorkspaceContext.Provider value={workspaceContext}>
         <Sidebar />
       </WorkspaceContext.Provider>
@@ -52,7 +52,7 @@ export default Workspace;
 
 const Loading = () => {
   return (
-    <div className={styles.container}>
+    <div className={styles.workspaceContainer}>
       <aside className={styles.sidebar}>
         <div className={styles.topSection}>
           <Button variant='outline' size='icon' />

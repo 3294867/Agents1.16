@@ -57,5 +57,6 @@ const Content: FC<Props> = memo(({
     </div>
   );
 });
+Content.displayName = 'Popover.Content';
 
 export default Content;

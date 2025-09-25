@@ -1,10 +1,12 @@
 import { memo } from 'react';
 import { Link } from 'react-router-dom';
-import AddWorkspaceDialog from './AddWorkspaceDialog';
-import Button from 'src/components/button';
-import Tooltip from 'src/components/tooltip';
-import styles from './WorkspacesMenu.module.css';
 import hooks from 'src/hooks';
+import Button from 'src/components/button';
+import Popover from 'src/components/popover';
+import AddWorkspaceDialog from './AddWorkspaceDialog';
+import Paragraph from 'src/components/paragraph';
+import Icons from 'src/assets/icons';
+import styles from './WorkspacesMenu.module.css';
 
 const WorkspacesMenu = memo(() => {
   const {
@@ -12,12 +14,12 @@ const WorkspacesMenu = memo(() => {
     workspaceName: currentWorkspaceName,
     workspaces
   } = hooks.features.useWorkspaceContext();
-  
+
   return (
-    <div className={styles.container}>
+    <div className={styles.workspacesMenuContainer}>
       {workspaces.map(w => (
-        <Tooltip.Root key={w.id}>
-          <Tooltip.Trigger asChild>
+        <Popover.Root key={w.id}>
+          <Popover.Trigger asChild>
             <Link prefetch='intent' to={`/${w.name}`}> 
               <Button
                 variant='outline'
@@ -27,15 +29,26 @@ const WorkspacesMenu = memo(() => {
                 {w.name[0].toUpperCase()}
               </Button>
             </Link>
-          </Tooltip.Trigger>
-          <Tooltip.Content side='right' sideOffset={12}>
-            {w.name}
-          </Tooltip.Content>
-        </Tooltip.Root>
+          </Popover.Trigger>
+          <Popover.Content align='start' side='right' sideOffset={12}>
+            <Paragraph style={{ marginTop: '0.25rem', marginLeft: '0.75rem'}}>
+              {w.name[0].toUpperCase() + w.name.slice(1, w.name.length)}
+            </Paragraph>
+            <Button
+              role='menuitem'
+              variant='dropdown'
+              style={{ width: '100%' }}
+            >
+              <Icons.Users style={{ marginRight: '0.5rem' }}/>
+              Members
+            </Button>
+          </Popover.Content>
+        </Popover.Root>
       ))}
       <AddWorkspaceDialog userId={userId} />
     </div>
   );
 });
+WorkspacesMenu.displayName = 'WorkspacesMenu';
 
 export default WorkspacesMenu;

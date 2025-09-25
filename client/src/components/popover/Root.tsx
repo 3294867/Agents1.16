@@ -1,4 +1,4 @@
-import { FC, FocusEvent, memo, ReactNode, useRef, useState } from 'react';
+import { FC, memo, MouseEvent, ReactNode, useRef, useState } from 'react';
 import PopoverContext from './PopoverContext';
 import styles from './Popover.module.css';
 
@@ -7,36 +7,36 @@ interface Props {
 }
 
 const Root: FC<Props> = memo(({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const rootRef = useRef<HTMLElement | null>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
   const contentRef = useRef<HTMLDivElement | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleBlur = (e: FocusEvent<HTMLSpanElement>) => {
-    const relatedTarget = e.relatedTarget as HTMLElement | null;
-    if (relatedTarget && contentRef.current?.contains(relatedTarget)) {
-      return;
-    }
-
-    if (relatedTarget) {
-      const isPreventClose = relatedTarget.hasAttribute('data-prevent-popover-close') ||
-        !!relatedTarget.closest('[data-prevent-popover-close]');
-      if (isPreventClose) return;
-    }
-
+  const handleMouseLeave = (e: MouseEvent<HTMLElement>) => {
+    const init = () => {
+      const nextElement = e.relatedTarget as HTMLElement | null;
+      if (!rootRef.current?.contains(nextElement)) {
+        setIsOpen(false);
+      }
+    };
     setTimeout(() => {
-      setIsOpen(false);
-    }, 100);
+      init();
+    }, 200);
+    
   };
 
   return (
     <PopoverContext.Provider value={{
+      rootRef,
       triggerRef,
       contentRef,
       isOpen,
       setIsOpen,
     }}>
       <span
-        onBlur={(e: FocusEvent<HTMLSpanElement>) => handleBlur(e)}
+        onMouseEnter={() => setIsOpen(true)}
+        onMouseLeave={(e: MouseEvent<HTMLElement>) => handleMouseLeave(e)}
+        ref={rootRef}
         className={styles.popoverContainer}
       >
         {children}
@@ -44,5 +44,6 @@ const Root: FC<Props> = memo(({ children }) => {
     </PopoverContext.Provider>
   );
 });
+Root.displayName = 'PopoverRoot';
 
 export default Root;

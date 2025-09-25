@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo  } from 'react';
 import hooks from 'src/hooks';
 import WorkspacesMenu from './workspaces-menu';
 import ThemeToggle from 'src/features/workspace/sidebar/ThemeToggle';
@@ -10,9 +10,9 @@ const Sidebar = memo(() => {
   const { isMobile } = hooks.features.useWorkspaceContext();
 
   return !isMobile && (
-    <aside className={styles.container}>
+    <aside className={styles.sidebarContainer}>
       <WorkspacesMenu />
-      <div className={styles.bottomSection}>
+      <div className={styles.sidebarContainerBottomSection}>
         <ThemeToggle />
         <NotificationsPopover />
         <Account />
@@ -20,5 +20,6 @@ const Sidebar = memo(() => {
     </aside>
   );
 });
+Sidebar.displayName = 'Sidebar';
 
 export default Sidebar;

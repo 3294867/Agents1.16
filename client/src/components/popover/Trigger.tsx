@@ -7,12 +7,10 @@ interface Props {
 }
 
 const Trigger: FC<Props> = memo(({ asChild, children }) => {
-  const { triggerRef, setIsOpen } = hooks.components.usePopoverContext();
+  const { triggerRef } = hooks.components.usePopoverContext();
 
   const props = {
     ref: triggerRef,
-    onClick: () => setIsOpen(true),
-    onFocus: () => setIsOpen(true),
     'aria-describedby': undefined as string | undefined,
     tabIndex: 0,
   };
@@ -21,7 +19,12 @@ const Trigger: FC<Props> = memo(({ asChild, children }) => {
     return cloneElement(children, Object.assign({}, props, children.props));
   }
 
-  return <span {...props}>{children}</span>;
+  return (
+    <span {...props}>
+      {children}
+    </span>
+  )
 });
+Trigger.displayName = 'PopoverTrigger';
 
 export default Trigger;

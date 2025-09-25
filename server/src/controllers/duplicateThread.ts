@@ -38,8 +38,9 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
       return utils.sendResponse({ res, status: 404, message: "Failed to get agent type" });
     }
 
-    /** Get agent id from the user */
+    /** Get agent id, name from the user */
     let agentId: string;
+    let agentName: string;
     const getAgentIds = await pool.query(`
       SELECT agent_id
       FROM user_agent
@@ -51,15 +52,16 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     }
     const agentIds: string[] = getAgentIds.rows.map((i: { agent_id: string}) => i.agent_id);
     
-    const getAgentId = await pool.query(`
-      SELECT id
+    const getAgentData = await pool.query(`
+      SELECT id, name
       FROM agents
       WHERE id = ANY($1::uuid[]) AND type = $2::text;
     `, [ agentIds, getRootAgentType.rows[0].type ]);
 
     /** Use existing agent id, if agent exists */
-    if (getAgentId.rows.length === 1) {
-      agentId = getAgentId.rows[0].id;
+    if (getAgentData.rows.length === 1) {
+      agentId = getAgentData.rows[0].id;
+      agentName = getAgentData.rows[0].name;
     /** Insert new agent, if does not exist */
     } else {
       const getRootUserId = await pool.query(`
@@ -112,7 +114,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
           $6::float,
           $7::boolean
         )
-        RETURNING id;
+        RETURNING id, name;
       `, [
         getRootAgent.rows[0].name,
         getRootAgent.rows[0].type,
@@ -129,6 +131,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
 
       /** Assign new agent id */
       agentId = addAgent.rows[0].id;
+      agentName = addAgent.rows[0].name;
     }
 
     /** Duplicate thread */
@@ -153,7 +156,7 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
         $2::jsonb,
         TRUE
       )
-      RETURNING id;
+      RETURNING *;
     `, [
       getPublicThread.rows[0].name,
       getPublicThread.rows[0].body,
@@ -176,9 +179,24 @@ const duplicateThread = async (req: Request, res: Response): Promise<void> => {
     
     await pool.query(`COMMIT`);
 
+    const duplicatedThread = {
+      id: duplicateThread.rows[0].id,
+      name: duplicateThread.rows[0].name,
+      body: duplicateThread.rows[0].body,
+      isBookmarked: duplicateThread.rows[0].is_bookmarked,
+      isShared: duplicateThread.rows[0].is_shared,
+      isActive: false,
+      agentId,
+      createdAt: duplicateThread.rows[0].created_at,
+      updatedAt: duplicateThread.rows[0].updated_at
+    }
+
     res.status(200).json({
       message: "Thread duplicated",
-      data: duplicateThread.rows[0].id
+      data: {
+        thread: duplicatedThread,
+        agentName
+      }
     });
   } catch (error) {
     try {

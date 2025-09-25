@@ -25,7 +25,13 @@ const Thread = () => {
   const { userId, workspaceId, workspaceName, agentId, agentName, agentType, agentModel, isMobile }
     = useOutletContext<OutletContext>();
   const { threadId } = useParams();
-  const { thread, isLoading, error } = hooks.features.useHandleThread({ threadId });
+  const { thread, isLoading, error } = hooks.features.useHandleThread({
+    workspaceId,
+    workspaceName,
+    agentId,
+    agentName,
+    threadId
+  });
 
   if (isLoading) return <Loading />;
   if (error || !workspaceName || !agentName || !threadId || !thread) {

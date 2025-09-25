@@ -45,7 +45,7 @@ const Agent = () => {
   };
   
   return (
-    <div className={styles.container}>
+    <div className={styles.agentContainer}>
       <AgentContext.Provider value={agentContext}>
         <header className={styles.header}>
           <div className={styles.wrapper}>

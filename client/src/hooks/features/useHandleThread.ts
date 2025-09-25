@@ -4,19 +4,29 @@ import indexedDB from 'src/storage/indexedDB';
 import { ReqRes, Thread } from 'src/types';
 
 interface Props {
+  workspaceId: string;
+  workspaceName: string;
+  agentId: string;
+  agentName: string;
   threadId: string | undefined;
 }
 
-const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: string | null, isLoading: boolean } => {
-  const [ thread, setThread ] = useState<Thread | null>(null);
-  const [ error, setError ] = useState<string | null>(null);
-  const [ isLoading, setIsLoading ] = useState<boolean>(true);
-  const [ newRequestId, setNewRequestId ] = useState<string | null>(null);
+interface Return {
+  thread: Thread | null;
+  error: string | null;
+  isLoading: boolean;
+}
+
+const useHandleThread = ({ workspaceId, workspaceName, agentId, agentName, threadId }: Props): Return => {
+  const [thread, setThread] = useState<Thread | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [newRequestId, setNewRequestId] = useState<string | null>(null);
   
   /** Get thread */
   useEffect(() => {
-    if (!threadId) {
-      setError('All props are required: threadId');
+    if (!workspaceId || !workspaceName || !agentId || !agentName || !threadId) {
+      setError('All props are required: workspaceId, workspaceName, agentId, agentName, threadId');
       setIsLoading(false);
       return;
     }
@@ -33,14 +43,14 @@ const useHandleThread = ({ threadId }: Props): { thread: Thread | null, error: s
           return;
         }
         setThread(getThreadIDB);
-      } catch (error) {
-        setError(`Failed to get thread: ${error}`);
+      } catch (err) {
+        setError(`Failed to get thread: ${err}`);
       } finally {
         setIsLoading(false);
       }
     };
     init();
-  }, [threadId]);
+  }, [workspaceId, workspaceName, agentId, agentName, threadId]);
 
   /** Scroll to saved 'positionY' value of the thread (UI) */
   useEffect(() => {
