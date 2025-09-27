@@ -51,7 +51,7 @@ const Content: FC<Props> = memo(({
         className={styles.popoverClose}
         aria-label='Close popover'
       >
-        <Icons.Close />
+        <Icons.Close style={{ width: '0.875rem', height: '0.875rem' }} />
       </button>
       {children}
     </div>

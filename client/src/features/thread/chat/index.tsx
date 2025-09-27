@@ -2,8 +2,8 @@ import { memo, useState } from 'react';
 import hooks from 'src/hooks';
 import Answer from './Answer';
 import Question from './question';
-import styles from './Chat.module.css';
 import ChatContext from './ChatContext';
+import styles from './Chat.module.css';
 
 const Chat = memo(() => {
   const [progressBarLength, setProgressBarLength] = useState(0);

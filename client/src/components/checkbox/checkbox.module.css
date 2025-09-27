@@ -1,0 +1,25 @@
+.checkboxContainer {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border);
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.checkboxContainer[data-state='checked'],
+.checkboxContainer[data-state='indeterminate'] {
+  background-color: black;
+  border-color: white;
+}
+
+.icon {
+  width: 0.75rem;
+  height: 0.75rem;
+  color: white;
+}

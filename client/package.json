@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.11",
-    "@types/lodash": "^4.17.20",
+    "@tanstack/react-table": "^8.21.3",
     "cmdk": "^1.1.1",
     "dexie": "^4.2.0",
     "dexie-react-hooks": "^4.2.0",
@@ -28,6 +28,7 @@
     "@types/node": "^22.13.2",
     "@types/react": "^19.0.8",
     "@types/react-dom": "^19.0.3",
+    "@types/react-table": "^7.7.20",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.19.0",

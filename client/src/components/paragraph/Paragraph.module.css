@@ -1,6 +1,10 @@
-.base {
+.root {
   font-family: var(--font-poppins);
   color: var(--text-primary);
+}
+
+.root.isMuted {
+  color: var(--text-tertiary);
 }
 
 .thin {
@@ -11,16 +15,17 @@
   font-weight: 600;
 }
 
+.base {
+  font-size: 1rem;
+  line-height: 1;
+}
+
 .sm {
   font-size: 0.75rem;
   line-height: calc(1 / 0.75);
 }
 
-.base {
-  font-size: 0.875rem;
-  line-height: calc(1.25 / 0.875);
-}
-
-.base.isMuted {
-  color: var(--text-tertiary);
+.xs {
+  font-size: 0.625rem;
+  line-height: calc(1 / 0.625);
 }

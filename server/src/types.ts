@@ -1,5 +1,11 @@
 type UserRole = 'admin' | 'editor' | 'viewer' 
 
+type WorkspaceMember = {
+  memberId: string;
+  memberName: string;
+  memberRole: 'admin' | 'editor' | 'viewer';
+}
+
 interface WorkspacePG {
   id: string;
   name: string;
@@ -96,6 +102,7 @@ interface ThreadFE {
 
 export type {
   UserRole,
+  WorkspaceMember,
   WorkspacePG,
   WorkspaceFE,
   AgentType,

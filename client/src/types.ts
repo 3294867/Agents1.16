@@ -1,4 +1,10 @@
-type UserRole = 'admin' | 'editor' | 'viewer' 
+type UserRole = 'admin' | 'editor' | 'viewer'
+
+type WorkspaceMember = {
+  memberId: string;
+  memberName: string;
+  memberRole: 'admin' | 'editor' | 'viewer';
+}
 
 interface Workspace {
   id: string;
@@ -69,6 +75,7 @@ interface Tab {
 
 export type {
   UserRole,
+  WorkspaceMember,
   Workspace,
   AgentType,
   AgentModel,

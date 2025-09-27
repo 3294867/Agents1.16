@@ -15,6 +15,7 @@ import useWorkspaceContext from './useWorkspaceContext';
 import useAgentContext from './useAgentContext';
 import useThreadContext from './useThreadContext';
 import useChatContext from './useChatContext';
+import useHandleMembersTable from './useHandleMembersTable';
 
 const features = {
   useWorkspaceContext,
@@ -33,7 +34,8 @@ const features = {
   useHandleAnimatedParagraph,
   useHandleQuestion,
   useHandleThreadPostionY,
-  useHandleAgentsDropdown
+  useHandleAgentsDropdown,
+  useHandleMembersTable
 };
 
 export default features;

@@ -29,6 +29,7 @@ import getAgentUpdatedAt from './getAgentUpdatedAt';
 import getAgent from './getAgent';
 import getAgentNames from './getAgentNames';
 import getAgentByType from './getAgentByType';
+import getWorkspaceMembers from './getWorkspaceMembers';
 
 const controllers = {
   addAgent,
@@ -61,7 +62,8 @@ const controllers = {
   updateRequestBody,
   updateResponseBody,
   updateThreadIsBookmarked,
-  updateThreadName
+  updateThreadName,
+  getWorkspaceMembers
 };
 
 export default controllers;

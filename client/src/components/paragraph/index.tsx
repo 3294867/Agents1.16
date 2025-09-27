@@ -4,7 +4,7 @@ import styles from './Paragraph.module.css';
 
 interface Props extends HTMLAttributes<HTMLParagraphElement> {
   variant?: 'thin' | 'thick';
-  size?: 'sm' | 'base';
+  size?: 'xs' | 'sm' | 'base';
   isMuted?: boolean;
   role?: string;
 }
@@ -16,9 +16,9 @@ const Paragraph = forwardRef<HTMLParagraphElement, Props>(
       <p
         ref={ref}
         className={utils.cn(
-          styles.base,
-          styles[variant],
+          styles.root,
           styles[size],
+          styles[variant],
           isMutedClass,
           className
         )}
