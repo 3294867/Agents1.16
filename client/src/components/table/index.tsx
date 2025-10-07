@@ -1,75 +1,86 @@
 import * as React from 'react';
 import utils from 'src/utils';
-import styles from './Table..module.css';
+import styles from './Table.module.css';
 
 const Root = React.forwardRef<
-  HTMLTableElement,
-  React.HTMLAttributes<HTMLTableElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div className={styles.rootWrapper}>
-    <table ref={ref} className={utils.cn(styles.root, className)} {...props} />
-  </div>
+  <div ref={ref} className={utils.cn(styles.rootWrapper, className)} {...props} />
 ));
 Root.displayName = 'Root';
 
+const Actions = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ children, className, ...props }, ref) => (
+  <div ref={ref} className={utils.cn(styles.actions, className)} {...props}>
+    {children}
+  </div>
+));
+Actions.displayName = 'Actions';
+
 const Header = React.forwardRef<
-  HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <thead ref={ref} className={utils.cn(styles.header, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.header, className)} {...props} />
 ));
 Header.displayName = 'Header';
 
 const Body = React.forwardRef<
-  HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <tbody ref={ref} className={utils.cn(styles.body, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.body, className)} {...props} />
 ));
 Body.displayName = 'Body';
 
 const Footer = React.forwardRef<
-  HTMLTableSectionElement,
-  React.HTMLAttributes<HTMLTableSectionElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <tfoot ref={ref} className={utils.cn(styles.footer, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.footer, className)} {...props} />
 ));
 Footer.displayName = 'Footer';
 
 const Row = React.forwardRef<
-  HTMLTableRowElement,
-  React.HTMLAttributes<HTMLTableRowElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <tr ref={ref} className={utils.cn(styles.row, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.row, className)} {...props} />
 ));
 Row.displayName = 'Row';
 
 const Head = React.forwardRef<
-  HTMLTableCellElement,
-  React.ThHTMLAttributes<HTMLTableCellElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <th ref={ref} className={utils.cn(styles.head, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.head, className)} {...props} />
 ));
 Head.displayName = 'Head';
 
 const Cell = React.forwardRef<
-  HTMLTableCellElement,
-  React.TdHTMLAttributes<HTMLTableCellElement>
->(({ className, ...props }, ref) => (
-  <td ref={ref} className={utils.cn(styles.cell, className)} {...props} />
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ children, className, ...props }, ref) => (
+  <div ref={ref} className={utils.cn(styles.cell, className)} {...props}>
+    {children}
+  </div>
 ));
 Cell.displayName = 'Cell';
 
 const Caption = React.forwardRef<
-  HTMLTableCaptionElement,
-  React.HTMLAttributes<HTMLTableCaptionElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <caption ref={ref} className={utils.cn(styles.caption, className)} {...props} />
+  <div ref={ref} className={utils.cn(styles.caption, className)} {...props} />
 ));
 Caption.displayName = 'Caption';
 
 const Table = {
   Root,
+  Actions,
   Header,
   Body,
   Footer,

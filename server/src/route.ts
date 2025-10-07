@@ -35,5 +35,6 @@ router.post("/infer-agent-type", controllers.inferAgentType);
 router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
 router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);
 router.post("/get-workspace-members", controllers.getWorkspaceMembers);
+router.post("/update-member-role", controllers.updateMemberRole);
 
 export default router;

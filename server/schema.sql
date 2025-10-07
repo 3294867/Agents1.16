@@ -140,6 +140,7 @@ BEGIN
     JOIN workspaces w ON wu.workspace_id = w.id
     WHERE wu.user_id = NEW.user_id
       AND w.name = (SELECT name FROM workspaces WHERE id = NEW.workspace_id)
+      AND NOT (wu.workspace_id = NEW.workspace_id AND wu.user_id = NEW.user_id)
   ) THEN
     RAISE EXCEPTION 'User % already has a workspace named %', NEW.user_id, (SELECT name FROM workspaces WHERE id = NEW.workspace_id);
   END IF;
@@ -169,7 +170,7 @@ END;
 $$ LANGUAGE plpgsql;
 
 CREATE TRIGGER trg_unique_agent_per_workspace
-BEFORE INSERT OR UPDATE ON workspace_agent
+BEFORE INSERT ON workspace_agent
 FOR EACH ROW EXECUTE FUNCTION enforce_unique_agent_per_workspace();
 
 
@@ -183,7 +184,8 @@ INSERT INTO workspaces (id, name, description)
 VALUES
   ('79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid, 'personal', 'Root personal workspace'),
   ('c82a8f65-3373-4bb9-bb08-378cd4d6daf1'::uuid, 'incognito', 'Root incognito workspace'),
-  ('bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid, 'personal', 'Test personal workspace');
+  ('bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid, 'personal', 'Test personal workspace'),
+  ('40166349-603e-4b73-ab0a-adec16b24385'::uuid, 'team', 'Team workspace');
 
 INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid AND u.name = 'root';
@@ -193,6 +195,12 @@ SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = 'c82a8f65-337
 
 INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = 'bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid AND u.name = 'test';
+
+INSERT INTO workspace_user (workspace_id, user_id, user_role)
+SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '40166349-603e-4b73-ab0a-adec16b24385'::uuid AND u.name = 'root';
+
+INSERT INTO workspace_user (workspace_id, user_id, user_role)
+SELECT w.id, u.id, 'editor' FROM workspaces w, users u WHERE w.id = '40166349-603e-4b73-ab0a-adec16b24385'::uuid AND u.name = 'test';
 
 INSERT INTO agents (id, name, type, model, system_instructions, stack, temperature, web_search)
 VALUES

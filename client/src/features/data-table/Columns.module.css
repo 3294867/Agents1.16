@@ -1,0 +1,22 @@
+.headerButton {
+  width: 100%;
+  justify-content: start;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+  outline: none;
+  height: 2.25rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 1rem;
+  font-size: 0.75rem;
+  background-color: var(--background);
+}
+
+.headerButton:hover {
+  background-color: var(--background-hover);
+}

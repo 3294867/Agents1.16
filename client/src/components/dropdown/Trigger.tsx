@@ -1,9 +1,9 @@
-import { cloneElement, FC, isValidElement, memo, ReactElement } from 'react';
+import { cloneElement, FC, isValidElement, memo, ReactElement, ReactNode } from 'react';
 import hooks from 'src/hooks';
 
 interface Props {
   asChild?: boolean;
-  children: ReactElement;
+  children: ReactElement | ReactNode;
 }
 
 const Trigger: FC<Props> = memo(({ asChild, children }: Props) => {

@@ -8,6 +8,7 @@ import responsePaused from './responsePaused';
 import threadIsBookmarkedUpdated from './threadIsBookmarkedUpdated';
 import threadNameUpdated from './threadNameUpdated';
 import reqresAdded from './reqresAdded';
+import memberRoleUpdated from './memberRoleUpdated';
 
 const dispatchEvent = {
   agentAdded,
@@ -19,7 +20,8 @@ const dispatchEvent = {
   reqresIsNewUpdated,
   editingQuestion,
   responsePaused,
-  threadIsBookmarkedUpdated
+  threadIsBookmarkedUpdated,
+  memberRoleUpdated
 };
 
 export default dispatchEvent;

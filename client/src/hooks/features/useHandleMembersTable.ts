@@ -43,6 +43,20 @@ const useHandleMembersTable = ({ workspaceId }: Props): Return => {
     
   },[workspaceId]);
 
+  useEffect(() => {
+    const handleMemberRoleUpdated = async () => {
+      const fetchingMembers = await postgresDB.getWorkspaceMembers({ workspaceId });
+      if (!fetchingMembers) {
+        setError('Failed to fetch members (PostgresDB)');
+        return;
+      }
+      setMembers(fetchingMembers);
+    };
+    
+    window.addEventListener('memberRoleUpdated', handleMemberRoleUpdated as EventListener);
+    return () => window.removeEventListener('memberRoleUpdated', handleMemberRoleUpdated as EventListener);
+  },[workspaceId]);
+
   return { members, isLoading, error };
 };
 

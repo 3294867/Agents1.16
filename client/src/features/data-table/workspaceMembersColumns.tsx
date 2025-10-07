@@ -1,8 +1,8 @@
 import { ColumnDef } from '@tanstack/react-table';
 import Icons from 'src/assets/icons';
-import Button from 'src/components/button';
 import Checkbox from 'src/components/checkbox';
 import { WorkspaceMember } from 'src/types';
+import styles from './Columns.module.css';
 
 const workspaceMembersColumns: ColumnDef<WorkspaceMember>[] = [
    {
@@ -17,14 +17,14 @@ const workspaceMembersColumns: ColumnDef<WorkspaceMember>[] = [
             : false
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(value === true)}
-        aria-label="Select all"
+        aria-label='Select all'
       />
     ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(value) => row.toggleSelected(value === true)}
-        aria-label="Select row"
+        aria-label='Select row'
         onClick={(e) => e.stopPropagation()}
       />
     ),
@@ -32,34 +32,42 @@ const workspaceMembersColumns: ColumnDef<WorkspaceMember>[] = [
     enableHiding: false,
   },
   {
-    id: 'member name',
+    id: 'member_name',
     accessorKey: 'memberName',
     header: ({ column }) => {
       return (
-        <Button
-          variant='ghost'
+        <button
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='hover:bg-transparent p-0'
+          className={styles.headerButton}
         >
           Name
-          <Icons.ChevronDown style={{ width: '1rem', height: '1rem', marginLeft: '0.5rem'}} />
-        </Button>
+          <Icons.ChevronUpDown style={{
+            width: '1rem',
+            height: '1rem',
+            marginLeft: '0.5rem',
+            opacity: '50%',
+          }} />
+        </button>
       );
     },
   },
   {
-    id: 'member role',
+    id: 'member_role',
     accessorKey: 'memberRole',
     header: ({ column }) => {
       return (
-        <Button
-          variant='ghost'
+        <button
+          className={styles.headerButton}
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='hover:bg-transparent p-0'
         >
           Role
-          <Icons.ChevronDown style={{ width: '1rem', height: '1rem', marginLeft: '0.5rem'}} />
-        </Button>
+          <Icons.ChevronUpDown style={{
+            width: '1rem',
+            height: '1rem',
+            marginLeft: '0.5rem',
+            opacity: '50%',
+          }} />
+        </button>
       );
     },
   },

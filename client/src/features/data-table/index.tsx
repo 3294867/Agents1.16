@@ -1,16 +1,32 @@
 import { useState } from 'react';
-import { ColumnDef, ColumnFiltersState, SortingState, VisibilityState, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable, flexRender } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+  flexRender
+} from '@tanstack/react-table';
 import Table from 'src/components/table';
+import Button from 'src/components/button';
+import Dropdown from 'src/components/dropdown';
+import Icons from 'src/assets/icons';
+import constants from 'src/constants';
+import utils from 'src/utils';
+import postgresDB from 'src/storage/postgresDB';
 
-interface DataTableProps<TData, TValue> {
+interface Props<TData, TValue> {
+  workspaceId: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
+const DataTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, TValue>) => {
+  const [closeDropdown, setCloseDropdown] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -38,34 +54,75 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  const handleUpdateMemberRole = async ({ userId, role }: { userId: string, role: string }) => {
+    await postgresDB.updateMemberRole({ workspaceId, userId, role });
+    setCloseDropdown(true);
+    setTimeout(() => setCloseDropdown(false), 100);
+  };
+
   return (
-    <div className='space-y-8'>
-      <Table.Root>
-        <Table.Header>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Table.Row key={headerGroup.id} className='border-t h-12'>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <Table.Head key={header.id}>
-                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                  </Table.Head>
-                );
-              })}
-            </Table.Row>
+    <Table.Root>
+      {table.getHeaderGroups().map((headerGroup) => (
+        <Table.Header key={headerGroup.id}>
+          {headerGroup.headers.map((header) => (
+            <Table.Head key={header.id}>
+              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+            </Table.Head>
           ))}
         </Table.Header>
-        <Table.Body>
-          {table.getRowModel().rows.map((row) => (
+      ))}
+      <Table.Body>
+        {table.getRowModel().rows.map((row) => {
+          return (
             <Table.Row key={row.id} data-state={row.getIsSelected() && 'selected'}>
-              {row.getVisibleCells().map((cell) => (
-                <Table.Cell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Table.Cell>
-              ))}
+              {row.getVisibleCells().map((cell) => {
+                const buttonBackgroundColor = cell.getValue() === 'admin'
+                  ? 'orange'
+                  : cell.getValue() === 'editor'
+                  ? 'blue'
+                  : 'green';
+                
+                return cell.column.id === 'member_role'
+                  ? (
+                    <Table.Cell key={cell.id}>
+                      <Dropdown.Root >
+                        <Dropdown.Trigger asChild>
+                          <Button style={{
+                            width: '5rem',
+                            backgroundColor: buttonBackgroundColor || ''
+                          }}>
+                            {utils.capitalizeFirstLetter(cell.getValue() as string)}
+                            <Icons.ChevronDown style={{ marginLeft: '0.5rem', marginRight: '-0.5rem' }} />
+                          </Button>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content sideOffset={8} align='end' forceClose={closeDropdown}>
+                          {constants.userRoles
+                            .filter(i => i !== utils.capitalizeFirstLetter(cell.getValue() as string))
+                            .map(i => (
+                              <Button
+                                key={i}
+                                onClick={() => handleUpdateMemberRole({ userId: row.original.memberId, role: i.toLowerCase() })}
+                                variant='dropdown'
+                                style={{ width: '4.5rem' }}
+                              >
+                                {utils.capitalizeFirstLetter(i)}
+                              </Button>
+                            ))
+                          }
+                        </Dropdown.Content>
+                      </Dropdown.Root>
+                    </Table.Cell>
+                  ) : (
+                    <Table.Cell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </Table.Cell>
+                  ); 
+              })}
             </Table.Row>
-          ))}
-        </Table.Body>
-      </Table.Root>
-    </div>
+          )})}
+      </Table.Body>
+    </Table.Root>
   );
-}
+};
+
+export default DataTable;

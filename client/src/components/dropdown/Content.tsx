@@ -1,4 +1,4 @@
-import { CSSProperties, FC, HTMLAttributes, memo, ReactNode } from 'react';
+import { CSSProperties, FC, HTMLAttributes, memo, ReactNode, useEffect } from 'react';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
 import styles from './Dropdown.module.css';
@@ -8,14 +8,19 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   sideOffset?: number;
   align?: 'start' | 'center' | 'end';
   children: ReactNode;
+  forceClose: boolean;
 }
 
-const Content: FC<Props> = memo(({ side = 'bottom', sideOffset = 4, align = 'start', children, ...props }) => {
+const Content: FC<Props> = memo(({ side = 'bottom', sideOffset = 4, align = 'start', children, forceClose, ...props }) => {
   const { dropdownRef, isOpen, setIsOpen } = hooks.components.useDropdownContext();
   hooks.components.useHandleDropdownFocusOnOpen({ dropdownRef, isOpen });
   hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
   hooks.components.useHandleDropdownEnterKey({ dropdownRef, isOpen, setIsOpen, });
   hooks.components.useHandleDropdownTabKey({ dropdownRef, isOpen });
+
+  useEffect(() => {
+    if (forceClose) setIsOpen(false);
+  },[forceClose])
 
   if (!isOpen) return null;
 

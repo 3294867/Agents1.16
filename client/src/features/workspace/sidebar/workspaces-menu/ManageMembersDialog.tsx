@@ -5,8 +5,8 @@ import Button from 'src/components/button';
 import Error from 'src/components/error';
 import Dialog from 'src/components/dialog';
 import Heading from 'src/components/heading';
+import DataTable from 'src/features/data-table';
 import { UserRole } from 'src/types';
-import { DataTable } from 'src/features/data-table';
 
 interface Props {
   workspaceId: string;
@@ -33,7 +33,11 @@ const ManageMembersDialog = ({ workspaceId, userRole }: Props) => {
       </Dialog.Trigger>
       <Dialog.Content>
         <Heading variant='h4'>Members</Heading>
-        <DataTable columns={workspaceMembersColumns} data={members} />
+        <DataTable
+          workspaceId={workspaceId}
+          columns={workspaceMembersColumns}
+          data={members}
+        />
       </Dialog.Content>
     </Dialog.Root>
   ) : null;

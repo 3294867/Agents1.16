@@ -29,10 +29,9 @@ const Content: FC<Props> = memo(({ children, open, className, isNestedInDropdown
     <Fragment>
       <Overlay isNestedInDropdown={isNestedInDropdown} isPermanent={isPermanent} />
       <div 
-        data-prevent-dropdown-close
         ref={dialogRef}
-        role="dialog"
-        aria-modal="true"
+        role='dialog'
+        aria-modal='true'
         aria-labelledby={titleId}
         aria-describedby={descriptionId}
         id={dialogId}
@@ -43,7 +42,7 @@ const Content: FC<Props> = memo(({ children, open, className, isNestedInDropdown
           <button
             onClick={() => setIsOpen(false)}
             className={styles.dialogClose}
-            aria-label="Close dialog"
+            aria-label='Close dialog'
           >
             <Icons.Close />
           </button>

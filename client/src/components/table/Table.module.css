@@ -1,0 +1,84 @@
+.rootWrapper {
+  position: relative;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  min-height: 320px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+}
+
+.head {
+  width: 100%;
+}
+
+.head:first-child {
+  width: fit-content;
+  padding: 0.5rem;
+}
+
+.head:last-child {
+  width: fit-content;
+  padding-right: 0.5rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer {
+  border-top: 1px solid var(--border);
+  background-color: var(--muted-background, rgba(0,0,0,0.05));
+  font-weight: 500;
+}
+
+.row {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  transition: background-color 0.2s ease;
+  cursor: pointer;
+  align-items: center;
+  min-height: 2.25rem;
+}
+
+.row:hover {
+  background-color: var(--background-hover, rgba(0,0,0,0.05));
+}
+
+.row[data-state='selected'] {
+  background-color: var(--muted-selected, rgba(0,0,0,0.1));
+}
+
+.cell {
+  padding: 0.5rem;
+  vertical-align: middle;
+  width: 100%;
+}
+
+.cell:first-child {
+  width: fit-content;
+}
+
+.cell:last-child {
+  width: fit-content;
+}
+
+.caption {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  color: var(--muted-foreground);
+}

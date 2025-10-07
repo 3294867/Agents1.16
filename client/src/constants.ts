@@ -1,3 +1,5 @@
+const userRoles = [ 'Admin', 'Editor', 'Viewer' ];
+
 const agentTypes = [ 'general', 'data-analyst', 'copywriter', 'devops-helper' ];
 
 const agentModels = [
@@ -116,6 +118,7 @@ const initialPositionY = 0;
 const sideNavWidth = 200;
 
 const constants = {
+  userRoles,
   agentTypes,
   agentModels,
   technologies,

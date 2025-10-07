@@ -26,6 +26,7 @@ import CircleAlert from './CircleAlert';
 import Notifications from './Notifications';
 import Users from './Users';
 import Check from './Check';
+import ChevronUpDown from './ChevronUpDown';
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -54,6 +55,7 @@ const Icons: IconComponents = {
   Library,
   Settings,
   ChevronDown,
+  ChevronUpDown,
   Logout,
   EyeClosed,
   EyeOpened,
