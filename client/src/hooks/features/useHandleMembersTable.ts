@@ -12,8 +12,7 @@ interface Return {
   error: string | null;
 }
 
-
-const useHandleMembersTable = ({ workspaceId }: Props): Return => {
+const useHandleWorkspaceMembersData = ({ workspaceId }: Props): Return => {
   const [members, setMembers] = useState<WorkspaceMember[] | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,39 +24,27 @@ const useHandleMembersTable = ({ workspaceId }: Props): Return => {
       return;
     }
 
-    try {
-      const init = async () => {
-        const fetchingMembers = await postgresDB.getWorkspaceMembers({ workspaceId });
-        if (!fetchingMembers) {
+    const init = async () => {
+      try {
+        const fetchMembers = await postgresDB.getWorkspaceMembers({ workspaceId });
+        if (!fetchMembers) {
           setError('Failed to fetch members (PostgresDB)');
           return;
         }
-        setMembers(fetchingMembers);
-      };
-      init();
-    } catch (err) {
-      setError(`Failed to fetch members: ${err}`);
-    } finally {
-      setIsLoading(false);
-    }
-    
-  },[workspaceId]);
-
-  useEffect(() => {
-    const handleMemberRoleUpdated = async () => {
-      const fetchingMembers = await postgresDB.getWorkspaceMembers({ workspaceId });
-      if (!fetchingMembers) {
-        setError('Failed to fetch members (PostgresDB)');
-        return;
+        setMembers(fetchMembers);
+      } catch (err) {
+        setError(`Failed to fetch members: ${err}`);
+      } finally {
+        setIsLoading(false);
       }
-      setMembers(fetchingMembers);
-    };
+    }
+    init();
     
-    window.addEventListener('memberRoleUpdated', handleMemberRoleUpdated as EventListener);
-    return () => window.removeEventListener('memberRoleUpdated', handleMemberRoleUpdated as EventListener);
+    window.addEventListener('memberRoleUpdated', init as EventListener);
+    return () => window.removeEventListener('memberRoleUpdated', init as EventListener);
   },[workspaceId]);
 
   return { members, isLoading, error };
 };
 
-export default useHandleMembersTable;
+export default useHandleWorkspaceMembersData;

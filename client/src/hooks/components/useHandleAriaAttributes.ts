@@ -1,15 +1,15 @@
 import { RefObject, useEffect } from 'react';
 
 interface Props {
-  mounted: boolean;
+  isMounted: boolean;
   dialogRef: RefObject<HTMLDivElement | null>;
   titleId: string;
   descriptionId: string;
 }
 
-const useHandleDialogAriaAttributes = ({ mounted, dialogRef, titleId, descriptionId }: Props): void => {
+const useHandleDialogAriaAttributes = ({ isMounted, dialogRef, titleId, descriptionId }: Props): void => {
   useEffect(() => {
-    if (mounted && dialogRef.current) {
+    if (isMounted && dialogRef.current) {
       const heading = dialogRef.current.querySelector('h1, h2, h3, h4, h5, h6');
       const paragraph = dialogRef.current.querySelector('p');
       
@@ -20,7 +20,7 @@ const useHandleDialogAriaAttributes = ({ mounted, dialogRef, titleId, descriptio
         paragraph.id = descriptionId;
       }
     }
-  }, [mounted, dialogRef, titleId, descriptionId]);
+  }, [isMounted, dialogRef, titleId, descriptionId]);
 };
 
 export default useHandleDialogAriaAttributes;

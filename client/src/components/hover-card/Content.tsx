@@ -1,7 +1,7 @@
 import { CSSProperties, FC, HTMLAttributes, memo, ReactNode } from 'react';
 import hooks from 'src/hooks';
 import utils from 'src/utils';
-import styles from './Tooltip.module.css';
+import styles from './HoverCard.module.css';
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
   side?: 'top' | 'bottom' | 'left' | 'right';
@@ -21,7 +21,7 @@ const Content: FC<Props> = memo(({
   children,
   ...props
 }) => {
-  const { contentRef, triggerRef, isOpen, } = hooks.components.useTooltipContext();
+  const { contentRef, triggerRef, isOpen } = hooks.components.useHoverCardContext();
   const { isMounted } = hooks.components.useHandleMount({ isOpen });
   const { triggerHeight, triggerWidth } = hooks.components.useHandleTriggerSize({ triggerRef });
   const positioningClass = utils.components.getContentPositioningClass(side, align);
@@ -31,9 +31,8 @@ const Content: FC<Props> = memo(({
   return (
     <div
       ref={contentRef}
-      role='tooltip'
       className={utils.cn(
-        styles.tooltipContent,
+        styles.hoverCardContent,
         positioningClass,
         className
       )}
@@ -49,5 +48,6 @@ const Content: FC<Props> = memo(({
     </div>
   );
 });
+Content.displayName = 'HoverCard.Content';
 
 export default Content;

@@ -36,5 +36,6 @@ router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
 router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);
 router.post("/get-workspace-members", controllers.getWorkspaceMembers);
 router.post("/update-member-role", controllers.updateMemberRole);
+router.post("/get-users", controllers.getUsers);
 
 export default router;

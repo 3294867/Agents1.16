@@ -27,6 +27,7 @@ import Notifications from './Notifications';
 import Users from './Users';
 import Check from './Check';
 import ChevronUpDown from './ChevronUpDown';
+import Search from './Search';
 
 type IconProps = SVGProps<SVGSVGElement>
 
@@ -63,6 +64,7 @@ const Icons: IconComponents = {
   Notifications,
   Users,
   Check,
+  Search,
 };
 
 export default Icons;

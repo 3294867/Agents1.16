@@ -31,6 +31,7 @@ import getAgentNames from './getAgentNames';
 import getAgentByType from './getAgentByType';
 import getWorkspaceMembers from './getWorkspaceMembers';
 import updateMemberRole from './updateMemberRole';
+import getUsers from './getUsers';
 
 const controllers = {
   addAgent,
@@ -65,7 +66,8 @@ const controllers = {
   updateThreadIsBookmarked,
   updateThreadName,
   getWorkspaceMembers,
-  updateMemberRole
+  updateMemberRole,
+  getUsers
 };
 
 export default controllers;

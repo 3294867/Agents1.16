@@ -1,27 +1,31 @@
 import { useEffect, useState } from 'react';
 
 interface Props {
-  isVisible: boolean;
+  isOpen: boolean;
   delay?: number;
 }
 
-const useHandleMount = ({ isVisible, delay = 0 }: Props): boolean => {
-  const [mounted, setMounted] = useState(false);
+interface Return {
+  isMounted: boolean;
+}
+
+const useHandleMount = ({ isOpen, delay = 0 }: Props): Return => {
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    if (isVisible) {
+    if (isOpen) {
       if (delay > 0) {
-        const timer = setTimeout(() => setMounted(true), delay);
+        const timer = setTimeout(() => setIsMounted(true), delay);
         return () => clearTimeout(timer);
       } else {
-        setMounted(true);
+        setIsMounted(true);
       }
     } else {
-      setMounted(false);
+      setIsMounted(false);
     }
-  }, [isVisible, delay]);
+  }, [isOpen, delay]);
 
-  return mounted;
+  return { isMounted };
 };
 
 export default useHandleMount; 

@@ -11,13 +11,14 @@ import {
   useReactTable,
   flexRender
 } from '@tanstack/react-table';
+import postgresDB from 'src/storage/postgresDB';
+import utils from 'src/utils';
 import Table from 'src/components/table';
+import InviteMember from './inviteMember';
 import Button from 'src/components/button';
 import Dropdown from 'src/components/dropdown';
 import Icons from 'src/assets/icons';
 import constants from 'src/constants';
-import utils from 'src/utils';
-import postgresDB from 'src/storage/postgresDB';
 
 interface Props<TData, TValue> {
   workspaceId: string;
@@ -25,7 +26,7 @@ interface Props<TData, TValue> {
   data: TData[];
 }
 
-const DataTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, TValue>) => {
+const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, TValue>) => {
   const [closeDropdown, setCloseDropdown] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -59,9 +60,12 @@ const DataTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, T
     setCloseDropdown(true);
     setTimeout(() => setCloseDropdown(false), 100);
   };
-
+  
   return (
     <Table.Root>
+      <Table.Actions>
+        <InviteMember workspaceId={workspaceId} />
+      </Table.Actions>
       {table.getHeaderGroups().map((headerGroup) => (
         <Table.Header key={headerGroup.id}>
           {headerGroup.headers.map((header) => (
@@ -124,5 +128,6 @@ const DataTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, T
     </Table.Root>
   );
 };
+WorkspaceMembersTable.displayName = 'WorkspaceMembersTable';
 
-export default DataTable;
+export default WorkspaceMembersTable;

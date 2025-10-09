@@ -17,13 +17,13 @@ interface Props {
 const Content: FC<Props> = memo(({ children, open, className, isNestedInDropdown, isPermanent = false }) => {
   const { isOpen, setIsOpen, dialogRef, dialogId, titleId, descriptionId }
     = hooks.components.useDialogContext();
-  const mounted = hooks.components.useHandleMount({ isVisible: isOpen });
+  const { isMounted } = hooks.components.useHandleMount({ isOpen });
   hooks.components.useHandleEscapeKey({ isOpen, setIsOpen });
   hooks.components.useHandleDialogOpenProp({ open });
   hooks.components.useHandleDialogFocusOnOpen({ dialogRef, isOpen });
-  hooks.components.useHandleDialogAriaAttributes({ mounted, dialogRef, titleId, descriptionId });
+  hooks.components.useHandleDialogAriaAttributes({ isMounted, dialogRef, titleId, descriptionId });
 
-  if (!mounted) return null;
+  if (!isMounted) return null;
 
   return createPortal(
     <Fragment>

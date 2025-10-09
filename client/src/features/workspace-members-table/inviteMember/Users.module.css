@@ -1,0 +1,38 @@
+.wrapper {
+  width: 14rem;
+}
+
+.input {
+  text-indent: 1rem;
+}
+
+.searchIcon {
+  position: absolute;
+  top: 1.125rem;
+  left: 0.5rem;
+  color: var(--text-tertiary);
+  transform: translateY(-50%);
+}
+
+.list {
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button {
+  width: fit-content
+}
+
+.plusIcon {
+  margin-left: -0.25rem;
+  margin-right: 0.25rem;
+}

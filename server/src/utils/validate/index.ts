@@ -29,6 +29,7 @@ import getAvailableAgents from './getAvailableAgents';
 import getAgentByType from './getAgentByType';
 import getWorkspaceMembers from './getWorkspaceMembers';
 import updateMemberRole from './updateMemberRole';
+import getUsers from './getUsers';
 
 const validate = {
   addAgent,
@@ -61,7 +62,8 @@ const validate = {
   getAgentNames,
   getAvailableAgents,
   getWorkspaceMembers,
-  updateMemberRole
+  updateMemberRole,
+  getUsers
 };
 
 export default validate;

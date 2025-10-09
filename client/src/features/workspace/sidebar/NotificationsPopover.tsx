@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
-import Popover from 'src/components/popover';
+import Popover from 'src/components/hover-card';
 import hooks from 'src/hooks';
 
 const NotificationsPopover = memo(() => {

@@ -1,9 +1,9 @@
-.popoverRoot {
+.hoverCardRoot {
   position: relative;
   display: inline-block;
 }
 
-.popoverContent {
+.hoverCardContent {
   min-width: 10rem;
   position: absolute;
   z-index: 1001;
@@ -31,17 +31,4 @@
   to {
     opacity: 1;
   }
-}
-
-.popoverClose {
-  position: absolute;
-  cursor: pointer;
-  top: 0.5rem;
-  right: 0.5rem;
-  border-radius: 2px;
-  transition: color 0.3s ease;
-}
-
-.popoverClose:hover {
-  opacity: 0.8;
 }

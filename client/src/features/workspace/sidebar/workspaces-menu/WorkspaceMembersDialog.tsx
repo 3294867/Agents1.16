@@ -1,11 +1,11 @@
 import hooks from 'src/hooks';
-import workspaceMembersColumns from 'src/features/data-table/workspaceMembersColumns';
+import workspaceMembersColumns from 'src/features/workspace-members-table/workspaceMembersColumns';
 import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Error from 'src/components/error';
 import Dialog from 'src/components/dialog';
 import Heading from 'src/components/heading';
-import DataTable from 'src/features/data-table';
+import WorkspaceMembersTable from 'src/features/workspace-members-table';
 import { UserRole } from 'src/types';
 
 interface Props {
@@ -13,8 +13,8 @@ interface Props {
   userRole: UserRole;
 }
 
-const ManageMembersDialog = ({ workspaceId, userRole }: Props) => {
-  const { members, isLoading, error } = hooks.features.useHandleMembersTable({ workspaceId });
+const WorkspaceMembersDialog = ({ workspaceId, userRole }: Props) => {
+  const { members, isLoading, error } = hooks.features.useHandleWorkspaceMembersData({ workspaceId });
 
   if (isLoading) return <Loading />
   if (error || !members) return <Error error={ error ?? 'Something went wrong. Try again later.' }/>
@@ -33,7 +33,7 @@ const ManageMembersDialog = ({ workspaceId, userRole }: Props) => {
       </Dialog.Trigger>
       <Dialog.Content>
         <Heading variant='h4'>Members</Heading>
-        <DataTable
+        <WorkspaceMembersTable
           workspaceId={workspaceId}
           columns={workspaceMembersColumns}
           data={members}
@@ -42,9 +42,9 @@ const ManageMembersDialog = ({ workspaceId, userRole }: Props) => {
     </Dialog.Root>
   ) : null;
 };
-ManageMembersDialog.displayName = 'ManageMembersDialog';
+WorkspaceMembersDialog.displayName = 'ManageMembersDialog';
 
-export default ManageMembersDialog;
+export default WorkspaceMembersDialog;
 
 const Loading = () => {
   return (
