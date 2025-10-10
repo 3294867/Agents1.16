@@ -26,6 +26,11 @@ import getAgentByType from './getAgentByType';
 import getWorkspaceMembers from './getWorkspaceMembers';
 import updateMemberRole from './updateMemberRole';
 import getUsers from './getUsers';
+import inviteUser from './inviteUser';
+import getNotifications from './getNotifications';
+import acceptWorkspaceInvite from './acceptWorkspaceInvite';
+import declineWorkspaceInvite from './declineWorkspaceInvite';
+import dismissWorkspaceInvite from './dismissWorkspaceInvite';
 
 const postgresDB = {
   auth,
@@ -56,6 +61,11 @@ const postgresDB = {
   getWorkspaceMembers,
   updateMemberRole,
   getUsers,
+  inviteUser,
+  getNotifications,
+  acceptWorkspaceInvite,
+  declineWorkspaceInvite,
+  dismissWorkspaceInvite,
 };
 
 export default postgresDB;

@@ -73,6 +73,17 @@ interface Tab {
   isActive: boolean;
 }
 
+type NotificationType = 'workspace_invite'
+
+interface Notification {
+  id: string;
+  type: NotificationType;
+  message: string;
+  details: object;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export type {
   UserRole,
   WorkspaceMember,
@@ -83,6 +94,8 @@ export type {
   AddAgent,
   ReqRes,
   Thread,
-  Tab
+  Tab,
+  NotificationType,
+  Notification,
 };
 

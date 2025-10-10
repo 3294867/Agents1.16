@@ -8,7 +8,7 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
   sideOffset?: number;
   align?: 'start' | 'center' | 'end';
   children: ReactNode;
-  forceClose: boolean;
+  forceClose?: boolean;
 }
 
 const Content: FC<Props> = memo(({ side = 'bottom', sideOffset = 4, align = 'start', children, forceClose, ...props }) => {

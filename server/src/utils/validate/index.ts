@@ -30,6 +30,11 @@ import getAgentByType from './getAgentByType';
 import getWorkspaceMembers from './getWorkspaceMembers';
 import updateMemberRole from './updateMemberRole';
 import getUsers from './getUsers';
+import inviteUser from './inviteUser';
+import getNotifications from './getNotifications';
+import acceptWorkspaceInvite from './acceptWorkspaceInvite';
+import declineWorkspaceInvite from './declineWorkspaceInvite';
+import dismissWorkspaceInvite from './dismissWorkspaceInvite';
 
 const validate = {
   addAgent,
@@ -63,7 +68,12 @@ const validate = {
   getAvailableAgents,
   getWorkspaceMembers,
   updateMemberRole,
-  getUsers
+  getUsers,
+  inviteUser,
+  getNotifications,
+  acceptWorkspaceInvite,
+  declineWorkspaceInvite,
+  dismissWorkspaceInvite
 };
 
 export default validate;

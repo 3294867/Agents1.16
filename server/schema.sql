@@ -5,7 +5,23 @@ BEGIN
   END IF;
 END $$;
 
-DROP TABLE IF EXISTS users, workspaces, workspace_user, sessions, agents, user_agent, workspace_agent, threads, agent_thread, requests, thread_request, responses, thread_response CASCADE;
+DROP TABLE IF EXISTS
+  users,
+  workspaces,
+  workspace_user,
+  sessions,
+  agents,
+  user_agent,
+  workspace_agent,
+  threads,
+  agent_thread,
+  requests,
+  thread_request,
+  responses,
+  thread_response,
+  notifications,
+  user_notification
+CASCADE;
 
 -- Create Tables
 CREATE TABLE users (
@@ -130,6 +146,24 @@ CREATE TABLE thread_response (
   CONSTRAINT thread_response_response_id_fkey FOREIGN KEY (response_id) REFERENCES responses(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE TABLE notifications (
+  id UUID NOT NULL DEFAULT gen_random_uuid(),
+  type TEXT NOT NULL,
+  message TEXT NOT NULL,
+  details JSONB DEFAULT '[]'::JSONB,
+  created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT notifications_pkey PRIMARY KEY (id)
+);
+
+CREATE TABLE user_notification (
+  user_id UUID NOT NULL,
+  notification_id UUID NOT NULL,
+  CONSTRAINT user_notification_pkey PRIMARY KEY (user_id, notification_id),
+  CONSTRAINT user_notification_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT user_notification_notification_id_fkey FOREIGN KEY (notification_id) REFERENCES notifications(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 -- Add Trigger - Workspace name must be unique per user
 CREATE OR REPLACE FUNCTION enforce_unique_workspace_per_user()
 RETURNS TRIGGER AS $$
@@ -198,9 +232,6 @@ SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = 'bf4a8ed2-0d0
 
 INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '40166349-603e-4b73-ab0a-adec16b24385'::uuid AND u.name = 'root';
-
-INSERT INTO workspace_user (workspace_id, user_id, user_role)
-SELECT w.id, u.id, 'editor' FROM workspaces w, users u WHERE w.id = '40166349-603e-4b73-ab0a-adec16b24385'::uuid AND u.name = 'test';
 
 INSERT INTO agents (id, name, type, model, system_instructions, stack, temperature, web_search)
 VALUES

@@ -12,7 +12,6 @@ const addThread = async (req: Request, res: Response): Promise<void> => {
   const validationError = utils.validate.addThread({ agentId });
   if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
 
-
   try {
     await pool.query(`BEGIN`);
     

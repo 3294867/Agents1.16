@@ -2,7 +2,7 @@ import { memo  } from 'react';
 import hooks from 'src/hooks';
 import WorkspacesMenu from './workspaces-menu';
 import ThemeToggle from 'src/features/workspace/sidebar/ThemeToggle';
-import NotificationsPopover from './NotificationsPopover';
+import NotificationsPopover from './notifacations-popover';
 import Account from './Account';
 import styles from './Sidebar.module.css';
 

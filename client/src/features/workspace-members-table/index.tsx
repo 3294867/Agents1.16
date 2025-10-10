@@ -19,6 +19,7 @@ import Button from 'src/components/button';
 import Dropdown from 'src/components/dropdown';
 import Icons from 'src/assets/icons';
 import constants from 'src/constants';
+import WorkspaceMembersTableContext from './WorkspaceMembersTableContext';
 
 interface Props<TData, TValue> {
   workspaceId: string;
@@ -60,24 +61,28 @@ const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Pr
     setCloseDropdown(true);
     setTimeout(() => setCloseDropdown(false), 100);
   };
+
+  const context = {
+    memberNames: table.getRowModel().rows.map(row => row.original.memberName),
+  }
   
   return (
-    <Table.Root>
-      <Table.Actions>
-        <InviteMember workspaceId={workspaceId} />
-      </Table.Actions>
-      {table.getHeaderGroups().map((headerGroup) => (
-        <Table.Header key={headerGroup.id}>
-          {headerGroup.headers.map((header) => (
-            <Table.Head key={header.id}>
-              {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-            </Table.Head>
-          ))}
-        </Table.Header>
-      ))}
-      <Table.Body>
-        {table.getRowModel().rows.map((row) => {
-          return (
+    <WorkspaceMembersTableContext.Provider value={context}>
+      <Table.Root>
+        <Table.Actions>
+          <InviteMember workspaceId={workspaceId} />
+        </Table.Actions>
+        {table.getHeaderGroups().map((headerGroup) => (
+          <Table.Header key={headerGroup.id}>
+            {headerGroup.headers.map((header) => (
+              <Table.Head key={header.id}>
+                {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+              </Table.Head>
+            ))}
+          </Table.Header>
+        ))}
+        <Table.Body>
+          {table.getRowModel().rows.map((row) => (
             <Table.Row key={row.id} data-state={row.getIsSelected() && 'selected'}>
               {row.getVisibleCells().map((cell) => {
                 const buttonBackgroundColor = cell.getValue() === 'admin'
@@ -123,9 +128,10 @@ const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Pr
                   ); 
               })}
             </Table.Row>
-          )})}
-      </Table.Body>
-    </Table.Root>
+          ))}
+        </Table.Body>
+      </Table.Root>
+    </WorkspaceMembersTableContext.Provider>
   );
 };
 WorkspaceMembersTable.displayName = 'WorkspaceMembersTable';

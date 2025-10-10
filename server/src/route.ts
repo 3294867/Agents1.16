@@ -37,5 +37,10 @@ router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);
 router.post("/get-workspace-members", controllers.getWorkspaceMembers);
 router.post("/update-member-role", controllers.updateMemberRole);
 router.post("/get-users", controllers.getUsers);
+router.post("/invite-user", controllers.inviteUser);
+router.post("/get-notifications", controllers.getNotifications);
+router.post("/accept-workspace-invite", controllers.acceptWorkspaceInvite);
+router.post("/decline-workspace-invite", controllers.declineWorkspaceInvite);
+router.post("/dismiss-workspace-invite", controllers.dismissWorkspaceInvite);
 
 export default router;

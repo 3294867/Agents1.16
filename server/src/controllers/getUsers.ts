@@ -16,10 +16,10 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
     const getUsers = await pool.query(`
       SELECT name
       FROM users
-      WHERE name LIKE $1::text
+      WHERE name LIKE $1::text;
     `, [ input + '%' ]);
 
-    const users = getUsers.rows.map(i => i.name);
+    const users = getUsers.rows.map((i: { name: string }) => i.name);
 
     res.status(200).json({
       message: "Users fetched",

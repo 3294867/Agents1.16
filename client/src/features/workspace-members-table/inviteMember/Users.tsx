@@ -1,28 +1,43 @@
 import { ChangeEvent, useState } from 'react';
+import postgresDB from 'src/storage/postgresDB';
 import Icons from 'src/assets/icons';
-import styles from './Users.module.css';
 import Input from 'src/components/input';
 import Button from 'src/components/button';
 import Paragraph from 'src/components/paragraph';
-import postgresDB from 'src/storage/postgresDB';
+import styles from './Users.module.css';
+import hooks from 'src/hooks';
+import { toast } from 'sonner';
 
 interface Props {
   workspaceId: string;
 }
 
 const Users = ({ workspaceId }: Props) => {
+  const { memberNames } = hooks.features.useWorkspaceMembersTableContext();
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [users, setUsers] = useState<string[]>([]);
 
   const handleSearchValue = async (e: ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
 
-    setTimeout(async () => {
-      const fetchUsers = await postgresDB.getUsers({ input: e.target.value })
-      if (!fetchUsers) return;
-      setUsers(fetchUsers);
-    }, 200);
+    if (e.target.value !== '') {
+      setTimeout(async () => {
+        const fetchUsers = await postgresDB.getUsers({ input: e.target.value })
+        if (!fetchUsers) return;
+        const filteredUsers = fetchUsers.filter(user => !memberNames.includes(user))
+        setUsers(filteredUsers);
+      }, 200);
+    }
   };
+
+  const handleInviteUser = async (userName: string) => {
+    const inviteUser = await postgresDB.inviteUser({ userName, workspaceId }); 
+    if (!inviteUser) {
+      toast.error(`Failed to invite user. Try again later`);
+      return;
+    }
+    toast.success(`User invited`);
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -38,12 +53,22 @@ const Users = ({ workspaceId }: Props) => {
       </div>
       <div className={styles.list}>
         {users.length === 0 ? (
-          <div>No users found</div>
+          <div className={styles.message}>
+            {searchValue === '' || !searchValue
+              ? 'Enter user name'
+              : 'No users found'
+            }
+          </div>
         ) : (
           users.map((i: string) => (
             <div key={i} className={styles.item}>
               <Paragraph>{i}</Paragraph>
-              <Button variant='ghost' size='sm' className={styles.button}>
+              <Button
+                onClick={() => handleInviteUser(i)}
+                variant='ghost'
+                size='sm'
+                className={styles.button}
+              >
                 <Icons.Add className={styles.plusIcon} />
                 Invite
               </Button>

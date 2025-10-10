@@ -100,6 +100,17 @@ interface ThreadFE {
   updatedAt: Date;
 }
 
+type NotificationTypeFE = 'workspace_invite'
+
+interface NotificationFE {
+  id: string;
+  type: NotificationTypeFE;
+  message: string;
+  details: object;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export type {
   UserRole,
   WorkspaceMember,
@@ -113,5 +124,6 @@ export type {
   ReqResPG,
   ThreadPG,
   ReqResFE,
-  ThreadFE
+  ThreadFE,
+  NotificationFE
 };
