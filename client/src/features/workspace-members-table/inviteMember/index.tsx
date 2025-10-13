@@ -2,13 +2,12 @@ import Icons from 'src/assets/icons';
 import Button from 'src/components/button';
 import Popover from 'src/components/popover';
 import Users from './Users';
+import hooks from 'src/hooks';
 
-interface Props {
-  workspaceId: string;
-}
-
-const InviteMember = ({ workspaceId }: Props) => {
-  return (
+const InviteMember = () => {
+  const { workspaceName } = hooks.features.useWorkspaceMembersTableContext();
+  
+  return workspaceName !== 'personal' && workspaceName !== 'incognito' && (
     <Popover.Root>
       <Popover.Trigger asChild>
         <Button variant='outline' size='sm' style={{ width: 'content-fit' }}>
@@ -17,7 +16,7 @@ const InviteMember = ({ workspaceId }: Props) => {
         </Button>
       </Popover.Trigger>
       <Popover.Content align='end'>
-        <Users workspaceId={workspaceId} />
+        <Users />
       </Popover.Content>
     </Popover.Root>
   );

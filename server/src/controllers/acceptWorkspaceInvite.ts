@@ -10,7 +10,11 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
   const { notificationId }: RequestBody = req.body;
 
   const validationError = utils.validate.acceptWorkspaceInvite({ notificationId });
-  if (validationError) utils.sendResponse({ res, status: 400, message: validationError });
+  console.log('validationError', validationError);
+  if (validationError) {
+    utils.sendResponse({ res, status: 400, message: validationError });
+    return;
+  }
 
   try {
     await pool.query(`BEGIN`);
@@ -20,7 +24,11 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
       FROM notifications
       WHERE id = $1::uuid;
     `, [ notificationId ]);
-    if (getNotification.rows.length === 0) utils.sendResponse({ res, status: 404, message: "Failed to get notification" });
+    if (getNotification.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      utils.sendResponse({ res, status: 404, message: "Failed to get notification" });
+    }
+    console.log('getNotification: ', getNotification.rows[0]);
 
     const addWorkspaceMember = await pool.query(`
       INSERT INTO workspace_user (workspace_id, user_id, user_role)
@@ -30,22 +38,23 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
       getNotification.rows[0].details.workspaceId,
       getNotification.rows[0].details.userId,
     ]);
-    if (addWorkspaceMember.rows.length === 0) utils.sendResponse({ res, status: 503, message: "Failed to add workspace_user" });
+    if (addWorkspaceMember.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      utils.sendResponse({ res, status: 503, message: "Failed to add workspace_user" });
+    }
+    console.log('addWorkspaceMember: ', addWorkspaceMember.rows[0]);
 
     const removeNotification = await pool.query(`
       DELETE
       FROM notifications
       WHERE id = $1::uuid
       RETURNING id;
-    `, [ notificationId]);
-    if (removeNotification.rows.length === 0) utils.sendResponse({ res, status: 503, message: "Failed to delete notification" });
-
-    const removeUserNotification = await pool.query(`
-      DELETE
-      FROM user_notification
-      WHERE notification_id = $1::uuid;
     `, [ notificationId ]);
-    if (removeUserNotification.rows.length === 0) utils.sendResponse({ res, status: 503, message: "Failed to delete user_notification" });
+    if (removeNotification.rows.length === 0) {
+      await pool.query(`ROLLBACK`);
+      utils.sendResponse({ res, status: 503, message: "Failed to delete notification" });
+    }
+    console.log('removeNotification: ', removeNotification);
 
     await pool.query(`COMMIT`);
     

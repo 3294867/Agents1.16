@@ -8,12 +8,8 @@ import styles from './Users.module.css';
 import hooks from 'src/hooks';
 import { toast } from 'sonner';
 
-interface Props {
-  workspaceId: string;
-}
-
-const Users = ({ workspaceId }: Props) => {
-  const { memberNames } = hooks.features.useWorkspaceMembersTableContext();
+const Users = () => {
+  const { workspaceId, workspaceName, memberNames } = hooks.features.useWorkspaceMembersTableContext();
   const [searchValue, setSearchValue] = useState<string | null>(null);
   const [users, setUsers] = useState<string[]>([]);
 

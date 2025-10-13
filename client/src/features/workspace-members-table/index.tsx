@@ -22,12 +22,13 @@ import constants from 'src/constants';
 import WorkspaceMembersTableContext from './WorkspaceMembersTableContext';
 
 interface Props<TData, TValue> {
-  workspaceId: string;
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  workspaceId: string;
+  workspaceName: string;
 }
 
-const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Props<TData, TValue>) => {
+const WorkspaceMembersTable = <TData, TValue>({ columns, data, workspaceId, workspaceName }: Props<TData, TValue>) => {
   const [closeDropdown, setCloseDropdown] = useState(false);
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 5 });
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -63,6 +64,8 @@ const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Pr
   };
 
   const context = {
+    workspaceId,
+    workspaceName,
     memberNames: table.getRowModel().rows.map(row => row.original.memberName),
   }
   
@@ -70,7 +73,7 @@ const WorkspaceMembersTable = <TData, TValue>({ workspaceId, columns, data }: Pr
     <WorkspaceMembersTableContext.Provider value={context}>
       <Table.Root>
         <Table.Actions>
-          <InviteMember workspaceId={workspaceId} />
+          <InviteMember />
         </Table.Actions>
         {table.getHeaderGroups().map((headerGroup) => (
           <Table.Header key={headerGroup.id}>

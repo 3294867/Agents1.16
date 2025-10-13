@@ -38,9 +38,16 @@ const getWorkspaces = async (req: Request, res: Response): Promise<void> => {
 
     const workspaces: WorkspaceFE[] = [];
     for (const item of getWorkspaces.rows) {
+      let workspaceName;
+      if (item.name === 'personal' || item.name === 'incognito') {
+        workspaceName = item.name;
+      } else {
+        workspaceName = item.name + "-" + item.id.slice(item.id.length - 5, item.id.length - 1);
+      }
+      
       const workspace: WorkspaceFE = {
         id: item.id,
-        name: item.name,
+        name: workspaceName,
         description: item.description,
         userRole: item.user_role,
         agentIds: item.agent_ids,

@@ -38,6 +38,7 @@ const WorkspacesMenu = memo(() => {
             <div className={styles.separator} />
             <WorkspaceMembersDialog
               workspaceId={i.id}
+              workspaceName={currentWorkspaceName}
               userRole={i.userRole}
             />
           </HoverCard.Content>

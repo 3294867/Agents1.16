@@ -164,28 +164,6 @@ CREATE TABLE user_notification (
   CONSTRAINT user_notification_notification_id_fkey FOREIGN KEY (notification_id) REFERENCES notifications(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
--- Add Trigger - Workspace name must be unique per user
-CREATE OR REPLACE FUNCTION enforce_unique_workspace_per_user()
-RETURNS TRIGGER AS $$
-BEGIN
-  IF EXISTS (
-    SELECT 1
-    FROM workspace_user wu
-    JOIN workspaces w ON wu.workspace_id = w.id
-    WHERE wu.user_id = NEW.user_id
-      AND w.name = (SELECT name FROM workspaces WHERE id = NEW.workspace_id)
-      AND NOT (wu.workspace_id = NEW.workspace_id AND wu.user_id = NEW.user_id)
-  ) THEN
-    RAISE EXCEPTION 'User % already has a workspace named %', NEW.user_id, (SELECT name FROM workspaces WHERE id = NEW.workspace_id);
-  END IF;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_unique_workspace_per_user
-BEFORE INSERT OR UPDATE ON workspace_user
-FOR EACH ROW EXECUTE FUNCTION enforce_unique_workspace_per_user();
-
 -- Add Trigger - Agent name must be unique per workspace
 CREATE OR REPLACE FUNCTION enforce_unique_agent_per_workspace()
 RETURNS TRIGGER AS $$
@@ -218,8 +196,8 @@ INSERT INTO workspaces (id, name, description)
 VALUES
   ('79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid, 'personal', 'Root personal workspace'),
   ('c82a8f65-3373-4bb9-bb08-378cd4d6daf1'::uuid, 'incognito', 'Root incognito workspace'),
-  ('bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid, 'personal', 'Test personal workspace'),
-  ('40166349-603e-4b73-ab0a-adec16b24385'::uuid, 'team', 'Team workspace');
+  ('40166349-603e-4b73-ab0a-adec16b24385'::uuid, 'team', 'Team workspace'),
+  ('bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid, 'personal', 'Test personal workspace');
 
 INSERT INTO workspace_user (workspace_id, user_id, user_role)
 SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '79fa0469-8a88-4bb0-9bc5-3623b09cf379'::uuid AND u.name = 'root';
@@ -240,7 +218,8 @@ VALUES
   ('b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid, 'copywriter', 'copywriter', 'gpt-3.5-turbo', 'You are a marketing copywriter', ARRAY['seo','content']::text[], 0.7, FALSE),
   ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops-helper', 'devops-helper', 'gpt-3.5-turbo', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
   ('b967db53-048f-48f5-bef8-a9605c89712a'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
-  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
+  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('3967edb4-9148-47d6-b945-55451a34b87c'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
 
 INSERT INTO user_agent (user_id, agent_id)
 VALUES
@@ -249,7 +228,8 @@ VALUES
   ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, 'b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid),
   ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, '42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid),
   ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, 'b967db53-048f-48f5-bef8-a9605c89712a'::uuid),
-  ('92dca7fc-739d-473d-8e95-d7bc506b0c72'::uuid, 'd9dcde55-7a55-44de-992a-f255658483eb'::uuid);
+  ('92dca7fc-739d-473d-8e95-d7bc506b0c72'::uuid, 'd9dcde55-7a55-44de-992a-f255658483eb'::uuid),
+  ('78a18939-13a1-44c1-92a0-d90379c5fa1d'::uuid, '3967edb4-9148-47d6-b945-55451a34b87c'::uuid);
 
 INSERT INTO workspace_agent (workspace_id, agent_id)
 SELECT w.id, a.id
@@ -287,8 +267,8 @@ FROM workspaces w, agents a
 WHERE w.id = 'bf4a8ed2-0d0c-44ac-a437-8143d24c7760'::uuid
   AND a.id = 'd9dcde55-7a55-44de-992a-f255658483eb';
 
-INSERT INTO threads (id, name)
-VALUES ('326cf95d-4c0c-468f-98e3-8940d590e9bf', 'New Chat');
-
-INSERT INTO agent_thread (agent_id, thread_id)
-VALUES ('18fcb91d-cd74-423d-a6be-09e705529304', '326cf95d-4c0c-468f-98e3-8940d590e9bf');
+INSERT INTO workspace_agent (workspace_id, agent_id)
+SELECT w.id, a.id
+FROM workspaces w, agents a
+WHERE w.id = '40166349-603e-4b73-ab0a-adec16b24385'::uuid
+  AND a.id = '3967edb4-9148-47d6-b945-55451a34b87c';

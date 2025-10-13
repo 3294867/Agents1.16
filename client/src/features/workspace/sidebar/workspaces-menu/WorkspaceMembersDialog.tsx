@@ -10,10 +10,11 @@ import { UserRole } from 'src/types';
 
 interface Props {
   workspaceId: string;
+  workspaceName: string;
   userRole: UserRole;
 }
 
-const WorkspaceMembersDialog = ({ workspaceId, userRole }: Props) => {
+const WorkspaceMembersDialog = ({ workspaceId, workspaceName, userRole }: Props) => {
   const { members, isLoading, error } = hooks.features.useHandleWorkspaceMembersData({ workspaceId });
 
   if (isLoading) return <Loading />
@@ -34,9 +35,10 @@ const WorkspaceMembersDialog = ({ workspaceId, userRole }: Props) => {
       <Dialog.Content>
         <Heading variant='h4'>Members</Heading>
         <WorkspaceMembersTable
-          workspaceId={workspaceId}
           columns={workspaceMembersColumns}
           data={members}
+          workspaceId={workspaceId}
+          workspaceName={workspaceName}
         />
       </Dialog.Content>
     </Dialog.Root>
