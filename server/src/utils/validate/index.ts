@@ -35,6 +35,7 @@ import getNotifications from './getNotifications';
 import acceptWorkspaceInvite from './acceptWorkspaceInvite';
 import declineWorkspaceInvite from './declineWorkspaceInvite';
 import dismissWorkspaceInvite from './dismissWorkspaceInvite';
+import createStructuredResponse from './createStructuredResponse';
 
 const validate = {
   addAgent,
@@ -42,6 +43,7 @@ const validate = {
   addReqRes,
   addThread,
   createResponse,
+  createStructuredResponse,
   deleteReqRes,
   deleteThread,
   getAgentId,

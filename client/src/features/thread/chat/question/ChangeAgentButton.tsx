@@ -2,7 +2,7 @@ import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import indexedDB from 'src/storage/indexedDB';
 import postgresDB from 'src/storage/postgresDB';
-import openai from 'src/opanai';
+import openai from 'src/openai';
 import tabsStorage from 'src/storage/localStorage/tabsStorage';
 import hooks from 'src/hooks';
 import utils from 'src/utils';

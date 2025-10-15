@@ -37,6 +37,7 @@ import getNotifications from './getNotifications';
 import acceptWorkspaceInvite from './acceptWorkspaceInvite';
 import declineWorkspaceInvite from './declineWorkspaceInvite';
 import dismissWorkspaceInvite from './dismissWorkspaceInvite';
+import createStructuredResponse from './createStructuredResponse';
 
 const controllers = {
   addAgent,
@@ -44,6 +45,7 @@ const controllers = {
   addReqRes,
   addThread,
   createResponse,
+  createStructuredResponse,
   createThreadName,
   deleteReqRes,
   deleteThread,

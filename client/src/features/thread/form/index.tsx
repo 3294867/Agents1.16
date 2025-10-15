@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import openai from 'src/opanai';
+import openai from 'src/openai';
 import postgresDB from 'src/storage/postgresDB';
 import indexedDB from 'src/storage/indexedDB';
 import hooks from 'src/hooks';

@@ -10,7 +10,6 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
   const { notificationId }: RequestBody = req.body;
 
   const validationError = utils.validate.acceptWorkspaceInvite({ notificationId });
-  console.log('validationError', validationError);
   if (validationError) {
     utils.sendResponse({ res, status: 400, message: validationError });
     return;
@@ -28,7 +27,6 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
       await pool.query(`ROLLBACK`);
       utils.sendResponse({ res, status: 404, message: "Failed to get notification" });
     }
-    console.log('getNotification: ', getNotification.rows[0]);
 
     const addWorkspaceMember = await pool.query(`
       INSERT INTO workspace_user (workspace_id, user_id, user_role)
@@ -42,7 +40,6 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
       await pool.query(`ROLLBACK`);
       utils.sendResponse({ res, status: 503, message: "Failed to add workspace_user" });
     }
-    console.log('addWorkspaceMember: ', addWorkspaceMember.rows[0]);
 
     const removeNotification = await pool.query(`
       DELETE
@@ -54,7 +51,6 @@ const acceptWorkspaceInvite = async (req: Request, res: Response): Promise<void>
       await pool.query(`ROLLBACK`);
       utils.sendResponse({ res, status: 503, message: "Failed to delete notification" });
     }
-    console.log('removeNotification: ', removeNotification);
 
     await pool.query(`COMMIT`);
     
