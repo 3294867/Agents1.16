@@ -29,6 +29,9 @@ const Form = memo(() => {
     /** Create response (OpenAI) */
     const responseBody = await openai.createResponse({ agentId, agentModel, input });
 
+    const output_parsed = await openai.createStructuredResponse({ agentId, agentModel, input });
+    console.log('output_parsed: ', output_parsed);
+    
     /** Infer type of an agent (OpenAI) */
     const inferredAgentType = await openai.inferAgentType({ input }) as AgentType;
     

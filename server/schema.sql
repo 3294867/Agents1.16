@@ -69,7 +69,7 @@ CREATE TABLE agents (
   id UUID NOT NULL DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   type TEXT NOT NULL,
-  model VARCHAR(20) DEFAULT 'gpt-3.5-turbo',
+  model VARCHAR(20) DEFAULT 'gpt-5-nano',
   system_instructions TEXT,
   stack TEXT[],
   temperature FLOAT NOT NULL DEFAULT 0.5,
@@ -213,13 +213,13 @@ SELECT w.id, u.id, 'admin' FROM workspaces w, users u WHERE w.id = '40166349-603
 
 INSERT INTO agents (id, name, type, model, system_instructions, stack, temperature, web_search)
 VALUES
-  ('18fcb91d-cd74-423d-a6be-09e705529304'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
-  ('f7e5617e-538b-487e-85f7-b6533a179011'::uuid, 'data-analyst', 'data-analyst', 'gpt-3.5-turbo', 'You are a data analyst', ARRAY['sql','python']::text[], 0.2, TRUE),
-  ('b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid, 'copywriter', 'copywriter', 'gpt-3.5-turbo', 'You are a marketing copywriter', ARRAY['seo','content']::text[], 0.7, FALSE),
-  ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops-helper', 'devops-helper', 'gpt-3.5-turbo', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
-  ('b967db53-048f-48f5-bef8-a9605c89712a'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
-  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
-  ('3967edb4-9148-47d6-b945-55451a34b87c'::uuid, 'general', 'general', 'gpt-3.5-turbo', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
+  ('18fcb91d-cd74-423d-a6be-09e705529304'::uuid, 'general', 'general', 'gpt-5-nano', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('f7e5617e-538b-487e-85f7-b6533a179011'::uuid, 'data-analyst', 'data-analyst', 'gpt-5-nano', 'You are a data analyst', ARRAY['sql','python']::text[], 0.2, TRUE),
+  ('b80717ed-ec20-43f9-92e4-3e7512227c3f'::uuid, 'copywriter', 'copywriter', 'gpt-5-nano', 'You are a marketing copywriter', ARRAY['seo','content']::text[], 0.7, FALSE),
+  ('42022aa9-ff0a-4c31-b8a3-11be97b853c4'::uuid, 'devops-helper', 'devops-helper', 'gpt-5-nano', 'You are a DevOps assistant', ARRAY['bash','terraform']::text[], 0.3, TRUE),
+  ('b967db53-048f-48f5-bef8-a9605c89712a'::uuid, 'general', 'general', 'gpt-5-nano', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('d9dcde55-7a55-44de-992a-f255658483eb'::uuid, 'general', 'general', 'gpt-5-nano', 'You are a general assistant', '{}'::text[], 0.5, TRUE),
+  ('3967edb4-9148-47d6-b945-55451a34b87c'::uuid, 'general', 'general', 'gpt-5-nano', 'You are a general assistant', '{}'::text[], 0.5, TRUE);
 
 INSERT INTO user_agent (user_id, agent_id)
 VALUES

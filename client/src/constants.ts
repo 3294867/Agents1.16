@@ -4,10 +4,11 @@ const agentTypes = [ 'general', 'data-analyst', 'copywriter', 'devops-helper' ];
 
 const agentModels = [
   'gpt-4.1',
-  'gpt-4o',
-  'gpt-4o-audio-preview',
-  'chatgpt-4o'
-] as ('gpt-4.1' |'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o')[];
+  'chatgpt-4o',
+  'gpt-5',
+  'gpt-5-mini',
+  'gpt-5-nano','gpt-5-pro'
+];
 
 const technologies = [
   'ActiveMQ',

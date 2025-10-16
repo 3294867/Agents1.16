@@ -17,7 +17,7 @@ interface Workspace {
 }
 
 type AgentType = 'general' | 'data-analyst' | 'copywriter' | 'devops-helper'
-type AgentModel = 'gpt-3.5-turbo' | 'gpt-4.1' | 'gpt-4o' | 'gpt-4o-audio-preview' | 'chatgpt-4o'
+type AgentModel = 'gpt-4.1' | 'chatgpt-4o' | 'gpt-5' | 'gpt-5-mini' | 'gpt-5-nano' | 'gpt-5-pro'
 
 interface Agent {
   id: string;
