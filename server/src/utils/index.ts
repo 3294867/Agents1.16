@@ -5,6 +5,7 @@ import sendResponse from './sendResponse';
 import regex from './regex';
 import validate from './validate';
 import runPythonScript from './runPythonScript';
+import scripts from './scripts';
 
 const utils = {
   encrypt,
@@ -12,6 +13,7 @@ const utils = {
   updateSeedPasswords,
   validate,
   regex,
+  scripts,
   sendResponse,
   runPythonScript
 };

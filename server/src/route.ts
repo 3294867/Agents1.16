@@ -1,6 +1,5 @@
 import express from "express";
 import controllers from './controllers';
-import createStructuredResponse from './controllers/createStructuredResponse';
 
 const router = express.Router();
 
@@ -32,7 +31,6 @@ router.post("/update-thread-name", controllers.updateThreadName);
 router.post("/remove-thread-name", controllers.removeThreadName);
 router.post("/update-thread-is-bookmarked", controllers.updateThreadIsBookmarked);
 router.post("/create-response", controllers.createResponse);
-router.post("/create-structured-response", createStructuredResponse);
 router.post("/infer-agent-type", controllers.inferAgentType);
 router.post("/get-thread-updated-at", controllers.getThreadUpdatedAt);
 router.post("/get-workspaces-updated-at", controllers.getWorkspacesUpdatedAt);

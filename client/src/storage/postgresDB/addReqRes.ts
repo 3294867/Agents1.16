@@ -2,14 +2,15 @@ interface Props {
   threadId: string;
   requestBody: string;
   responseBody: string;
+  responseType: string;
 }
 
-const addReqRes = async ({ threadId, requestBody, responseBody }: Props): Promise<{ requestId: string, responseId: string }> => {
+const addReqRes = async ({ threadId, requestBody, responseBody, responseType }: Props): Promise<{ requestId: string, responseId: string }> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/add-reqres`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ threadId, requestBody, responseBody })
+      body: JSON.stringify({ threadId, requestBody, responseBody, responseType })
     });
     
     if (!response.ok) {

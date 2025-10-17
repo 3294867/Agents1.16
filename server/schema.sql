@@ -133,6 +133,7 @@ CREATE TABLE thread_request (
 CREATE TABLE responses (
   id UUID NOT NULL DEFAULT gen_random_uuid(),
   body TEXT NOT NULL,
+  type TEXT NOT NULL DEFAULT 'paragraph' CHECK (type IN ('paragraph', 'bullet-list', 'table')),
   created_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT responses_pkey PRIMARY KEY (id)

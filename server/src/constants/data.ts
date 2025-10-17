@@ -6,10 +6,12 @@ const agentModels = [
   'gpt-5-nano','gpt-5-pro'
 ];
 const agentTypes = [ 'general', 'data-analyst', 'copywriter', 'devops-helper' ];
+const responseTypes = [ 'paragraph', 'bullet-list', 'table' ];
 
 const data = {
   agentModels,
-  agentTypes
+  agentTypes,
+  responseTypes
 };
 
 export default data;

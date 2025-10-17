@@ -27,11 +27,8 @@ const Form = memo(() => {
     e.preventDefault();
     
     /** Create response (OpenAI) */
-    const responseBody = await openai.createResponse({ agentId, agentModel, input });
+    const { type: responseType, output: responseBody } = await openai.createResponse({ agentId, agentModel, input });
 
-    const output_parsed = await openai.createStructuredResponse({ agentId, agentModel, input });
-    console.log('output_parsed: ', output_parsed);
-    
     /** Infer type of an agent (OpenAI) */
     const inferredAgentType = await openai.inferAgentType({ input }) as AgentType;
     
@@ -39,7 +36,8 @@ const Form = memo(() => {
     const { requestId, responseId } = await postgresDB.addReqRes({
       threadId,
       requestBody: input,
-      responseBody
+      responseBody,
+      responseType
     });
     
     setInput('');
@@ -65,6 +63,7 @@ const Form = memo(() => {
         requestBody: input,
         responseId: responseId,
         responseBody,
+        responseType,
         inferredAgentType,
         isNew: true
       }

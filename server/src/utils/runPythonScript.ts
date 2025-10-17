@@ -36,13 +36,12 @@ const runPythonScript = async ({ scriptPath, scriptInput }: Props): Promise<Retu
       }
 
       try {
-        const parsedOutput = JSON.parse(output);
-        if (parsedOutput.error) {
-          return resolve({ message: `Python returned error: ${parsedOutput.error}`, data: null });
-        }
+        // const parsedOutput = JSON.parse(output);
+        // if (parsedOutput.error) {
+        //   return resolve({ message: `Python returned error: ${parsedOutput.error}`, data: null });
+        // }
 
-        console.log('message, data', parsedOutput);
-        return resolve({ message: "Python script succeeded", data: parsedOutput });
+        return resolve({ message: "Python script succeeded", data: output });
       } catch (err) {
         console.error("Failed to parse Python output:", err, output);
         return resolve({ message: "Failed to parse Python output", data: null });

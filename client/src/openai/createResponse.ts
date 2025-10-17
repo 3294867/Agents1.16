@@ -6,7 +6,7 @@ interface Props {
   input: string;
 }
 
-const createResponse = async ({ agentId, agentModel, input }: Props): Promise<string> => {
+const createResponse = async ({ agentId, agentModel, input }: Props): Promise<{ type: string, output: string}> => {
   try {
     const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/api/create-response`, {
       method: 'POST',
@@ -19,10 +19,10 @@ const createResponse = async ({ agentId, agentModel, input }: Props): Promise<st
       throw new Error(`Failed to get response: ${response.status} ${response.statusText} - ${errorText}`);
     }
     
-    const data: { message: string, data: string | null } = await response.json();
-    if (!data.data) throw new Error(data.message);
+    const body: { message: string, data: { type: string, output: string} | null } = await response.json();
+    if (!body.data) throw new Error(body.message);
     
-    return data.data as string;
+    return body.data;
   } catch (error) {
     throw new Error(`Failed to create response (openAI): ${error}`);
   }

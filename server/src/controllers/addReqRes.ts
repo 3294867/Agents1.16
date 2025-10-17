@@ -7,10 +7,11 @@ interface RequestBody {
   threadId: string;
   requestBody: string;
   responseBody: string;
+  responseType: string;
 }
 
 const addReqRes = async (req: Request, res: Response): Promise<void> => {
-  const { threadId, requestBody, responseBody }: RequestBody = req.body;
+  const { threadId, requestBody, responseBody, responseType }: RequestBody = req.body;
 
   const validationError = await utils.validate.addReqRes({ threadId, requestBody, responseBody });
   if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
@@ -41,10 +42,10 @@ const addReqRes = async (req: Request, res: Response): Promise<void> => {
 
     /** Response */
     const addResponse = await pool.query(`
-      INSERT INTO responses (body)
-      VALUES ($1::text)
+      INSERT INTO responses (body, type)
+      VALUES ($1::text, $2::text)
       RETURNING id;
-    `, [ responseBody ]);
+    `, [ responseBody, responseType ]);
     if (addResponse.rows.length === 0) {
       await pool.query(`ROLLBACK`);
       return utils.sendResponse({ res, status: 503, message: "Failed to add response" });

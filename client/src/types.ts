@@ -48,6 +48,7 @@ type ReqRes = {
   requestBody: string;
   responseId: string;
   responseBody: string;
+  responseType: string;
   inferredAgentType: AgentType;
   isNew: boolean;
 }

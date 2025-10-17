@@ -1,16 +1,16 @@
 import { Request, Response } from "express";
-import { client, pool } from "../index";
-import utils from '../utils';
-import { AgentModel } from '../types';
+import { pool } from '..';
+import utils from "../utils";
+import { AgentModel } from "../types";
 
 interface RequestBody {
   agentId: string;
-  input: string;
   agentModel?: AgentModel;
+  input: string;
 }
 
 const createResponse = async (req: Request, res: Response): Promise<void> => {
-  const { agentId, input, agentModel }: RequestBody = req.body;
+  const { agentId, agentModel, input }: RequestBody = req.body;
 
   const validationError = await utils.validate.createResponse({ agentId, input, agentModel });
   if (validationError) return utils.sendResponse({ res, status: 400, message: validationError });
@@ -23,19 +23,31 @@ const createResponse = async (req: Request, res: Response): Promise<void> => {
     `, [ agentId ]);
     if (getAgent.rows.length === 0) return utils.sendResponse({ res, status: 404, message: "Failed to get agent" });
 
-    const apiResponse = await client.responses.create({
-      model: agentModel ?? getAgent.rows[0].model,
-      input,
-      instructions: getAgent.rows[0].system_instructions
-    });
-    if (!apiResponse.output_text) return utils.sendResponse({ res, status: 503, message: "Failed to get response" });
+    const {
+      message: inferOutputFormatMessage,
+      data: inferOutputFormatData
+    } = await utils.scripts.inferOutputFormat({ userInput: input});
+    if (!inferOutputFormatData) {
+      return utils.sendResponse({ res, status: 500, message: inferOutputFormatMessage });
+    }
+
+    const {
+      message: createResponseMessage,
+      data: createResponseData
+    } = await utils.scripts.createResponse({ outputFormat: inferOutputFormatData, userInput: input});
+    if (!createResponseData) {
+      return utils.sendResponse({ res, status: 500, message: createResponseMessage });
+    }
 
     res.status(201).json({
-      message: "Response created",
-      data: apiResponse.output_text
+      message: createResponseMessage,
+      data: {
+        type: inferOutputFormatData,
+        output: JSON.stringify(createResponseData)
+      }
     });
-  } catch (error) {
-    console.error("Failed to create response: ", error);
+  } catch (err) {
+    console.error("Spawn failed:", err);
     utils.sendResponse({ res, status: 500, message: "Internal server error" });
   }
 };
